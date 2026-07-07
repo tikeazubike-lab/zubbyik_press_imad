@@ -1,0 +1,161 @@
+<?php
+/**
+ * Malachy Portfolio Theme Functions
+ *
+ * @package Malachy_Portfolio
+ * @since 1.0.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+define( 'MALACHY_THEME_VERSION', '1.1.0' );
+define( 'MALACHY_THEME_DIR', get_template_directory() );
+define( 'MALACHY_THEME_URI', get_template_directory_uri() );
+
+// ---------------------------------------------------------------------------
+// Theme Supports
+// ---------------------------------------------------------------------------
+add_action( 'after_setup_theme', 'malachy_setup' );
+
+function malachy_setup() {
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
+	add_theme_support(
+		'html5',
+		array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' )
+	);
+	add_theme_support( 'custom-logo' );
+	add_theme_support( 'responsive-embeds' );
+	add_theme_support( 'editor-styles' );
+	add_editor_style( 'assets/css/wordpress-editor.css' );
+
+	register_nav_menus(
+		array(
+			'primary' => esc_html__( 'Primary Menu', 'malachy-portfolio' ),
+		)
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Disable Gutenberg Block Editor
+// ---------------------------------------------------------------------------
+add_filter( 'use_block_editor_for_post', '__return_false' );
+add_filter( 'use_block_editor_for_post_type', '__return_false' );
+
+// ---------------------------------------------------------------------------
+// Use home.php template for the Blog page (slug: blog)
+// ---------------------------------------------------------------------------
+add_filter( 'template_include', function ( $template ) {
+	if ( is_page( 'blog' ) ) {
+		$blog = locate_template( 'home.php' );
+		if ( $blog ) {
+			return $blog;
+		}
+	}
+	return $template;
+} );
+
+// ---------------------------------------------------------------------------
+// Enqueue Assets
+// ---------------------------------------------------------------------------
+add_action( 'wp_enqueue_scripts', 'malachy_enqueue_assets' );
+
+function malachy_enqueue_assets() {
+	// Google Fonts
+	wp_enqueue_style(
+		'malachy-fonts',
+		'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap',
+		array(),
+		null
+	);
+
+	// Main Stylesheet
+	wp_enqueue_style(
+		'malachy-main',
+		MALACHY_THEME_URI . '/assets/css/main.css',
+		array(),
+		MALACHY_THEME_VERSION
+	);
+
+	$is_mobile = wp_is_mobile();
+
+	if ( ! $is_mobile ) {
+		// GSAP Vendor (bundled copy) — deferred
+		wp_enqueue_script(
+			'gsap',
+			MALACHY_THEME_URI . '/assets/js/vendor/gsap.min.js',
+			array(),
+			'3.12.5',
+			array( 'strategy' => 'defer' )
+		);
+
+		wp_enqueue_script(
+			'gsap-scroll-trigger',
+			MALACHY_THEME_URI . '/assets/js/vendor/ScrollTrigger.min.js',
+			array( 'gsap' ),
+			'3.12.5',
+			array( 'strategy' => 'defer' )
+		);
+
+		// Animation Manager
+		wp_enqueue_script(
+			'malachy-anim-manager',
+			MALACHY_THEME_URI . '/assets/js/animations/AnimationManager.js',
+			array( 'gsap', 'gsap-scroll-trigger' ),
+			MALACHY_THEME_VERSION,
+			true
+		);
+
+		// Per-section animation modules — front page only
+		if ( is_front_page() ) {
+			$animations = array( 'hero', 'about', 'skills', 'projects', 'experience', 'contact', 'global' );
+			foreach ( $animations as $a ) {
+				wp_enqueue_script(
+					"malachy-anim-{$a}",
+					MALACHY_THEME_URI . "/assets/js/animations/{$a}.js",
+					array( 'gsap', 'gsap-scroll-trigger', 'malachy-anim-manager' ),
+					MALACHY_THEME_VERSION,
+					true
+				);
+			}
+		}
+	}
+
+	// Navigation — loaded everywhere, adapts to GSAP availability
+	$nav_deps = $is_mobile ? array() : array( 'gsap', 'gsap-scroll-trigger', 'malachy-anim-manager' );
+	wp_enqueue_script(
+		'malachy-anim-navigation',
+		MALACHY_THEME_URI . '/assets/js/animations/navigation.js',
+		$nav_deps,
+		MALACHY_THEME_VERSION,
+		true
+	);
+
+	// Contact form JS — always
+	wp_enqueue_script(
+		'malachy-contact',
+		MALACHY_THEME_URI . '/assets/js/contact.js',
+		array(),
+		MALACHY_THEME_VERSION,
+		true
+	);
+
+	wp_localize_script(
+		'malachy-contact',
+		'malachyAjax',
+		array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'malachy_contact_nonce' ),
+		)
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Include Modules
+// ---------------------------------------------------------------------------
+require_once MALACHY_THEME_DIR . '/inc/post-types.php';
+require_once MALACHY_THEME_DIR . '/inc/meta-boxes.php';
+require_once MALACHY_THEME_DIR . '/inc/data-seeder.php';
+require_once MALACHY_THEME_DIR . '/inc/contact-handler.php';
