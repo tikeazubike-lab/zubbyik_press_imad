@@ -23,6 +23,24 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 }
 
 /**
+ * Helper: log a message via WP_CLI if available, otherwise silently ignore.
+ */
+function malachy_seeder_log( $message ) {
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		WP_CLI::line( $message );
+	}
+}
+
+/**
+ * Helper: log success via WP_CLI if available.
+ */
+function malachy_seeder_success( $message ) {
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		WP_CLI::success( $message );
+	}
+}
+
+/**
  * Malachy Seeder Command
  */
 class Malachy_Seeder {
@@ -42,7 +60,7 @@ class Malachy_Seeder {
 		$this->seed_experience();
 		$this->seed_skills();
 
-		WP_CLI::success( 'All CPTs seeded successfully.' );
+		malachy_seeder_success( 'All CPTs seeded successfully.' );
 	}
 
 	/**
@@ -79,14 +97,14 @@ class Malachy_Seeder {
 			),
 		);
 
-		$this->create_posts( 'project', $projects, function ( $item ) {
-			update_post_meta( get_the_ID(), '_project_tag', $item['tag'] );
-			update_post_meta( get_the_ID(), '_project_tech', $item['tech'] );
-			update_post_meta( get_the_ID(), '_project_url', $item['url'] );
-			update_post_meta( get_the_ID(), '_project_github', $item['github'] );
+		$this->create_posts( 'project', $projects, function ( $id, $item ) {
+			update_post_meta( $id, '_project_tag', $item['tag'] );
+			update_post_meta( $id, '_project_tech', $item['tech'] );
+			update_post_meta( $id, '_project_url', $item['url'] );
+			update_post_meta( $id, '_project_github', $item['github'] );
 		} );
 
-		WP_CLI::line( '  → 3 projects created.' );
+		malachy_seeder_log( '  → 3 projects created.' );
 	}
 
 	/**
@@ -124,12 +142,12 @@ class Malachy_Seeder {
 			),
 		);
 
-		$this->create_posts( 'experience', $entries, function ( $item ) {
-			update_post_meta( get_the_ID(), '_exp_org', $item['org'] );
-			update_post_meta( get_the_ID(), '_exp_year', $item['year'] );
+		$this->create_posts( 'experience', $entries, function ( $id, $item ) {
+			update_post_meta( $id, '_exp_org', $item['org'] );
+			update_post_meta( $id, '_exp_year', $item['year'] );
 		} );
 
-		WP_CLI::line( '  → 4 experience entries created.' );
+		malachy_seeder_log( '  → 4 experience entries created.' );
 	}
 
 	/**
@@ -174,7 +192,7 @@ class Malachy_Seeder {
 			}
 		}
 
-		WP_CLI::line( "  → {$count} skills created." );
+		malachy_seeder_log( "  → {$count} skills created." );
 	}
 
 	/**
@@ -182,7 +200,7 @@ class Malachy_Seeder {
 	 *
 	 * @param string   $post_type        CPT slug.
 	 * @param array    $items            Array of item data arrays.
-	 * @param callable $meta_callback    Callback to set meta after insert.
+	 * @param callable $meta_callback    Callback to set meta after insert. Receives ( $post_id, $item ).
 	 */
 	private function create_posts( $post_type, $items, $meta_callback ) {
 		foreach ( $items as $item ) {
@@ -207,12 +225,7 @@ class Malachy_Seeder {
 			) );
 
 			if ( $id && ! is_wp_error( $id ) ) {
-				// Set current post context for the meta callback.
-				global $post;
-				$post = get_post( $id );
-				setup_postdata( $post );
-				$meta_callback( $item );
-				wp_reset_postdata();
+				$meta_callback( $id, $item );
 			}
 		}
 	}
