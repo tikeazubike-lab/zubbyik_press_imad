@@ -2,13 +2,13 @@
 /**
  * CPT Data Seeder — one-time WP-CLI command
  *
- * Seeds Projects, Experience, and Skills CPTs with the
+ * Seeds Projects, Experience, Skills, and Blog Posts with the
  * existing portfolio content so front-page renders from dynamic data.
  *
  * Usage: wp malachy seed
  *
  * @package Malachy_Portfolio
- * @since  1.0.9
+ * @since  1.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -59,8 +59,9 @@ class Malachy_Seeder {
 		$this->seed_projects();
 		$this->seed_experience();
 		$this->seed_skills();
+		$this->seed_blog_posts();
 
-		malachy_seeder_success( 'All CPTs seeded successfully.' );
+		malachy_seeder_success( 'All data seeded successfully.' );
 	}
 
 	/**
@@ -196,6 +197,57 @@ class Malachy_Seeder {
 	}
 
 	/**
+	 * Seed 2 blog posts.
+	 */
+	private function seed_blog_posts() {
+		$posts = array(
+			array(
+				'title'   => 'Diary of an Upwork Newbie: Day 1 to Day 30',
+				'content' => "So I joined Upwork. Thirty days later, I have opinions.\n\n<!--more-->\n\n## Week 1: The Humbling\n\nI sent 47 proposals. Got 3 views. Zero replies. My profile photo smiled back at me with what I now recognize as pity.\n\n## Week 2: Strategy Pivot\n\nStopped blasting generic proposals. Started reading the job description like it mattered. Mentioned specific details from their post. Response rate went from 0% to \"someone actually wrote back.\"\n\n## Week 3: First Gig\n\nA WordPress speed optimization project. Small budget, but it was a real client paying real money. I over-delivered, they left a 5-star review, and suddenly the algorithm noticed me.\n\n## Week 4: Momentum\n\nThree active contracts. A repeat client. The dopamine of that \"New Message\" notification when it's a client, not a scammer.\n\n**Lesson:** Upwork rewards patience and specificity, not volume. Quality proposals beat quantity every time.",
+				'excerpt'  => 'The first 30 days of freelancing on Upwork — from zero replies to three active contracts. What worked, what didn\'t, and what I wish I knew on Day 1.',
+				'date'     => '2026-06-15 10:00:00',
+				'status'   => 'publish',
+			),
+			array(
+				'title'   => 'When a Senior Developer Joins Upwork: The Five Stages of Freelance Grief',
+				'content' => "You've got 10 years of experience, a GitHub full of green squares, and a resume that makes recruiters swoon. Then you join Upwork and discover you're nobody.\n\n<!--more-->\n\n## Stage 1: Denial\n\n\"My rates are too high? But I'm worth it!\" You see entry-level developers charging $15/hr and scoff. You set your rate at $100/hr. You get zero invites.\n\n## Stage 2: Anger\n\n\"This platform is broken! These clients don't know quality!\" You write a strongly-worded LinkedIn post about the race to the bottom.\n\n## Stage 3: Bargaining\n\nFine. $80/hr. $60/hr. $45/hr. With a premium package. And a discount for the first project. And a satisfaction guarantee.\n\n## Stage 4: Depression\n\nYou check your connects balance. You've burned through 100+ connects. One interview. They went with someone else.\n\n## Stage 5: Acceptance\n\nYou lower your rate to $35/hr, land a small project, crush it, get a 5-star review, and slowly — painfully slowly — build a reputation.\n\nSix months later you're back at $100/hr with a waiting list.\n\n**The moral:** Upwork doesn't care about your resume. It cares about your last completed project. The first one is the hardest. It gets easier.",
+				'excerpt'  => 'The emotional journey of an experienced developer discovering that Upwork doesn\'t care about your resume — only your last completed project.',
+				'date'     => '2026-06-20 14:30:00',
+				'status'   => 'publish',
+			),
+		);
+
+		$count = 0;
+		foreach ( $posts as $p ) {
+			$existing = get_posts( array(
+				'post_type'      => 'post',
+				'title'          => $p['title'],
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+			) );
+
+			if ( ! empty( $existing ) ) {
+				continue;
+			}
+
+			$id = wp_insert_post( array(
+				'post_type'    => 'post',
+				'post_title'   => $p['title'],
+				'post_content' => $p['content'],
+				'post_excerpt' => $p['excerpt'],
+				'post_date'    => $p['date'],
+				'post_status'  => $p['status'],
+			) );
+
+			if ( $id && ! is_wp_error( $id ) ) {
+				++$count;
+			}
+		}
+
+		malachy_seeder_log( "  → {$count} blog posts created." );
+	}
+
+	/**
 	 * Generic post creator.
 	 *
 	 * @param string   $post_type        CPT slug.
@@ -204,7 +256,6 @@ class Malachy_Seeder {
 	 */
 	private function create_posts( $post_type, $items, $meta_callback ) {
 		foreach ( $items as $item ) {
-			// Check if post with this title already exists.
 			$existing = get_posts( array(
 				'post_type'      => $post_type,
 				'title'          => $item['title'],
