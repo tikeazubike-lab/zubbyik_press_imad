@@ -76,6 +76,7 @@ class Malachy_Seeder {
 				'tech'        => array( 'Playwright', 'TypeScript', 'Docker', 'GitHub Actions', 'Python', 'Allure' ),
 				'url'         => '#',
 				'github'      => '#',
+				'image'       => 'project-qa.png',
 				'menu_order'  => 1,
 			),
 			array(
@@ -85,6 +86,7 @@ class Malachy_Seeder {
 				'tech'        => array( 'Linux', 'Docker', 'Python', 'Nginx', 'Ansible', 'Prometheus' ),
 				'url'         => '#',
 				'github'      => '#',
+				'image'       => 'project-sysadmin.png',
 				'menu_order'  => 2,
 			),
 			array(
@@ -94,6 +96,7 @@ class Malachy_Seeder {
 				'tech'        => array( 'WordPress', 'PHP', 'GSAP', 'JavaScript', 'CSS', 'Docker' ),
 				'url'         => '#',
 				'github'      => '#',
+				'image'       => 'project-wordpress.png',
 				'menu_order'  => 3,
 			),
 		);
@@ -103,6 +106,7 @@ class Malachy_Seeder {
 			update_post_meta( $id, '_project_tech', $item['tech'] );
 			update_post_meta( $id, '_project_url', $item['url'] );
 			update_post_meta( $id, '_project_github', $item['github'] );
+			$this->set_featured_image( $id, $item['image'] );
 		} );
 
 		malachy_seeder_log( '  → 3 projects created.' );
@@ -279,5 +283,46 @@ class Malachy_Seeder {
 				$meta_callback( $id, $item );
 			}
 		}
+	}
+
+	/**
+	 * Import a theme image as the post's featured image.
+	 *
+	 * @param int    $post_id Post ID.
+	 * @param string $file    Filename in assets/images/ (e.g. 'project-qa.png').
+	 */
+	private function set_featured_image( $post_id, $file ) {
+		$file_path = MALACHY_THEME_DIR . '/assets/images/' . $file;
+
+		if ( ! file_exists( $file_path ) ) {
+			malachy_seeder_log( "    (image not found: {$file})" );
+			return;
+		}
+
+		// Check if already set
+		if ( has_post_thumbnail( $post_id ) ) {
+			return;
+		}
+
+		$wp_filetype = wp_check_filetype( $file, null );
+		$attachment  = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title'     => sanitize_file_name( pathinfo( $file, PATHINFO_FILENAME ) ),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+		);
+
+		$attach_id = wp_insert_attachment( $attachment, $file_path, $post_id );
+
+		if ( is_wp_error( $attach_id ) ) {
+			return;
+		}
+
+		// Generate attachment metadata
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		$attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
+		wp_update_attachment_metadata( $attach_id, $attach_data );
+
+		set_post_thumbnail( $post_id, $attach_id );
 	}
 }
