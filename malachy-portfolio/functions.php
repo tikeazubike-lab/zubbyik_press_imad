@@ -153,6 +153,81 @@ function malachy_enqueue_assets() {
 }
 
 // ---------------------------------------------------------------------------
+// Admin Settings Page
+// ---------------------------------------------------------------------------
+add_action( 'admin_menu', 'malachy_add_settings_page' );
+
+function malachy_add_settings_page() {
+	add_options_page(
+		'Malachy Portfolio Settings',
+		'Malachy Portfolio',
+		'manage_options',
+		'malachy-portfolio',
+		'malachy_render_settings_page'
+	);
+}
+
+function malachy_render_settings_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	if ( isset( $_GET['seed_data'] ) && check_admin_referer( 'malachy_seed_data' ) ) {
+		if ( class_exists( 'Malachy_Seeder' ) ) {
+			$seeder = new Malachy_Seeder();
+			$seeder->seed( array(), array() );
+			echo '<div class="notice notice-success is-dismissible"><p>Default data seeded successfully!</p></div>';
+		}
+	}
+	?>
+	<div class="wrap">
+		<h1>Malachy Portfolio Settings</h1>
+		<form method="post" action="options.php">
+			<?php settings_fields( 'malachy_theme_settings' ); ?>
+			<table class="form-table">
+				<tr>
+					<th scope="row"><label for="malachy_portrait">Portrait Image URL</label></th>
+					<td><input type="url" id="malachy_portrait" name="malachy_portrait" value="<?php echo esc_attr( get_option( 'malachy_portrait' ) ); ?>" class="regular-text" placeholder="https://.../malachy-portrait.webp" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="malachy_hero_subtitle">Hero Subtitle</label></th>
+					<td><input type="text" id="malachy_hero_subtitle" name="malachy_hero_subtitle" value="<?php echo esc_attr( get_option( 'malachy_hero_subtitle' ) ); ?>" class="regular-text" placeholder="Portfolio · 2026" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="malachy_resume_url">Resume / CV File URL</label></th>
+					<td><input type="url" id="malachy_resume_url" name="malachy_resume_url" value="<?php echo esc_attr( get_option( 'malachy_resume_url' ) ); ?>" class="regular-text" placeholder="https://.../malachy-cv.pdf" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="malachy_contact_email">Contact Form Email</label></th>
+					<td><input type="email" id="malachy_contact_email" name="malachy_contact_email" value="<?php echo esc_attr( get_option( 'malachy_contact_email', 'malachy.egbuna@imadconsulting.co.uk' ) ); ?>" class="regular-text" /></td>
+				</tr>
+			</table>
+			<?php submit_button(); ?>
+		</form>
+		<hr />
+		<h2>Seed Default Data</h2>
+		<p>Click below to create default projects, experience entries, and skills. Safe to run multiple times — won't overwrite existing entries.</p>
+		<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=malachy-portfolio&seed_data=1' ), 'malachy_seed_data' ) ); ?>" class="button button-primary">Seed Default Data</a>
+	</div>
+	<?php
+}
+
+// Register contact email setting
+add_action( 'admin_init', 'malachy_register_contact_email' );
+
+function malachy_register_contact_email() {
+	register_setting(
+		'malachy_theme_settings',
+		'malachy_contact_email',
+		array(
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_email',
+			'default'           => 'malachy.egbuna@imadconsulting.co.uk',
+		)
+	);
+}
+
+// ---------------------------------------------------------------------------
 // Include Modules
 // ---------------------------------------------------------------------------
 require_once MALACHY_THEME_DIR . '/inc/post-types.php';
