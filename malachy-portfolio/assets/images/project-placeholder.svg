@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="oklch(0.512 0.181 27.5 / 0.08)"/>
+      <stop offset="100%" stop-color="oklch(0.15 0 0 / 0.05)"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg)" rx="0"/>
+  <g transform="translate(300,200)" fill="none" stroke="oklch(0.512 0.181 27.5 / 0.25)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Folder/project icon -->
+    <path d="M-40,-30 h80 a8,8 0 0,1 8,8 v44 a8,8 0 0,1 -8,8 h-80 a8,8 0 0,1 -8,-8 v-44 a8,8 0 0,1 8,-8 z"/>
+    <path d="M-40,-30 v-10 a8,8 0 0,1 8,-8 h24 a8,8 0 0,1 8,8 v10"/>
+    <!-- Lines representing text/code -->
+    <line x1="-25" y1="-10" x2="25" y2="-10" stroke-width="1.5" opacity="0.5"/>
+    <line x1="-25" y1="0" x2="15" y2="0" stroke-width="1.5" opacity="0.35"/>
+    <line x1="-25" y1="10" x2="20" y2="10" stroke-width="1.5" opacity="0.35"/>
+    <line x1="-25" y1="20" x2="-5" y2="20" stroke-width="1.5" opacity="0.2"/>
+  </g>
+</svg>
