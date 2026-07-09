@@ -853,7 +853,6 @@ html { scroll-behavior: smooth; }
   top: 6rem;
   margin-bottom: 2rem;
   border-radius: 2rem;
-  overflow: hidden;
   background-color: var(--card);
   border: 1px solid var(--border);
   box-shadow: 0 10px 15px -3px color-mix(in oklab, black 5%, transparent);
@@ -879,7 +878,8 @@ html { scroll-behavior: smooth; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1.5rem;
+  overflow: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -894,18 +894,18 @@ html { scroll-behavior: smooth; }
 }
 
 .proj-card-body {
-  padding: 2rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 @media (min-width: 768px) {
-  .proj-card-body { padding: 3rem; }
+  .proj-card-body { padding: 2rem; }
 }
 
 @media (min-width: 1024px) {
-  .proj-card-body { padding: 4rem; }
+  .proj-card-body { padding: 2.5rem; }
 }
 
 .proj-card-tag {
