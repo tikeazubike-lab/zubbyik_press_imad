@@ -818,12 +818,12 @@ html { scroll-behavior: smooth; }
    ========================================================================= */
 .projects-section {
   position: relative;
-  padding-block: 8rem;
+  padding-block: 5rem;
   padding-block-end: 4rem;
 }
 
 @media (min-width: 768px) {
-  .projects-section { padding-block: 12rem; padding-block-end: 4rem; }
+  .projects-section { padding-block: 5rem; padding-block-end: 4rem; }
 }
 
 .projects-heading {
@@ -844,14 +844,14 @@ html { scroll-behavior: smooth; }
 }
 
 .projects-stack {
-  margin-top: 5rem;
+  margin-top: 3rem;
   position: relative;
 }
 
 .proj-card {
   position: sticky;
   top: 6rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   border-radius: 2rem;
   background-color: var(--card);
   border: 1px solid var(--border);
