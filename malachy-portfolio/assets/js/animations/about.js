@@ -17,33 +17,39 @@ document.addEventListener('DOMContentLoaded', function () {
   const stats = section.querySelector('.about-stats');
 
   // Title and text stagger
-  gsap.from(reveals, {
-    scrollTrigger: {
-      trigger: section,
-      start: 'top 80%',
-      end: 'top 40%',
-      scrub: 1,
-    },
-    y: 60,
-    opacity: 0,
-    stagger: 0.2,
-    ease: 'power2.out',
-  });
+  gsap.fromTo(reveals,
+    { y: 60, opacity: 0 },
+    {
+      y: 0, opacity: 1,
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 80%',
+        end: 'top 40%',
+        scrub: 1,
+      },
+      stagger: 0.2,
+      ease: 'power2.out',
+      immediateRender: false,
+    }
+  );
 
   // Stats stagger upward
   if (stats) {
-    gsap.from(stats.querySelectorAll('div'), {
-      scrollTrigger: {
-        trigger: stats,
-        start: 'top 85%',
-        end: 'top 50%',
-        scrub: 1,
-      },
-      y: 40,
-      opacity: 0,
-      stagger: 0.15,
-      ease: 'power2.out',
-    });
+    gsap.fromTo(stats.querySelectorAll('div'),
+      { y: 40, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        scrollTrigger: {
+          trigger: stats,
+          start: 'top 85%',
+          end: 'top 50%',
+          scrub: 1,
+        },
+        stagger: 0.15,
+        ease: 'power2.out',
+        immediateRender: false,
+      }
+    );
   }
 
   // Illustration parallax

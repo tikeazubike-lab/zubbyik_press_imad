@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://imadconsult.zubbystudio.shop/sitemap.xml
