@@ -21,7 +21,7 @@ $badges = array( 'Docker', 'Linux', 'Python', 'Git', 'Playwright', 'WordPress', 
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-600w.webp' ); ?> 600w,
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-1024w.webp' ); ?> 1024w"
 			sizes="(max-width: 640px) 50vw, (max-width: 1024px) 40vw, 30vw"
-			class="hero-portrait" alt="" draggable="false" width="600" height="800" fetchpriority="high" />
+			class="hero-portrait" alt="Malachy Egbuna — portrait photo" draggable="false" width="600" height="800" fetchpriority="high" />
 	</div>
 
 	<div aria-hidden="true" class="hero-portrait-bg"></div>

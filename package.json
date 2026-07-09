@@ -1,0 +1,24 @@
+{
+  "name": "wordpress_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tikeazubike-lab/zubbyik_press_imad.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tikeazubike-lab/zubbyik_press_imad/issues"
+  },
+  "homepage": "https://github.com/tikeazubike-lab/zubbyik_press_imad#readme",
+  "dependencies": {
+    "playwright": "^1.61.1"
+  }
+}

@@ -14,7 +14,7 @@
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/about-illustration-768w.webp' ); ?> 768w,
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/about-illustration-1024w.webp' ); ?> 1024w"
 			sizes="(max-width: 768px) 50vw, 40vw"
-			alt="" width="1024" height="1024" loading="lazy" />
+			alt="Illustration of developer working at multi-monitor setup" width="1024" height="1024" loading="lazy" />
 	</div>
 	<div aria-hidden="true" class="about-veil"></div>
 
