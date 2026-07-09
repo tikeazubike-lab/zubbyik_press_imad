@@ -850,8 +850,8 @@ html { scroll-behavior: smooth; }
 
 .proj-card {
   position: sticky;
-  top: 6rem;
-  margin-bottom: 4rem;
+  top: 0.5rem;
+  margin-bottom: 8rem;
   border-radius: 2rem;
   background-color: var(--card);
   border: 1px solid var(--border);
@@ -859,7 +859,7 @@ html { scroll-behavior: smooth; }
 }
 
 @media (min-width: 768px) {
-  .proj-card { top: 7rem; }
+  .proj-card { top: 1rem; }
 }
 
 .proj-card-grid {
