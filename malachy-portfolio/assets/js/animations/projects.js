@@ -1,28 +1,34 @@
 /**
  * Projects Section Animation
  *
- * Card stacking is handled via CSS position: sticky.
- * GSAP adds scroll-triggered entry animations (fade/translate) to
- * each card's image and body as the card comes into view.
- *
- * No GSAP pin — the sticky cards scroll naturally, eliminating the
- * freeze/jump that occurs when a pinned ScrollTrigger releases.
+ * GSAP ScrollTrigger pinning for stacked card reveal.
+ * Each card pins for a full viewport before releasing to the next.
+ * Falls back to simple fade-in on mobile (no pinning).
  *
  * @package Malachy_Portfolio
  */
-
 document.addEventListener('DOMContentLoaded', function () {
   const section = document.getElementById('projects');
   const stack = document.getElementById('projects-stack');
   if (!section || !stack) return;
 
+  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+  if (!isDesktop) return;
+
   const cards = stack.querySelectorAll('.proj-card');
   if (cards.length === 0) return;
 
-  // Each card animates in as it enters the viewport
-  cards.forEach((card) => {
-    const image = card.querySelector('.proj-card-image');
-    const body = card.querySelector('.proj-card-body');
+  // Kill any existing ScrollTriggers in this section
+  ScrollTrigger.getAll().forEach(function (t) {
+    if (t.vars && t.vars.trigger && stack.contains(t.vars.trigger)) {
+      t.kill();
+    }
+  });
+
+  // Animate each card's content
+  cards.forEach(function (card) {
+    var image = card.querySelector('.proj-card-image');
+    var body = card.querySelector('.proj-card-body');
 
     if (image) {
       gsap.from(image, {
@@ -32,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
           end: 'top 40%',
           scrub: 1,
         },
-        x: -80,
+        x: -60,
         opacity: 0,
         ease: 'power2.out',
       });
@@ -46,10 +52,30 @@ document.addEventListener('DOMContentLoaded', function () {
           end: 'top 40%',
           scrub: 1,
         },
-        x: 80,
+        x: 60,
         opacity: 0,
         ease: 'power2.out',
       });
     }
+  });
+
+  // Pin each card for a scroll distance equal to its own height
+  // so it fully scrolls into view before the next card takes over
+  cards.forEach(function (card, i) {
+    var isLast = i === cards.length - 1;
+
+    ScrollTrigger.create({
+      trigger: card,
+      start: 'top 4rem',
+      end: isLast ? 'bottom top' : 'bottom top',
+      pin: true,
+      pinSpacing: false,
+      anticipatePin: 1,
+    });
+  });
+
+  // Refresh on resize
+  window.addEventListener('resize', function () {
+    ScrollTrigger.refresh();
   });
 });
