@@ -851,7 +851,7 @@ html { scroll-behavior: smooth; }
 .proj-card {
   position: sticky;
   top: 6rem;
-  margin-bottom: 1rem;
+  margin-bottom: 4rem;
   border-radius: 2rem;
   background-color: var(--card);
   border: 1px solid var(--border);
