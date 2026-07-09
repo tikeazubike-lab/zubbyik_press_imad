@@ -85,17 +85,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Mobile: simple fade-only, no pin
   mm.add('(max-width: 767px)', () => {
-    gsap.from(hero, {
-      scrollTrigger: {
-        trigger: hero,
-        start: 'top 80%',
-        end: 'top 40%',
-        scrub: 1,
-      },
-      opacity: 0.8,
-      y: 30,
-      ease: 'power1.out',
-    });
+    gsap.fromTo(hero,
+      { opacity: 0.8, y: 30 },
+      {
+        opacity: 1, y: 0,
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top 80%',
+          end: 'top 40%',
+          scrub: 1,
+        },
+        ease: 'power1.out',
+        immediateRender: false,
+      }
+    );
   });
 
   // CTA hover (CSS-only, but smooth GSAP for enhanced feel)

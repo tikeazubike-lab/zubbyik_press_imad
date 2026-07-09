@@ -31,31 +31,37 @@ document.addEventListener('DOMContentLoaded', function () {
     var body = card.querySelector('.proj-card-body');
 
     if (image) {
-      gsap.from(image, {
-        scrollTrigger: {
-          trigger: card,
-          start: 'top 80%',
-          end: 'top 40%',
-          scrub: 1,
-        },
-        x: -60,
-        opacity: 0,
-        ease: 'power2.out',
-      });
+      gsap.fromTo(image,
+        { x: -60, opacity: 0 },
+        {
+          x: 0, opacity: 1,
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+            end: 'top 40%',
+            scrub: 1,
+          },
+          ease: 'power2.out',
+          immediateRender: false,
+        }
+      );
     }
 
     if (body) {
-      gsap.from(body, {
-        scrollTrigger: {
-          trigger: card,
-          start: 'top 80%',
-          end: 'top 40%',
-          scrub: 1,
-        },
-        x: 60,
-        opacity: 0,
-        ease: 'power2.out',
-      });
+      gsap.fromTo(body,
+        { x: 60, opacity: 0 },
+        {
+          x: 0, opacity: 1,
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+            end: 'top 40%',
+            scrub: 1,
+          },
+          ease: 'power2.out',
+          immediateRender: false,
+        }
+      );
     }
   });
 

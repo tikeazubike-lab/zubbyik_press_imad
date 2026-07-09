@@ -6,3 +6,8 @@ qa-screenshot.cjs
 .DS_Store
 build/
 db-data/
+wp-data/
+malachy-s-cinematic-canvas/
+human_image.png
+imadconsult.zubbystudio.shop*.json
+instruction_claude.md

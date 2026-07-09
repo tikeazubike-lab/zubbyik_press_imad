@@ -20,46 +20,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Heading fade-up
   if (heading) {
-    gsap.from(heading, {
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 80%',
-        end: 'top 50%',
-        scrub: 1,
-      },
-      y: 60,
-      opacity: 0,
-      ease: 'power2.out',
-    });
+    gsap.fromTo(heading,
+      { y: 60, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          end: 'top 50%',
+          scrub: 1,
+        },
+        ease: 'power2.out',
+        immediateRender: false,
+      }
+    );
   }
 
   // Form stagger fade-up
   if (form) {
-    gsap.from(form.querySelectorAll('input, textarea, button'), {
-      scrollTrigger: {
-        trigger: form,
-        start: 'top 80%',
-        end: 'top 40%',
-        scrub: 1,
-      },
-      y: 40,
-      ease: 'power2.out',
-    });
+    gsap.fromTo(form.querySelectorAll('input, textarea, button'),
+      { y: 40 },
+      {
+        y: 0,
+        scrollTrigger: {
+          trigger: form,
+          start: 'top 80%',
+          end: 'top 40%',
+          scrub: 1,
+        },
+        ease: 'power2.out',
+        immediateRender: false,
+      }
+    );
   }
 
   // Social links fade-up
   if (social) {
-    gsap.from(social, {
-      scrollTrigger: {
-        trigger: social,
-        start: 'top 90%',
-        end: 'top 60%',
-        scrub: 1,
-      },
-      y: 30,
-      opacity: 0,
-      ease: 'power2.out',
-    });
+    gsap.fromTo(social,
+      { y: 30, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        scrollTrigger: {
+          trigger: social,
+          start: 'top 90%',
+          end: 'top 60%',
+          scrub: 1,
+        },
+        ease: 'power2.out',
+        immediateRender: false,
+      }
+    );
   }
 
   // Orb float animation (continuous)

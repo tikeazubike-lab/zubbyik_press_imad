@@ -33,16 +33,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Animate each milestone item
   items.forEach((item, i) => {
-    gsap.from(item, {
-      scrollTrigger: {
-        trigger: item,
-        start: 'top 85%',
-        end: 'top 50%',
-        scrub: 1,
-      },
-      y: 50,
-      opacity: 0,
-      ease: 'power2.out',
-    });
+    gsap.fromTo(item,
+      { y: 50, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 85%',
+          end: 'top 50%',
+          scrub: 1,
+        },
+        ease: 'power2.out',
+        immediateRender: false,
+      }
+    );
   });
 });

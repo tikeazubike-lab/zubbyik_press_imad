@@ -36,17 +36,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const blogGrid = document.getElementById('blog-grid');
   if (blogGrid) {
     const blogCards = blogGrid.querySelectorAll('.blog-card');
-    gsap.from(blogCards, {
-      scrollTrigger: {
-        trigger: blogGrid,
-        start: 'top 85%',
-        end: 'top 40%',
-        scrub: 1,
-      },
-      y: 40,
-      opacity: 0,
-      stagger: 0.15,
-      ease: 'power2.out',
-    });
+    gsap.fromTo(blogCards,
+      { y: 40, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        scrollTrigger: {
+          trigger: blogGrid,
+          start: 'top 85%',
+          end: 'top 40%',
+          scrub: 1,
+        },
+        stagger: 0.15,
+        ease: 'power2.out',
+        immediateRender: false,
+      }
+    );
   }
 });
