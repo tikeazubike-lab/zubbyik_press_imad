@@ -855,6 +855,7 @@ html { scroll-behavior: smooth; }
   background-color: var(--card);
   border: 1px solid var(--border);
   box-shadow: 0 10px 15px -3px color-mix(in oklab, black 5%, transparent);
+  will-change: transform, opacity;
 }
 
 @media (min-width: 768px) {
