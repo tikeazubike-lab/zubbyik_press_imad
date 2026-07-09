@@ -819,11 +819,11 @@ html { scroll-behavior: smooth; }
 .projects-section {
   position: relative;
   padding-block: 5rem;
-  padding-block-end: 4rem;
+  padding-block-end: 1rem;
 }
 
 @media (min-width: 768px) {
-  .projects-section { padding-block: 5rem; padding-block-end: 4rem; }
+  .projects-section { padding-block: 5rem; padding-block-end: 1rem; }
 }
 
 .projects-heading {
@@ -851,7 +851,7 @@ html { scroll-behavior: smooth; }
 .proj-card {
   position: sticky;
   top: 4rem;
-  margin-bottom: 6rem;
+  margin-bottom: 80vh;
   border-radius: 2rem;
   background-color: var(--card);
   border: 1px solid var(--border);
@@ -937,6 +937,10 @@ html { scroll-behavior: smooth; }
   color: var(--muted-foreground);
   font-size: 1rem;
   line-height: 1.625;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
