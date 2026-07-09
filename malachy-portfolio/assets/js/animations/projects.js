@@ -65,22 +65,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Pin each card for a scroll distance equal to its own height
-  // so it fully scrolls into view before the next card takes over
-  cards.forEach(function (card, i) {
-    var isLast = i === cards.length - 1;
-
-    ScrollTrigger.create({
-      trigger: card,
-      start: 'top 4rem',
-      end: isLast ? 'bottom top' : 'bottom top',
-      pin: true,
-      pinSpacing: false,
-      anticipatePin: 1,
-    });
+  // Pin the entire stack container so cards animate within it
+  // then release cleanly to the next section
+  ScrollTrigger.create({
+    trigger: stack,
+    start: 'top 4rem',
+    end: function () {
+      var total = 0;
+      cards.forEach(function (c) { total += c.offsetHeight; });
+      return '+=' + (total + window.innerHeight * cards.length);
+    },
+    pin: true,
+    anticipatePin: 1,
   });
 
-  // Refresh on resize
+  ScrollTrigger.refresh();
   window.addEventListener('resize', function () {
     ScrollTrigger.refresh();
   });
