@@ -59,6 +59,16 @@ function malachy_register_meta_boxes() {
 		'high'
 	);
 
+	// --- Lead Magnet ---
+	add_meta_box(
+		'malachy_lead_magnet_meta',
+		__( 'Lead Magnet Settings', 'malachy-portfolio' ),
+		'malachy_lead_magnet_meta_cb',
+		'page',
+		'normal',
+		'high'
+	);
+
 	// --- Theme Settings (registered on dashboard) ---
 	add_meta_box(
 		'malachy_theme_settings',
@@ -91,6 +101,12 @@ function malachy_register_meta_keys() {
 		// Testimonial fields
 		'_testimonial_role' => 'string',
 		'_testimonial_org'  => 'string',
+		// Lead magnet fields
+		'_lead_magnet_headline'     => 'string',
+		'_lead_magnet_bullets'      => 'string',
+		'_lead_magnet_list_uuid'    => 'string',
+		'_lead_magnet_download_url' => 'string',
+		'_lead_magnet_tripwire_slug' => 'string',
 	);
 
 	foreach ( $meta_keys as $key => $type ) {
@@ -245,6 +261,62 @@ function malachy_testimonial_meta_cb( $post ) {
 	<?php
 }
 
+// --- Lead Magnet Meta Box ---
+
+function malachy_lead_magnet_meta_cb( $post ) {
+	wp_nonce_field( 'malachy_meta', 'malachy_meta_nonce' );
+	$headline     = get_post_meta( $post->ID, '_lead_magnet_headline', true );
+	$bullets      = get_post_meta( $post->ID, '_lead_magnet_bullets', true );
+	$list_uuid    = get_post_meta( $post->ID, '_lead_magnet_list_uuid', true );
+	$download_url = get_post_meta( $post->ID, '_lead_magnet_download_url', true );
+	$tripwire     = get_post_meta( $post->ID, '_lead_magnet_tripwire_slug', true ) ?: 'fix-spam';
+
+	if ( is_array( $bullets ) ) {
+		$bullets = implode( "\n", $bullets );
+	}
+	?>
+	<p class="description">
+		<?php esc_html_e( 'These fields are used when the page template is set to "Lead Magnet".', 'malachy-portfolio' ); ?>
+	</p>
+	<table class="form-table">
+		<tr>
+			<th><label for="_lead_magnet_headline"><?php esc_html_e( 'Headline', 'malachy-portfolio' ); ?></label></th>
+			<td>
+				<input type="text" id="_lead_magnet_headline" name="_lead_magnet_headline" value="<?php echo esc_attr( $headline ); ?>" class="large-text" placeholder="Get the free email security checklist" />
+			</td>
+		</tr>
+		<tr>
+			<th><label for="_lead_magnet_bullets"><?php esc_html_e( 'Bullets', 'malachy-portfolio' ); ?></label></th>
+			<td>
+				<textarea id="_lead_magnet_bullets" name="_lead_magnet_bullets" class="large-text" rows="5" placeholder="One bullet per line"><?php echo esc_textarea( $bullets ); ?></textarea>
+				<p class="description"><?php esc_html_e( 'Enter one bullet per line.', 'malachy-portfolio' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="_lead_magnet_list_uuid"><?php esc_html_e( 'Listmonk List UUID', 'malachy-portfolio' ); ?></label></th>
+			<td>
+				<input type="text" id="_lead_magnet_list_uuid" name="_lead_magnet_list_uuid" value="<?php echo esc_attr( $list_uuid ); ?>" class="regular-text" />
+				<p class="description"><?php esc_html_e( 'Public List UUID from Listmonk.', 'malachy-portfolio' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="_lead_magnet_download_url"><?php esc_html_e( 'Download Redirect URL', 'malachy-portfolio' ); ?></label></th>
+			<td>
+				<input type="url" id="_lead_magnet_download_url" name="_lead_magnet_download_url" value="<?php echo esc_attr( $download_url ); ?>" class="large-text" placeholder="https://example.com/lead-magnet.pdf" />
+				<p class="description"><?php esc_html_e( 'File or external URL to send the subscriber to after confirming opt-in. Passed to the thank-you page as ?download=.', 'malachy-portfolio' ); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="_lead_magnet_tripwire_slug"><?php esc_html_e( 'Tripwire Service Slug', 'malachy-portfolio' ); ?></label></th>
+			<td>
+				<input type="text" id="_lead_magnet_tripwire_slug" name="_lead_magnet_tripwire_slug" value="<?php echo esc_attr( $tripwire ); ?>" class="regular-text" />
+				<p class="description"><?php esc_html_e( 'Service slug for the "Get started" link below the form (e.g. fix-spam, m365-setup).', 'malachy-portfolio' ); ?></p>
+			</td>
+		</tr>
+	</table>
+	<?php
+}
+
 // --- Theme Settings (admin page) ---
 
 function malachy_theme_settings_cb() {
@@ -283,6 +355,7 @@ function malachy_save_meta_boxes( $post_id ) {
 	$string_keys = array(
 		'_project_url', '_project_github', '_project_tag',
 		'_exp_org', '_exp_year', '_skill_icon', '_testimonial_role', '_testimonial_org',
+		'_lead_magnet_headline', '_lead_magnet_list_uuid', '_lead_magnet_download_url', '_lead_magnet_tripwire_slug',
 	);
 	foreach ( $string_keys as $key ) {
 		if ( isset( $_POST[ $key ] ) ) {
@@ -302,6 +375,11 @@ function malachy_save_meta_boxes( $post_id ) {
 		update_post_meta( $post_id, '_project_tech', array_values( $tech ) );
 	} else {
 		delete_post_meta( $post_id, '_project_tech' );
+	}
+
+	// Lead magnet bullets (textarea stored as newline-separated string)
+	if ( isset( $_POST['_lead_magnet_bullets'] ) ) {
+		update_post_meta( $post_id, '_lead_magnet_bullets', sanitize_textarea_field( $_POST['_lead_magnet_bullets'] ) );
 	}
 }
 

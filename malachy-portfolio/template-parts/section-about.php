@@ -25,15 +25,18 @@
 				<?php esc_html_e( 'About', 'malachy-portfolio' ); ?>
 			</p>
 			<h2 class="about-heading about-reveal">
-				<?php esc_html_e( 'Engineering quality,', 'malachy-portfolio' ); ?>
-				<span class="about-heading-accent"><?php esc_html_e( 'from code to server rack.', 'malachy-portfolio' ); ?></span>
+				<?php esc_html_e( 'Software and servers,', 'malachy-portfolio' ); ?>
+				<span class="about-heading-accent"><?php esc_html_e( 'sorted.', 'malachy-portfolio' ); ?></span>
 			</h2>
 			<div class="about-text about-reveal">
 				<p>
-					<?php esc_html_e( "I'm Malachy — a QA engineer and systems specialist who treats software the way an architect treats a building. Every deploy, every migration, every test suite is a chance to make things feel effortless for the humans that come after.", 'malachy-portfolio' ); ?>
+					<?php esc_html_e( "I'm Malachy. Most of what I do comes down to one thing: making sure things work before someone else finds out they don't.", 'malachy-portfolio' ); ?>
 				</p>
 				<p>
-					<?php esc_html_e( "I lean on Playwright, Docker, and Linux daily, and I've been deeply exploring LLM-driven, spec-first coding — where the conversation between engineer and model becomes the source of truth.", 'malachy-portfolio' ); ?>
+					<?php esc_html_e( "Some days that means writing test suites that catch a bug before it reaches production. Other days it's keeping a Linux server patched, monitored, and boring — in a good way. I've spent enough time on both sides of that line to know they're really the same job: reduce the number of surprises.", 'malachy-portfolio' ); ?>
+				</p>
+				<p>
+					<?php esc_html_e( "Day to day, I work in Playwright, Docker, and Linux. More recently, I've been building with LLMs as part of the actual workflow — writing the spec first, then working with an AI model to build against it, and reviewing what comes out the same way I'd review a pull request from anyone else.", 'malachy-portfolio' ); ?>
 				</p>
 			</div>
 			<div class="about-stats about-reveal">

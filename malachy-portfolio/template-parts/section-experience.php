@@ -34,28 +34,46 @@ if ( $exp_query->have_posts() ) {
 if ( empty( $exp ) ) :
 	$exp = array(
 		array(
-			'title'       => 'Senior QA Engineer',
-			'org'         => 'IMaD Consulting · London',
-			'year'        => '2024 — Present',
-			'description' => 'Architecting and deploying test automation frameworks across client projects. Building LLM-integrated QA pipelines and championing spec-first development practices.',
+			'title'       => 'Founder & Systems/QA Consultant',
+			'org'         => 'IMaD Consulting',
+			'year'        => '2020 – Present',
+			'description' => 'Run a small freelance consultancy covering business email setup, DNS security, and web support, alongside AI-assisted automation work. Currently building and maintaining a self-hosted portfolio-tracking application from the ground up — backend, database, deployment, and testing — using a spec-first workflow where AI coding tools do the implementation and every change gets reviewed before it ships. Handle the server it runs on directly: containerized deployment, routing, and backups.',
 		),
 		array(
-			'title'       => 'Systems Administrator',
-			'org'         => 'Freelance / Contract',
-			'year'        => '2021 — 2024',
-			'description' => 'Managed Linux infrastructure for SMBs — server provisioning, Docker migrations, backup automation, and hardening. Migrated 30+ sites to containerized stacks.',
+			'title'       => 'Test Analyst / User Acceptance Tester',
+			'org'         => 'Imad Consulting (clients: zubbystudio, Okra Technology)',
+			'year'        => 'Mar 2019 – Oct 2022',
+			'description' => 'Documented functional requirements and wrote regression tests for an ERP platform. Worked directly with business owners to turn their needs into test cases, and ran the user-acceptance process that caught serious defects before they reached production.',
 		),
 		array(
-			'title'       => 'QA & Automation Lead',
-			'org'         => 'Digital Agency · London',
-			'year'        => '2019 — 2021',
-			'description' => 'Led QA for a portfolio of 15+ client websites and web apps. Introduced Playwright E2E testing, reducing regression time by 80%.',
+			'title'       => 'Test Analyst / Front-End Development, Freelance',
+			'org'         => 'Imad Consulting (client: Fitzdanuk.org)',
+			'year'        => 'Jul 2017 – Mar 2019',
+			'description' => 'Owned testing end-to-end for a tax reporting system — functional, regression, and integration testing, plus exploratory testing to catch the bugs a checklist wouldn\'t. Wrote the SQL needed to validate data directly against the database, and ran load tests before major releases went live.',
 		),
 		array(
-			'title'       => 'IT Support Engineer',
-			'org'         => 'MSP · Remote',
-			'year'        => '2017 — 2019',
-			'description' => 'Provided Tier 2-3 support across 50+ client organisations. Automated ticket resolution workflows and built internal documentation systems.',
+			'title'       => 'Test Analyst (Planixs)',
+			'org'         => 'Planixs (clients: Barclays, RBS, Vodafone, Zenith Bank)',
+			'year'        => 'Jul 2017 – Aug 2018',
+			'description' => 'Turned tickets into test cases and ran them against a liquidity-reporting content management system, using Selenium and Cucumber alongside manual testing. Wrote the API scripts needed to check the data coming back from the backend actually matched what the front end showed.',
+		),
+		array(
+			'title'       => 'Test Analyst (Parcel Force / NatWest / Quick Light)',
+			'org'         => 'Parcel Force / NatWest / Quick Light',
+			'year'        => 'Jun 2014 – Aug 2018',
+			'description' => 'Several UK test-analyst roles in a row, each following the same core loop: turn requirements into a test plan, run smoke/regression/UAT cycles, and report clear results back to the business so decisions weren\'t made on guesswork.',
+		),
+		array(
+			'title'       => 'Desktop Support Engineer',
+			'org'         => 'British Telecoms',
+			'year'        => 'Jun 2011 – Dec 2013',
+			'description' => 'Supported a Windows server migration from 2003 to 2008 and helped bring order to a support environment that had been struggling to keep up with day-to-day demand.',
+		),
+		array(
+			'title'       => 'Network Administrator',
+			'org'         => 'Admiral Insurance',
+			'year'        => 'May 2010 – Oct 2012',
+			'description' => 'Rolled out and configured pre-built desktop systems for staff, and helped set up regular knowledge-sharing between support staff to speed up problem-solving.',
 		),
 	);
 endif;

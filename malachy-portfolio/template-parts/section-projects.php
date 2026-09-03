@@ -42,7 +42,7 @@ if ( empty( $projects ) ) :
 			'description' => 'A comprehensive Playwright-based E2E framework for multi-environment regression testing, featuring parallel execution, visual diffing, and CI integration.',
 			'tech'        => array( 'Playwright', 'TypeScript', 'Docker', 'GitHub Actions' ),
 			'url'         => '#',
-			'github'      => '#',
+			'github'      => 'https://github.com/zubbyik',
 			'image'       => MALACHY_THEME_URI . '/assets/images/project-qa.png',
 		),
 		array(
@@ -51,7 +51,7 @@ if ( empty( $projects ) ) :
 			'description' => 'Automation for server provisioning using Docker Compose, monitoring stacks, and automated backup rotations across 4 environments.',
 			'tech'        => array( 'Docker', 'Linux', 'Bash', 'Python' ),
 			'url'         => '#',
-			'github'      => '#',
+			'github'      => 'https://github.com/zubbyik',
 			'image'       => MALACHY_THEME_URI . '/assets/images/project-sysadmin.png',
 		),
 		array(
@@ -59,8 +59,8 @@ if ( empty( $projects ) ) :
 			'tag'         => 'Web Development',
 			'description' => 'A bespoke WordPress theme and plugin ecosystem for high-traffic portfolio and directory sites, with GSAP animations and zero page builder reliance.',
 			'tech'        => array( 'WordPress', 'PHP', 'GSAP', 'Docker' ),
-			'url'         => '#',
-			'github'      => '#',
+			'url'         => 'https://imadconsult.zubbystudio.site',
+			'github'      => 'https://github.com/zubbyik',
 			'image'       => MALACHY_THEME_URI . '/assets/images/project-wordpress.png',
 		),
 	);
@@ -85,7 +85,7 @@ endif;
 			<article class="proj-card" data-project-index="<?php echo esc_attr( $index ); ?>">
 				<div class="proj-card-grid">
 					<div class="proj-card-image">
-						<img src="<?php echo esc_url( $p['image'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" loading="lazy" />
+						<img src="<?php echo esc_url( $p['image'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" loading="lazy" width="600" height="450" />
 					</div>
 					<div class="proj-card-body">
 						<div class="proj-card-tag"><?php echo esc_html( $p['tag'] ); ?></div>

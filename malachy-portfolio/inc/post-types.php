@@ -93,6 +93,7 @@ function malachy_register_post_types() {
 		'show_in_admin_bar' => true,
 		'can_export'        => true,
 		'delete_with_user'  => false,
+		'show_in_rest'      => true,
 		'supports'           => array( 'title', 'editor', 'excerpt', 'thumbnail', 'custom-fields', 'page-attributes' ),
 	);
 

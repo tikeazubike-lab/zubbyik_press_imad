@@ -14,6 +14,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (!form) return;
 
+  // Service lookup for ?service=<slug> pre-fill from offer CTAs.
+  const serviceMap = {
+    'fix-spam': 'Fix Business Emails Going to Spam',
+    'email-audit': 'Audit and Report on Your Business Email Security and Deliverability',
+    'domain-security': 'Lock Down Your Domain and DNS Against Spoofing, Hijacking and Email Fraud',
+    'email-monitoring': 'Provide Ongoing Email & DNS Health Monitoring for Your Business',
+    'm365-setup': 'Set Up Microsoft 365 Business Email With Your Custom Domain',
+    'migrate-email': 'Migrate Business Email to Microsoft 365, Google Workspace',
+    'migrate-website-email': 'Migrate Your Website and Business Email to a New Host',
+    'wp-chatbot-assessment': 'Assess Your WordPress Site for AI Chatbot Integration',
+    'wp-rebuild': 'Migrate and Rebuild a WordPress Site Onto a Modern Stack for AI Chatbot Integration',
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const serviceSlug = params.get('service');
+  const serviceField = document.getElementById('malachy_service');
+  const serviceContext = document.getElementById('contact-service-context');
+
+  if (serviceSlug && serviceMap[serviceSlug] && serviceField) {
+    serviceField.value = serviceSlug;
+    if (serviceContext) {
+      serviceContext.textContent = 'Enquiry about: ' + serviceMap[serviceSlug];
+      serviceContext.style.display = 'block';
+    }
+  }
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
 

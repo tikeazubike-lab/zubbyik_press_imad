@@ -25,11 +25,14 @@
 		<form id="contact-form" class="contact-form" method="post">
 			<?php wp_nonce_field( 'malachy_contact_nonce', 'malachy_nonce' ); ?>
 			<input type="hidden" name="action" value="malachy_send_contact" />
+			<input type="hidden" name="malachy_service" id="malachy_service" value="" />
 
 			<!-- Honeypot -->
 			<div style="position:absolute;left:-9999px" aria-hidden="true">
 				<input type="text" name="malachy_hp" tabindex="-1" autocomplete="off" />
 			</div>
+
+			<p id="contact-service-context" class="contact-service-context" style="display:none"></p>
 
 			<div class="full-width">
 				<label for="malachy_name" class="contact-form-label"><?php esc_html_e( 'Name', 'malachy-portfolio' ); ?></label>

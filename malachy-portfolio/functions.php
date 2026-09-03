@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'MALACHY_BOOKING_URL' ) ) {
+	define( 'MALACHY_BOOKING_URL', 'https://cal.com/malachy-egbuna' );
+}
+
 /**
  * Malachy Portfolio Theme Functions
  *
@@ -10,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MALACHY_THEME_VERSION', '1.1.0' );
+define( 'MALACHY_THEME_VERSION', '1.2.1' );
 define( 'MALACHY_THEME_DIR', get_template_directory() );
 define( 'MALACHY_THEME_URI', get_template_directory_uri() );
 
@@ -110,7 +114,7 @@ function malachy_enqueue_assets() {
 
 		// Per-section animation modules — front page only
 		if ( is_front_page() ) {
-			$animations = array( 'hero', 'about', 'skills', 'projects', 'experience', 'contact', 'global' );
+			$animations = array( 'hero', 'about', 'offers', 'skills', 'projects', 'experience', 'contact', 'global' );
 			foreach ( $animations as $a ) {
 				wp_enqueue_script(
 					"malachy-anim-{$a}",
@@ -234,3 +238,4 @@ require_once MALACHY_THEME_DIR . '/inc/post-types.php';
 require_once MALACHY_THEME_DIR . '/inc/meta-boxes.php';
 require_once MALACHY_THEME_DIR . '/inc/data-seeder.php';
 require_once MALACHY_THEME_DIR . '/inc/contact-handler.php';
+require_once MALACHY_THEME_DIR . '/inc/ai-chat-bot.php';

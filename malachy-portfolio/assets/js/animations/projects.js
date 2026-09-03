@@ -1,12 +1,9 @@
 /**
  * Projects Section Animation
  *
- * Stacked card reveal via GSAP ScrollTrigger.
- * The #projects-stack container is pinned; cards are layered absolutely
- * so they overlap. Each subsequent card scrubs up from below while the
- * previous card scales down and dims, creating a true deck/stack effect.
- *
- * Falls back to simple fade-in on mobile (no pinning).
+ * Stacked sticky cards on lg+ only.
+ * Below 1024px the cards render as a normal responsive grid.
+ * Respects prefers-reduced-motion.
  *
  * @package Malachy_Portfolio
  */
@@ -15,18 +12,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const stack   = document.getElementById('projects-stack');
   if (!section || !stack) return;
 
-  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-  if (!isDesktop) return;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
 
-  const cards = stack.querySelectorAll('.proj-card');
-  const cardArray = Array.from(cards);
-  if (cardArray.length === 0) return;
+  const mm = window.matchMedia('(min-width: 1024px)');
+  let activeTween = null;
 
-  /* ---- Reset inline styles when dropping below desktop ---- */
   function resetCardStyles () {
+    stack.style.position = '';
     stack.style.height = '';
     stack.style.overflow = '';
-    cardArray.forEach(function (card) {
+    stack.querySelectorAll('.proj-card').forEach(function (card) {
       card.style.position = '';
       card.style.top = '';
       card.style.left = '';
@@ -37,106 +33,120 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* ---- Cleanup any previous ScrollTriggers / tweens ---- */
-  ScrollTrigger.getAll().forEach(function (t) {
-    if (t.vars && t.vars.trigger &&
-        (t.vars.trigger === stack || stack.contains(t.vars.trigger))) {
-      t.kill();
+  function buildStack () {
+    // Clean up any previous ScrollTriggers / tweens tied to this stack
+    ScrollTrigger.getAll().forEach(function (t) {
+      if (t.vars && t.vars.trigger &&
+          (t.vars.trigger === stack || stack.contains(t.vars.trigger))) {
+        t.kill();
+      }
+    });
+    if (activeTween) {
+      activeTween.kill();
+      activeTween = null;
     }
-  });
-  gsap.killTweensOf(cardArray);
+    gsap.killTweensOf(stack.querySelectorAll('.proj-card'));
 
-  /* ---- Measure natural card heights, then switch to absolute stack ---- */
-  var maxCardHeight = 0;
-  cardArray.forEach(function (c) {
-    maxCardHeight = Math.max(maxCardHeight, c.offsetHeight);
-  });
-
-  var stackHeight = Math.max(maxCardHeight, window.innerHeight);
-  stack.style.position = 'relative';
-  stack.style.height   = stackHeight + 'px';
-  stack.style.overflow = 'hidden';
-
-  cardArray.forEach(function (card, i) {
-    card.style.position   = 'absolute';
-    card.style.top        = '0';
-    card.style.left       = '0';
-    card.style.width      = '100%';
-    card.style.height     = '100%';
-    card.style.zIndex     = (i + 1).toString(); // higher index = on top
-    card.style.marginBottom = '0';
-  });
-
-  /* ---- Scrubbed stacking timeline ---- */
-  var tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: stack,
-      start: 'top 4rem',
-      end: '+=' + (window.innerHeight * (cardArray.length - 1)),
-      pin: true,
-      scrub: 1,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
+    if (!mm.matches) {
+      resetCardStyles();
+      return;
     }
-  });
 
-  cardArray.forEach(function (card, i) {
-    var img  = card.querySelector('.proj-card-image');
-    var body = card.querySelector('.proj-card-body');
+    const cards = stack.querySelectorAll('.proj-card');
+    const cardArray = Array.from(cards);
+    if (cardArray.length === 0) return;
 
-    if (i === 0) {
-      /* First card is visible immediately — just reveal its content */
+    const maxCardHeight = Math.max.apply(null, cardArray.map(function (c) { return c.offsetHeight; }));
+    const stackHeight = Math.max(maxCardHeight, window.innerHeight);
+
+    stack.style.position = 'relative';
+    stack.style.height   = stackHeight + 'px';
+    stack.style.overflow = 'hidden';
+
+    cardArray.forEach(function (card, i) {
+      card.style.position   = 'absolute';
+      card.style.top        = '0';
+      card.style.left       = '0';
+      card.style.width      = '100%';
+      card.style.height     = '100%';
+      card.style.zIndex     = (i + 1).toString();
+      card.style.marginBottom = '0';
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: stack,
+        start: 'top 4rem',
+        end: '+=' + (window.innerHeight * (cardArray.length - 1)),
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      }
+    });
+    activeTween = tl;
+
+    cardArray.forEach(function (card, i) {
+      var img  = card.querySelector('.proj-card-image');
+      var body = card.querySelector('.proj-card-body');
+
+      if (i === 0) {
+        if (img) {
+          tl.fromTo(img,
+            { x: -60, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+            0
+          );
+        }
+        if (body) {
+          tl.fromTo(body,
+            { x: 60, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+            0.1
+          );
+        }
+        return;
+      }
+
+      var prev = cardArray[i - 1];
+
+      tl.fromTo(prev,
+        { scale: 1, opacity: 1 },
+        { scale: 0.92, opacity: 0.7, duration: 1, ease: 'none' },
+        i - 1
+      );
+
+      tl.fromTo(card,
+        { yPercent: 100 },
+        { yPercent: 0, duration: 1, ease: 'none' },
+        i - 1
+      );
+
       if (img) {
         tl.fromTo(img,
           { x: -60, opacity: 0 },
           { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-          0
+          (i - 1) + 0.2
         );
       }
       if (body) {
         tl.fromTo(body,
           { x: 60, opacity: 0 },
           { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-          0.1
+          (i - 1) + 0.3
         );
       }
-      return;
-    }
+    });
 
-    var prev = cardArray[i - 1];
+    ScrollTrigger.refresh();
+  }
 
-    /* 1. Previous card recedes (scales down + dims) */
-    tl.fromTo(prev,
-      { scale: 1, opacity: 1 },
-      { scale: 0.92, opacity: 0.7, duration: 1, ease: 'none' },
-      i - 1
-    );
+  buildStack();
 
-    /* 2. Current card slides up from below to cover the previous */
-    tl.fromTo(card,
-      { yPercent: 100 },
-      { yPercent: 0, duration: 1, ease: 'none' },
-      i - 1
-    );
-
-    /* 3. Current card content sweeps in */
-    if (img) {
-      tl.fromTo(img,
-        { x: -60, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-        (i - 1) + 0.2
-      );
-    }
-    if (body) {
-      tl.fromTo(body,
-        { x: 60, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-        (i - 1) + 0.3
-      );
-    }
+  mm.addEventListener('change', function () {
+    buildStack();
   });
 
-  ScrollTrigger.refresh();
   window.addEventListener('resize', function () {
     ScrollTrigger.refresh();
   });

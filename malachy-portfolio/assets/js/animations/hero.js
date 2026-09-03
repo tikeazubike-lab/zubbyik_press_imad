@@ -1,14 +1,9 @@
 /**
  * Hero Section Animation
  *
- * - Pinned hero (desktop/tablet, mobile pinning exception).
- * - Portrait scales slowly on scroll.
- * - Text translates upward.
- * - CTA buttons have subtle hover motion.
- * - Marquee scrolls infinitely.
- *
- * Mobile Pinning Exception: pin is gated behind matchMedia at <= 767px.
- * Below that, hero degrades to simple fade reveal.
+ * Pure scroll-driven transforms (no pin) to avoid duplicate pinned layers.
+ * Portrait scales/fades, text rises, marquee scrubs.
+ * Falls back to a simple fade on mobile and respects prefers-reduced-motion.
  *
  * @package Malachy_Portfolio
  */
@@ -19,56 +14,45 @@ document.addEventListener('DOMContentLoaded', function () {
   const textCol = hero?.querySelector('.hero-text-col');
   const ctaRow = hero?.querySelector('.hero-cta-row');
   const marquee = document.getElementById('hero-marquee-track');
-  const scrollHint = hero?.querySelector('.hero-scroll-hint');
 
   if (!hero) return;
 
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+
   const mm = gsap.matchMedia();
 
-  // Desktop/Tablet: pin + scrub animations
+  // Desktop/Tablet: scrub transforms only, no pin
   mm.add('(min-width: 768px)', () => {
-    // Pin the hero section
-    ScrollTrigger.create({
-      trigger: hero,
-      start: 'top top',
-      end: '+=120%',
-      pin: true,
-      pinSpacing: true,
-      anticipatePin: 1,
-    });
-
-    // Portrait slow scale
     if (portrait) {
       gsap.to(portrait, {
         scrollTrigger: {
           trigger: hero,
           start: 'top top',
-          end: 'bottom 80%',
+          end: 'bottom top',
           scrub: 1.5,
         },
-        scale: 0.85,
-        opacity: 0.7,
+        scale: 0.88,
+        opacity: 0.6,
         y: 60,
-        ease: 'power1.out',
+        ease: 'none',
       });
     }
 
-    // Text translates upward
     if (textCol) {
       gsap.to(textCol, {
         scrollTrigger: {
           trigger: hero,
           start: 'top top',
-          end: 'bottom 60%',
+          end: 'bottom top',
           scrub: 1,
         },
-        y: -80,
-        opacity: 0.6,
-        ease: 'power1.out',
+        y: -60,
+        opacity: 0.5,
+        ease: 'none',
       });
     }
 
-    // Marquee scroll
     if (marquee) {
       gsap.to(marquee, {
         xPercent: -50,
@@ -83,16 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Mobile: simple fade-only, no pin
+  // Mobile: simple fade-only
   mm.add('(max-width: 767px)', () => {
     gsap.fromTo(hero,
-      { opacity: 0.8, y: 30 },
+      { opacity: 0.8, y: 20 },
       {
         opacity: 1, y: 0,
         scrollTrigger: {
           trigger: hero,
-          start: 'top 80%',
-          end: 'top 40%',
+          start: 'top 85%',
+          end: 'top 45%',
           scrub: 1,
         },
         ease: 'power1.out',
@@ -101,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
     );
   });
 
-  // CTA hover (CSS-only, but smooth GSAP for enhanced feel)
+  // CTA hover
   if (ctaRow) {
     ctaRow.querySelectorAll('a').forEach(btn => {
       btn.addEventListener('mouseenter', () => {

@@ -8,6 +8,7 @@
 // Define nav links matching the React NAV_LINKS constant
 $nav_links = array(
 	array( 'href' => '/', 'label' => __( 'Home', 'malachy-portfolio' ), 'section' => 'home' ),
+	array( 'href' => '/#offers', 'label' => __( 'Offers', 'malachy-portfolio' ), 'section' => 'offers' ),
 	array( 'href' => '/#about', 'label' => __( 'About', 'malachy-portfolio' ), 'section' => 'about' ),
 	array( 'href' => '/#skills', 'label' => __( 'Skills', 'malachy-portfolio' ), 'section' => 'skills' ),
 	array( 'href' => '/#projects', 'label' => __( 'Projects', 'malachy-portfolio' ), 'section' => 'projects' ),

@@ -17,7 +17,8 @@
 }
 </script>
 <script>
-(function(){try{var t=localStorage.getItem('theme'),m=window.matchMedia('(prefers-color-scheme:dark)').matches;if(t==='dark'||(!t&&m)){document.documentElement.classList.add('dark');}}catch(e){}})();
+/* Light mode is the default. Only switch to dark if the user explicitly chose it. */
+(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();
 </script>
 </head>
 <body <?php body_class( 'antialiased' ); ?>>

@@ -60,8 +60,135 @@ class Malachy_Seeder {
 		$this->seed_experience();
 		$this->seed_skills();
 		$this->seed_blog_posts();
+		$this->seed_offer_pages();
+		$this->seed_thank_you_page();
 
 		malachy_seeder_success( 'All data seeded successfully.' );
+	}
+
+	/**
+	 * Seed offer detail pages.
+	 */
+	private function seed_offer_pages() {
+		$offers = array(
+			array(
+				'title'     => 'Fix Business Emails Going to Spam',
+				'slug'      => 'fix-business-emails-going-to-spam',
+				'content'   => "If legitimate emails from your business are landing in spam, the problem is almost always in your domain authentication records: SPF, DKIM, and DMARC.",
+				'highlight' => true,
+			),
+			array(
+				'title'     => 'Audit and Report on Your Business Email Security and Deliverability',
+				'slug'      => 'audit-and-report-on-your-business-email-security-and-deliverability',
+				'content'   => "You get a written audit of your email authentication, DNS records, blacklist status, and spam risk, plus a prioritized list of what to fix.",
+				'highlight' => true,
+			),
+			array(
+				'title'     => 'Lock Down Your Domain and DNS Against Spoofing, Hijacking and Email Fraud',
+				'slug'      => 'lock-down-your-domain-and-dns-against-spoofing-hijacking-and-email-fraud',
+				'content'   => "Harden your domain records and registrar settings against impersonation and takeover.",
+				'highlight' => false,
+			),
+			array(
+				'title'     => 'Provide Ongoing Email & DNS Health Monitoring for Your Business',
+				'slug'      => 'provide-ongoing-email-and-dns-health-monitoring-for-your-business',
+				'content'   => "Monthly monitoring that catches email and DNS problems before they affect your customers.",
+				'highlight' => false,
+			),
+			array(
+				'title'     => 'Set Up Microsoft 365 Business Email With Your Custom Domain',
+				'slug'      => 'set-up-microsoft-365-business-email-with-your-custom-domain',
+				'content'   => "Get professional business email running on your domain with correct DNS and authentication.",
+				'highlight' => true,
+			),
+			array(
+				'title'     => 'Migrate Business Email to Microsoft 365, Google Workspace',
+				'slug'      => 'migrate-business-email-to-microsoft-365-google-workspace',
+				'content'   => "Move mailboxes, calendars, and contacts without downtime or lost messages.",
+				'highlight' => true,
+			),
+			array(
+				'title'     => 'Migrate Your Website and Business Email to a New Host',
+				'slug'      => 'migrate-your-website-and-business-email-to-a-new-host',
+				'content'   => "Relocate your site and email together with minimal disruption and proper DNS handover.",
+				'highlight' => true,
+			),
+			array(
+				'title'     => 'Migrate and Rebuild a WordPress Site Onto a Modern Stack for AI Chatbot Integration',
+				'slug'      => 'migrate-and-rebuild-a-wordpress-site-onto-a-modern-stack-for-ai-chatbot-integration',
+				'content'   => "A full rebuild on a modern, maintainable stack with AI chatbot integration built in.",
+				'highlight' => true,
+			),
+			array(
+				'title'     => 'Assess Your WordPress Site for AI Chatbot Integration',
+				'slug'      => 'assess-your-wordpress-site-for-ai-chatbot-integration',
+				'content'   => "A structured review of whether your site is ready for an AI chatbot and what it would take.",
+				'highlight' => false,
+			),
+		);
+
+		$count = 0;
+		foreach ( $offers as $offer ) {
+			$existing = get_posts( array(
+				'post_type'      => 'page',
+				'name'           => $offer['slug'],
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+			) );
+
+			if ( ! empty( $existing ) ) {
+				continue;
+			}
+
+			$badge = $offer['highlight']
+				? '<p><span class="badge-highlight">Most Requested</span></p>' . "\n\n"
+				: '';
+
+			$id = wp_insert_post( array(
+				'post_type'    => 'page',
+				'post_title'   => $offer['title'],
+				'post_name'    => $offer['slug'],
+				'post_content' => $badge . $offer['content'] . "\n\n<a href=\"" . home_url( '/?service=' . $offer['slug'] . '#contact' ) . "\">Get started</a>",
+				'post_status'  => 'publish',
+			) );
+
+			if ( $id && ! is_wp_error( $id ) ) {
+				++$count;
+			}
+		}
+
+		malachy_seeder_log( "  → {$count} offer pages created." );
+	}
+
+	/**
+	 * Seed a generic thank-you page.
+	 */
+	private function seed_thank_you_page() {
+		$existing = get_posts( array(
+			'post_type'      => 'page',
+			'name'           => 'thank-you',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		) );
+
+		if ( ! empty( $existing ) ) {
+			malachy_seeder_log( '  → thank-you page already exists.' );
+			return;
+		}
+
+		$id = wp_insert_post( array(
+			'post_type'    => 'page',
+			'post_title'   => 'Thank You',
+			'post_name'    => 'thank-you',
+			'post_content' => '',
+			'post_status'  => 'publish',
+			'page_template' => 'template-thank-you.php',
+		) );
+
+		if ( $id && ! is_wp_error( $id ) ) {
+			update_post_meta( $id, '_wp_page_template', 'template-thank-you.php' );
+			malachy_seeder_log( '  → thank-you page created.' );
+		}
 	}
 
 	/**
@@ -75,7 +202,7 @@ class Malachy_Seeder {
 				'tag'         => 'QA',
 				'tech'        => array( 'Playwright', 'TypeScript', 'Docker', 'GitHub Actions', 'Python', 'Allure' ),
 				'url'         => '#',
-				'github'      => '#',
+				'github'      => 'https://github.com/zubbyik',
 				'image'       => 'project-qa.png',
 				'menu_order'  => 1,
 			),
@@ -85,7 +212,7 @@ class Malachy_Seeder {
 				'tag'         => 'DevOps',
 				'tech'        => array( 'Linux', 'Docker', 'Python', 'Nginx', 'Ansible', 'Prometheus' ),
 				'url'         => '#',
-				'github'      => '#',
+				'github'      => 'https://github.com/zubbyik',
 				'image'       => 'project-sysadmin.png',
 				'menu_order'  => 2,
 			),
@@ -94,8 +221,8 @@ class Malachy_Seeder {
 				'excerpt'     => 'Full-featured portfolio and blog platform built on WordPress with GSAP animations, dark mode, contact forms, and a custom CPT-driven content architecture. No page builders, no ACF — pure native WordPress.',
 				'tag'         => 'Web Dev',
 				'tech'        => array( 'WordPress', 'PHP', 'GSAP', 'JavaScript', 'CSS', 'Docker' ),
-				'url'         => '#',
-				'github'      => '#',
+				'url'         => 'https://imadconsult.zubbystudio.site',
+				'github'      => 'https://github.com/zubbyik',
 				'image'       => 'project-wordpress.png',
 				'menu_order'  => 3,
 			),
@@ -118,32 +245,53 @@ class Malachy_Seeder {
 	private function seed_experience() {
 		$entries = array(
 			array(
-				'title'      => 'Senior QA Engineer & Systems Consultant',
-				'excerpt'    => 'Architecting and deploying test automation frameworks across client projects. Building LLM-integrated QA pipelines and championing spec-first development practices.',
-				'org'        => 'IMaD Consulting · London',
-				'year'       => '2024 — Present',
+				'title'      => 'Founder & Systems/QA Consultant',
+				'excerpt'    => 'Run a small freelance consultancy covering business email setup, DNS security, and web support, alongside AI-assisted automation work. Currently building and maintaining a self-hosted portfolio-tracking application from the ground up — backend, database, deployment, and testing — using a spec-first workflow where AI coding tools do the implementation and every change gets reviewed before it ships. Handle the server it runs on directly: containerized deployment, routing, and backups.',
+				'org'        => 'IMaD Consulting',
+				'year'       => '2020 – Present',
 				'menu_order' => 1,
 			),
 			array(
-				'title'      => 'QA Automation Engineer',
-				'excerpt'    => 'Designed and maintained large-scale test suites for enterprise SaaS products. Reduced regression cycle time by 70% through parallelization and smart test selection algorithms.',
-				'org'        => 'Enterprise SaaS · Remote',
-				'year'       => '2021 — 2024',
+				'title'      => 'Test Analyst / User Acceptance Tester',
+				'excerpt'    => 'Documented functional requirements and wrote regression tests for an ERP platform. Worked directly with business owners to turn their needs into test cases, and ran the user-acceptance process that caught serious defects before they reached production.',
+				'org'        => 'Imad Consulting (clients: zubbystudio, Okra Technology)',
+				'year'       => 'Mar 2019 – Oct 2022',
 				'menu_order' => 2,
 			),
 			array(
-				'title'      => 'Systems Administrator',
-				'excerpt'    => 'Managed 200+ Linux servers across 3 data centres. Implemented automated patching, monitoring, and disaster recovery procedures that achieved 99.99% uptime over 24 months.',
-				'org'        => 'Managed Services Firm · London',
-				'year'       => '2019 — 2021',
+				'title'      => 'Test Analyst / Front-End Development, Freelance',
+				'excerpt'    => 'Owned testing end-to-end for a tax reporting system — functional, regression, and integration testing, plus exploratory testing to catch the bugs a checklist wouldn\'t. Wrote the SQL needed to validate data directly against the database, and ran load tests before major releases went live.',
+				'org'        => 'Imad Consulting (client: Fitzdanuk.org)',
+				'year'       => 'Jul 2017 – Mar 2019',
 				'menu_order' => 3,
 			),
 			array(
-				'title'      => 'IT Support Engineer',
-				'excerpt'    => 'Provided tier-2 and tier-3 support for 800+ users across 15 branches. Led the migration from on-premise Exchange to Microsoft 365, and deployed a company-wide MDM solution.',
-				'org'        => 'Regional Bank · Manchester',
-				'year'       => '2017 — 2019',
+				'title'      => 'Test Analyst (Planixs)',
+				'excerpt'    => 'Turned tickets into test cases and ran them against a liquidity-reporting content management system, using Selenium and Cucumber alongside manual testing. Wrote the API scripts needed to check the data coming back from the backend actually matched what the front end showed.',
+				'org'        => 'Planixs (clients: Barclays, RBS, Vodafone, Zenith Bank)',
+				'year'       => 'Jul 2017 – Aug 2018',
 				'menu_order' => 4,
+			),
+			array(
+				'title'      => 'Test Analyst (Parcel Force / NatWest / Quick Light)',
+				'excerpt'    => 'Several UK test-analyst roles in a row, each following the same core loop: turn requirements into a test plan, run smoke/regression/UAT cycles, and report clear results back to the business so decisions weren\'t made on guesswork.',
+				'org'        => 'Parcel Force / NatWest / Quick Light',
+				'year'       => 'Jun 2014 – Aug 2018',
+				'menu_order' => 5,
+			),
+			array(
+				'title'      => 'Desktop Support Engineer',
+				'excerpt'    => 'Supported a Windows server migration from 2003 to 2008 and helped bring order to a support environment that had been struggling to keep up with day-to-day demand.',
+				'org'        => 'British Telecoms',
+				'year'       => 'Jun 2011 – Dec 2013',
+				'menu_order' => 6,
+			),
+			array(
+				'title'      => 'Network Administrator',
+				'excerpt'    => 'Rolled out and configured pre-built desktop systems for staff, and helped set up regular knowledge-sharing between support staff to speed up problem-solving.',
+				'org'        => 'Admiral Insurance',
+				'year'       => 'May 2010 – Oct 2012',
+				'menu_order' => 7,
 			),
 		);
 
@@ -152,7 +300,7 @@ class Malachy_Seeder {
 			update_post_meta( $id, '_exp_year', $item['year'] );
 		} );
 
-		malachy_seeder_log( '  → 4 experience entries created.' );
+		malachy_seeder_log( '  → 7 experience entries created.' );
 	}
 
 	/**
@@ -160,14 +308,15 @@ class Malachy_Seeder {
 	 */
 	private function seed_skills() {
 		$skills = array(
-			array( 'name' => 'QA Automation',       'desc' => 'Playwright, Cypress, Pytest — end-to-end coverage.',              'icon' => 'test' ),
-			array( 'name' => 'System Administration', 'desc' => 'Linux, Nginx, Bash, monitoring & hardening.',                     'icon' => 'server' ),
-			array( 'name' => 'Containerization',      'desc' => 'Docker, Compose, image optimization, CI pipelines.',              'icon' => 'docker' ),
-			array( 'name' => 'Scripting',             'desc' => 'Python and shell for automation & tooling.',                      'icon' => 'code' ),
-			array( 'name' => 'Version Control',       'desc' => 'Git workflows, code review, branching strategies, release mgmt.', 'icon' => 'git' ),
-			array( 'name' => 'Linux Servers',         'desc' => 'Debian/Ubuntu, security hardening, performance tuning.',          'icon' => 'terminal' ),
-			array( 'name' => 'WordPress',             'desc' => 'Custom themes, CPTs, meta boxes, REST API, performance tuning.',  'icon' => 'wordpress' ),
-			array( 'name' => 'LLM & Agentic Coding',  'desc' => 'Prompt engineering, context management, multi-agent workflows.',  'icon' => 'brain' ),
+			array( 'name' => 'QA Automation',       'desc' => 'Testing software automatically, so bugs get caught before customers see them.',                 'icon' => 'test' ),
+			array( 'name' => 'System Administration', 'desc' => 'Keeping servers running, secure, and monitored — quietly, in the background.',              'icon' => 'server' ),
+			array( 'name' => 'Containerization',      'desc' => 'Packaging software so it runs the same way everywhere, and deploying it without drama.',    'icon' => 'docker' ),
+			array( 'name' => 'Scripting',             'desc' => 'Writing small programs that handle repetitive work automatically.',                          'icon' => 'code' ),
+			array( 'name' => 'Version Control',       'desc' => 'Tracking every code change, reviewing it properly, and rolling it out safely.',             'icon' => 'git' ),
+			array( 'name' => 'Linux Servers',         'desc' => 'Setting up and locking down servers so they stay fast, stable, and hard to break into.',   'icon' => 'terminal' ),
+			array( 'name' => 'WordPress',             'desc' => 'Custom themes and features built to fit exactly what a site needs — not just what a plugin allows.', 'icon' => 'wordpress' ),
+			array( 'name' => 'LLM Integration',       'desc' => 'Connecting AI tools into real software features, not just chat windows.',                   'icon' => 'brain' ),
+			array( 'name' => 'Agentic Coding',        'desc' => 'Directing AI coding tools with clear instructions and context, so they build the right thing the first time.', 'icon' => 'brain' ),
 		);
 
 		$count = 0;
@@ -222,6 +371,17 @@ class Malachy_Seeder {
 		);
 
 		$count = 0;
+		$notes = get_category_by_slug( 'notes' );
+		if ( ! $notes ) {
+			$notes_id = wp_insert_category( array(
+				'cat_name'          => 'Notes',
+				'category_nicename' => 'notes',
+				'category_description' => 'Short notes and observations.',
+			) );
+		} else {
+			$notes_id = $notes->term_id;
+		}
+
 		foreach ( $posts as $p ) {
 			$existing = get_posts( array(
 				'post_type'      => 'post',
@@ -231,6 +391,13 @@ class Malachy_Seeder {
 			) );
 
 			if ( ! empty( $existing ) ) {
+				// Recategorize existing blog posts under Notes if needed.
+				foreach ( $existing as $existing_id ) {
+					$categories = wp_get_post_categories( $existing_id, array( 'fields' => 'ids' ) );
+					if ( ! in_array( (int) $notes_id, $categories, true ) ) {
+						wp_set_post_categories( $existing_id, array( (int) $notes_id ) );
+					}
+				}
 				continue;
 			}
 
@@ -241,6 +408,7 @@ class Malachy_Seeder {
 				'post_excerpt' => $p['excerpt'],
 				'post_date'    => $p['date'],
 				'post_status'  => $p['status'],
+				'post_category' => array( (int) $notes_id ),
 			) );
 
 			if ( $id && ! is_wp_error( $id ) ) {
@@ -292,9 +460,9 @@ class Malachy_Seeder {
 	 * @param string $file    Filename in assets/images/ (e.g. 'project-qa.png').
 	 */
 	private function set_featured_image( $post_id, $file ) {
-		$file_path = MALACHY_THEME_DIR . '/assets/images/' . $file;
+		$source_path = MALACHY_THEME_DIR . '/assets/images/' . $file;
 
-		if ( ! file_exists( $file_path ) ) {
+		if ( ! file_exists( $source_path ) ) {
 			malachy_seeder_log( "    (image not found: {$file})" );
 			return;
 		}
@@ -304,15 +472,20 @@ class Malachy_Seeder {
 			return;
 		}
 
-		$wp_filetype = wp_check_filetype( $file, null );
+		// Copy to uploads dir so WordPress can process it correctly.
+		$upload_dir  = wp_upload_dir();
+		$target_path = $upload_dir['path'] . '/' . sanitize_file_name( basename( $file ) );
+		copy( $source_path, $target_path );
+
+		$wp_filetype = wp_check_filetype( basename( $target_path ), null );
 		$attachment  = array(
 			'post_mime_type' => $wp_filetype['type'],
-			'post_title'     => sanitize_file_name( pathinfo( $file, PATHINFO_FILENAME ) ),
+			'post_title'     => sanitize_file_name( pathinfo( basename( $target_path ), PATHINFO_FILENAME ) ),
 			'post_content'   => '',
 			'post_status'    => 'inherit',
 		);
 
-		$attach_id = wp_insert_attachment( $attachment, $file_path, $post_id );
+		$attach_id = wp_insert_attachment( $attachment, $target_path, $post_id );
 
 		if ( is_wp_error( $attach_id ) ) {
 			return;
@@ -320,7 +493,7 @@ class Malachy_Seeder {
 
 		// Generate attachment metadata
 		require_once ABSPATH . 'wp-admin/includes/image.php';
-		$attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
+		$attach_data = wp_generate_attachment_metadata( $attach_id, $target_path );
 		wp_update_attachment_metadata( $attach_id, $attach_data );
 
 		set_post_thumbnail( $post_id, $attach_id );

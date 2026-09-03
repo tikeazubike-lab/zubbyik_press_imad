@@ -84,6 +84,7 @@ function malachy_process_contact( $data ) {
 	$name    = isset( $data['malachy_name'] ) ? sanitize_text_field( $data['malachy_name'] ) : '';
 	$email   = isset( $data['malachy_email'] ) ? sanitize_email( $data['malachy_email'] ) : '';
 	$message = isset( $data['malachy_message'] ) ? sanitize_textarea_field( $data['malachy_message'] ) : '';
+	$service = isset( $data['malachy_service'] ) ? sanitize_text_field( $data['malachy_service'] ) : '';
 
 	if ( empty( $name ) || empty( $email ) || empty( $message ) ) {
 		return new WP_Error( 'missing_fields', __( 'Please fill in all fields.', 'malachy-portfolio' ) );
@@ -101,9 +102,10 @@ function malachy_process_contact( $data ) {
 		$name
 	);
 	$body = sprintf(
-		"Name: %s\nEmail: %s\n\nMessage:\n%s",
+		"Name: %s\nEmail: %s\nService: %s\n\nMessage:\n%s",
 		$name,
 		$email,
+		$service ?: 'General enquiry',
 		$message
 	);
 	$headers = array(
