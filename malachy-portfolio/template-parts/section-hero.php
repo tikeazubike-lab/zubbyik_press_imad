@@ -54,7 +54,7 @@ $booking_url   = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https
 			srcset="<?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-400w.webp' ); ?> 400w,
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-600w.webp' ); ?> 600w,
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-1024w.webp' ); ?> 1024w"
-			sizes="(max-width: 640px) 50vw, (max-width: 1024px) 40vw, 30vw"
+			sizes="(max-width: 800px) 100vw, (max-width: 1200px) 70vw, 980px"
 			class="hero-portrait" alt="Malachy Egbuna — portrait photo" draggable="false" width="600" height="800" fetchpriority="high" />
 		<p class="portrait-note">
 			<?php esc_html_e( 'Based in Manchester', 'malachy-portfolio' ); ?><br />
