@@ -1,99 +1,67 @@
 /**
  * Hero Section Animation
  *
- * Pure scroll-driven transforms (no pin) to avoid duplicate pinned layers.
- * Portrait scales/fades, text rises, marquee scrubs.
- * Falls back to a simple fade on mobile and respects prefers-reduced-motion.
+ * Reference: polished-portfolio hero animations.
+ * - Fade-up stagger for kicker, title, copy, actions.
+ * - Portrait scale/fade entrance.
+ * - Subtle parallax on scroll.
  *
  * @package Malachy_Portfolio
  */
 
 document.addEventListener('DOMContentLoaded', function () {
   const hero = document.getElementById('home');
-  const portrait = hero?.querySelector('.hero-portrait');
-  const textCol = hero?.querySelector('.hero-text-col');
-  const ctaRow = hero?.querySelector('.hero-cta-row');
-  const marquee = document.getElementById('hero-marquee-track');
-
   if (!hero) return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
 
-  const mm = gsap.matchMedia();
+  const copyWrap = hero.querySelector('.hero-copy-wrap');
+  const portrait = hero.querySelector('.hero-portrait');
 
-  // Desktop/Tablet: scrub transforms only, no pin
-  mm.add('(min-width: 768px)', () => {
-    if (portrait) {
-      gsap.to(portrait, {
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.5,
-        },
-        scale: 0.88,
-        opacity: 0.6,
-        y: 60,
-        ease: 'none',
-      });
-    }
-
-    if (textCol) {
-      gsap.to(textCol, {
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-        y: -60,
-        opacity: 0.5,
-        ease: 'none',
-      });
-    }
-
-    if (marquee) {
-      gsap.to(marquee, {
-        xPercent: -50,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      });
-    }
+  // Entrance animations
+  gsap.from('.hero-kicker, .hero-title, .hero-copy, .hero-actions', {
+    opacity: 0,
+    y: 28,
+    duration: 0.8,
+    stagger: 0.08,
+    ease: 'power3.out',
   });
 
-  // Mobile: simple fade-only
-  mm.add('(max-width: 767px)', () => {
-    gsap.fromTo(hero,
-      { opacity: 0.8, y: 20 },
-      {
-        opacity: 1, y: 0,
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top 85%',
-          end: 'top 45%',
-          scrub: 1,
-        },
-        ease: 'power1.out',
-        immediateRender: false,
-      }
-    );
-  });
+  if (portrait) {
+    gsap.from(portrait, {
+      opacity: 0,
+      scale: 1.08,
+      duration: 1.2,
+      ease: 'power3.out',
+    });
+  }
 
-  // CTA hover
-  if (ctaRow) {
-    ctaRow.querySelectorAll('a').forEach(btn => {
-      btn.addEventListener('mouseenter', () => {
-        gsap.to(btn, { y: -3, duration: 0.3, ease: 'power2.out' });
-      });
-      btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, { y: 0, duration: 0.3, ease: 'power2.out' });
-      });
+  // Scroll-driven parallax
+  if (copyWrap) {
+    gsap.to(copyWrap, {
+      yPercent: -12,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
+    });
+  }
+
+  if (portrait) {
+    gsap.to(portrait, {
+      yPercent: 8,
+      scale: 0.96,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
     });
   }
 });

@@ -7,6 +7,7 @@
 <?php wp_head(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -23,7 +24,7 @@
 </head>
 <body <?php body_class( 'antialiased' ); ?>>
 <?php wp_body_open(); ?>
-<a class="skip-link screen-reader-text" href="#main-content"><?php esc_html_e( 'Skip to content', 'malachy-portfolio' ); ?></a>
-<div class="site-wrapper relative">
+<a class="skip-link screen-reader-text" href="#top"><?php esc_html_e( 'Skip to content', 'malachy-portfolio' ); ?></a>
+<div class="portfolio-shell">
 <?php get_template_part( 'template-parts/navigation' ); ?>
-<main id="main-content" role="main">
+<main id="top" role="main">

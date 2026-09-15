@@ -2,7 +2,10 @@
 /**
  * Template Part: Hero Section
  *
- * Source: React Hero.tsx — full-screen hero with portrait, text, marquee.
+ * Reference: polished-portfolio hero — large title, serif accent,
+ * role line, two CTAs, curved portrait mask, scroll hint footer.
+ *
+ * Hero image src/srcset/sizes/alt and text content are preserved.
  *
  * @package Malachy_Portfolio
  */
@@ -13,69 +16,56 @@ $phone         = get_option( 'malachy_phone', '+44 7000 000000' );
 $whatsapp      = get_option( 'malachy_whatsapp', '447000000000' );
 $twitter       = get_option( 'malachy_twitter', 'https://x.com/zubbyik' );
 $booking_url   = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https://cal.com/malachy-egbuna';
-
-$badges = array( 'Docker', 'Linux', 'Python', 'Git', 'Playwright', 'WordPress', 'Prompt Eng.', 'Context Eng.', 'Agentic Coding' );
 ?>
-<section id="home" class="hero-section" aria-label="<?php esc_attr_e( 'Hero introduction', 'malachy-portfolio' ); ?>">
-	<div aria-hidden="true" class="grain-bg hero-section" style="position:absolute;inset:0;"></div>
+<section id="home" class="hero section-wrap" aria-labelledby="hero-title">
+	<div class="hero-copy-wrap">
+		<p class="eyebrow hero-kicker">
+			<span class="eyebrow-mark"></span>
+			<?php echo esc_html( $hero_subtitle ); ?>
+		</p>
+		<h1 id="hero-title" class="hero-title">
+			<?php esc_html_e( "Hi, I'm", 'malachy-portfolio' ); ?><br />
+			<em><?php esc_html_e( 'Malachy.', 'malachy-portfolio' ); ?></em>
+		</h1>
+		<p class="hero-role">
+			<?php esc_html_e( 'QA Engineer', 'malachy-portfolio' ); ?>
+			<span>·</span>
+			<?php esc_html_e( 'System Admin', 'malachy-portfolio' ); ?>
+			<span>·</span>
+			<?php esc_html_e( 'IT Support Specialist', 'malachy-portfolio' ); ?>
+		</p>
+		<p class="hero-copy">
+			<?php esc_html_e( "I engineer confidence into software and infrastructure — from automated test suites to resilient servers, with a fondness for LLM-driven, spec-first workflows.", 'malachy-portfolio' ); ?>
+		</p>
+		<div class="hero-actions">
+			<a href="<?php echo esc_url( home_url( '/#work' ) ); ?>" class="btn-primary" data-section-link="work">
+				<?php esc_html_e( 'View My Projects', 'malachy-portfolio' ); ?>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+			</a>
+			<button type="button" class="btn-ghost" id="open-discovery" aria-expanded="false" aria-controls="discovery-panel">
+				<?php esc_html_e( 'Book a Discovery Call', 'malachy-portfolio' ); ?>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+			</button>
+		</div>
+	</div>
 
-	<div aria-hidden="true" class="hero-portrait-wrap">
+	<div class="hero-visual">
 		<img src="<?php echo esc_url( $portrait_url ); ?>"
 			srcset="<?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-400w.webp' ); ?> 400w,
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-600w.webp' ); ?> 600w,
 			        <?php echo esc_url( MALACHY_THEME_URI . '/assets/images/malachy-portrait-1024w.webp' ); ?> 1024w"
 			sizes="(max-width: 640px) 50vw, (max-width: 1024px) 40vw, 30vw"
 			class="hero-portrait" alt="Malachy Egbuna — portrait photo" draggable="false" width="600" height="800" fetchpriority="high" />
+		<p class="portrait-note">
+			<?php esc_html_e( 'Based in Manchester', 'malachy-portfolio' ); ?><br />
+			<span><?php esc_html_e( 'Working everywhere', 'malachy-portfolio' ); ?></span>
+		</p>
 	</div>
 
-	<div aria-hidden="true" class="hero-portrait-bg"></div>
-
-	<div aria-hidden="true" class="hero-light-left"></div>
-	<div aria-hidden="true" class="hero-veil"></div>
-	<div aria-hidden="true" class="hero-floor"></div>
-	<div aria-hidden="true" class="hero-floor-line"></div>
-
-	<div class="hero-content container-x">
-		<div class="hero-text-col">
-			<p class="hero-eyebrow">
-				<span class="hero-eyebrow-line"></span>
-				<?php echo esc_html( $hero_subtitle ); ?>
-			</p>
-			<h1 class="hero-title">
-				<span class="block" style="display:block"><?php esc_html_e( "Hi, I'm", 'malachy-portfolio' ); ?></span>
-				<span class="block hero-title-primary"><?php esc_html_e( 'Malachy.', 'malachy-portfolio' ); ?></span>
-				<span class="block hero-title-sub"><?php esc_html_e( 'QA Engineer,', 'malachy-portfolio' ); ?></span>
-				<span class="block hero-title-sub"><?php esc_html_e( 'System Admin &', 'malachy-portfolio' ); ?></span>
-				<span class="block hero-title-sub"><?php esc_html_e( 'IT Support Specialist.', 'malachy-portfolio' ); ?></span>
-			</h1>
-			<p class="hero-lede">
-				<?php esc_html_e( "I engineer confidence into software and infrastructure — from automated test suites to resilient servers, with a fondness for LLM-driven, spec-first workflows.", 'malachy-portfolio' ); ?>
-			</p>
-			<div class="hero-cta-row">
-				<a href="#projects" class="hero-cta-primary">
-					<?php esc_html_e( 'View My Projects', 'malachy-portfolio' ); ?>
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-				</a>
-				<button type="button" class="hero-cta-outline" id="open-discovery" aria-expanded="false" aria-controls="discovery-panel">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-					<?php esc_html_e( 'Book a Discovery Call', 'malachy-portfolio' ); ?>
-				</button>
-			</div>
-		</div>
-	</div>
-
-	<div class="hero-marquee" aria-hidden="true">
-		<div class="hero-marquee-track-wrap">
-			<div class="hero-marquee-track" id="hero-marquee-track">
-				<?php foreach ( array_merge( $badges, $badges ) as $i => $badge ) : ?>
-					<span class="hero-marquee-badge">
-						<span class="hero-marquee-dot"></span>
-						<?php echo esc_html( $badge ); ?>
-					</span>
-				<?php endforeach; ?>
-			</div>
-		</div>
-		<div class="hero-scroll-hint"><span><?php esc_html_e( 'Scroll', 'malachy-portfolio' ); ?></span></div>
+	<div class="hero-footer">
+		<span><?php esc_html_e( 'Scroll to explore', 'malachy-portfolio' ); ?></span>
+		<span class="hero-rule"></span>
+		<span>01 / 08</span>
 	</div>
 </section>
 

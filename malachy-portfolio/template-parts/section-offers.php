@@ -1,8 +1,10 @@
 <?php
 /**
- * Template Part: Offers Section
+ * Template Part: Offers Section (Services)
  *
- * 2-column grid with oversized highlight card and GSAP stagger reveal.
+ * Reference: polished-portfolio Services section.
+ * First highlighted offer becomes the featured service;
+ * the next offers become a numbered service list.
  *
  * @package Malachy_Portfolio
  */
@@ -91,16 +93,16 @@ $offer_groups = array(
 	),
 	'AI & WordPress Modernization' => array(
 		array(
-			'id'           => 9,
-			'title'        => 'Migrate and Rebuild a WordPress Site Onto a Modern Stack for AI Chatbot Integration',
-			'description'  => 'A full rebuild on a modern, maintainable stack with AI chatbot integration built in.',
-			'price'        => 'from £220',
-			'slug'         => 'wp-rebuild',
-			'page_path'    => '/offers/migrate-and-rebuild-a-wordpress-site-onto-a-modern-stack-for-ai-chatbot-integration/',
-			'highlight'    => true,
-			'show_started' => false,
+			'id'             => 9,
+			'title'          => 'Migrate and Rebuild a WordPress Site Onto a Modern Stack for AI Chatbot Integration',
+			'description'    => 'A full rebuild on a modern, maintainable stack with AI chatbot integration built in.',
+			'price'          => 'from £220',
+			'slug'           => 'wp-rebuild',
+			'page_path'      => '/offers/migrate-and-rebuild-a-wordpress-site-onto-a-modern-stack-for-ai-chatbot-integration/',
+			'highlight'      => true,
+			'show_started'   => false,
 			'show_discovery' => true,
-			'icon'         => 'wordpress',
+			'icon'           => 'wordpress',
 		),
 		array(
 			'id'           => 8,
@@ -118,77 +120,70 @@ $offer_groups = array(
 
 $booking_url = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https://cal.com/malachy-egbuna';
 
-function malachy_offer_icon( $icon ) {
-	$icons = array(
-		'spam'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/><path d="M12 13l-2 2"/><path d="M12 13l2 2"/></svg>',
-		'audit'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
-		'shield'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
-		'monitor'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 10l3 3 3-3"/><path d="M12 7v3"/></svg>',
-		'mail'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
-		'migrate'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
-		'server'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>',
-		'wordpress'=> '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M6 11c1 4 3 8 6 8s5-4 6-8"/></svg>',
-		'ai'       => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>',
-	);
-	echo isset( $icons[ $icon ] ) ? $icons[ $icon ] : $icons['mail'];
+// Flatten offers and identify the featured + numbered list.
+$all_offers   = array();
+$featured     = null;
+foreach ( $offer_groups as $group_title => $offers ) {
+	foreach ( $offers as $offer ) {
+		$all_offers[] = $offer;
+		if ( null === $featured && ! empty( $offer['highlight'] ) ) {
+			$featured = $offer;
+		}
+	}
+}
+
+// Fallback featured if none highlighted.
+if ( ! $featured && ! empty( $all_offers ) ) {
+	$featured = $all_offers[0];
+}
+
+$numbered = array();
+$index    = 0;
+foreach ( $all_offers as $offer ) {
+	if ( $featured && $offer['id'] === $featured['id'] ) {
+		continue;
+	}
+	if ( count( $numbered ) >= 3 ) {
+		break;
+	}
+	$numbered[] = $offer;
+}
+
+function malachy_featured_cta( $offer, $booking_url ) {
+	if ( ! empty( $offer['show_started'] ) ) {
+		return home_url( '/?service=' . $offer['slug'] . '#contact' );
+	}
+	if ( ! empty( $offer['show_discovery'] ) ) {
+		return $booking_url;
+	}
+	return home_url( $offer['page_path'] );
 }
 ?>
-<section id="offers" class="offers-section" aria-label="<?php esc_attr_e( 'Services and offers', 'malachy-portfolio' ); ?>">
-	<div class="container-x">
-		<div class="max-w-2xl">
-			<p class="section-eyebrow offers-head">
-				<span class="hero-eyebrow-line"></span>
-				<?php esc_html_e( 'What I do', 'malachy-portfolio' ); ?>
-			</p>
-			<h2 class="offers-heading offers-head">
-				<?php esc_html_e( 'Fixed-price help for common email, migration, and WordPress problems.', 'malachy-portfolio' ); ?>
-			</h2>
-		</div>
+<section id="offers" class="services section-wrap" aria-labelledby="services-title">
+	<div class="section-label reveal"><span>03</span><span><?php esc_html_e( 'How I can help', 'malachy-portfolio' ); ?></span></div>
+	<div class="services-content">
+		<?php if ( $featured ) : ?>
+			<div class="featured-service reveal">
+				<div class="service-index"><?php esc_html_e( 'Featured service', 'malachy-portfolio' ); ?> <span>01</span></div>
+				<h2 id="services-title"><?php echo esc_html( $featured['title'] ); ?>.</h2>
+				<p><?php echo esc_html( $featured['description'] ); ?></p>
+				<a href="<?php echo esc_url( malachy_featured_cta( $featured, $booking_url ) ); ?>" class="btn-primary" <?php echo ! empty( $featured['show_discovery'] ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+					<?php esc_html_e( "Tell me what's stuck", 'malachy-portfolio' ); ?>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+				</a>
+			</div>
+		<?php endif; ?>
 
-		<div class="offers-groups" id="offers-groups">
-			<?php foreach ( $offer_groups as $group_title => $offers ) : ?>
-				<div class="offers-group">
-					<h3 class="offers-group-title"><?php echo esc_html( $group_title ); ?></h3>
-					<div class="offers-grid">
-						<?php
-						$highlight_used = false;
-						foreach ( $offers as $offer ) :
-							$is_highlight = ! $highlight_used && ! empty( $offer['highlight'] );
-							if ( $is_highlight ) {
-								$highlight_used = true;
-							}
-						?>
-							<article class="offer-card<?php echo $is_highlight ? ' highlight' : ''; ?>">
-								<div class="offer-card-icon">
-									<?php malachy_offer_icon( $offer['icon'] ); ?>
-								</div>
-								<?php if ( $is_highlight ) : ?>
-									<span class="badge-highlight"><?php esc_html_e( 'Most Requested', 'malachy-portfolio' ); ?></span>
-								<?php endif; ?>
-								<div class="offer-card-meta">
-									<h4 class="offer-card-title"><?php echo esc_html( $offer['title'] ); ?></h4>
-									<p class="offer-card-price"><?php echo esc_html( $offer['price'] ); ?></p>
-								</div>
-								<p class="offer-card-desc"><?php echo esc_html( $offer['description'] ); ?></p>
-								<div class="offer-card-actions">
-									<?php if ( ! empty( $offer['show_started'] ) ) : ?>
-										<a href="<?php echo esc_url( home_url( '/?service=' . $offer['slug'] . '#contact' ) ); ?>" class="offer-cta-primary">
-											<?php esc_html_e( 'Get started', 'malachy-portfolio' ); ?>
-										</a>
-									<?php endif; ?>
-									<?php if ( ! empty( $offer['show_discovery'] ) ) : ?>
-										<a href="<?php echo esc_url( $booking_url ); ?>" class="offer-cta-discovery" target="_blank" rel="noopener noreferrer">
-											<?php esc_html_e( 'Book a discovery call', 'malachy-portfolio' ); ?>
-										</a>
-									<?php endif; ?>
-									<a href="<?php echo esc_url( home_url( $offer['page_path'] ) ); ?>" class="offer-cta-secondary">
-										<?php esc_html_e( 'Learn more', 'malachy-portfolio' ); ?>
-									</a>
-								</div>
-							</article>
-						<?php endforeach; ?>
+		<div class="service-list">
+			<?php foreach ( $numbered as $i => $offer ) : ?>
+				<a href="<?php echo esc_url( home_url( $offer['page_path'] ) ); ?>" class="service-item reveal">
+					<span class="service-number"><?php echo esc_html( sprintf( '%02d', $i + 2 ) ); ?></span>
+					<div>
+						<h3><?php echo esc_html( $offer['title'] ); ?></h3>
+						<p><?php echo esc_html( $offer['description'] ); ?></p>
 					</div>
-				</div>
+					<svg class="service-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+				</a>
 			<?php endforeach; ?>
 		</div>
 	</div>

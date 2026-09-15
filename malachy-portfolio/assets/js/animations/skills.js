@@ -1,32 +1,31 @@
 /**
- * Skills Section Animation
+ * Stack / Skills Section Animation
  *
- * - Cards stagger upward on scroll reveal.
- * - Hover lift (CSS already accomplishes this).
+ * Reference: polished-portfolio reveal animation.
  *
  * @package Malachy_Portfolio
  */
 
 document.addEventListener('DOMContentLoaded', function () {
   const section = document.getElementById('skills');
-  const grid = document.getElementById('skills-grid');
-  if (!section || !grid) return;
+  if (!section) return;
 
-  const cards = grid.querySelectorAll('.skill-card');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
 
-  gsap.fromTo(cards,
-    { y: 50, opacity: 0 },
-    {
-      y: 0, opacity: 1,
+  const reveals = section.querySelectorAll('.reveal');
+
+  reveals.forEach(function (element) {
+    gsap.from(element, {
+      opacity: 0,
+      y: 34,
+      duration: 0.75,
+      ease: 'power3.out',
       scrollTrigger: {
-        trigger: section,
-        start: 'top 80%',
-        end: 'bottom 40%',
-        scrub: 1,
+        trigger: element,
+        start: 'top 88%',
+        once: true,
       },
-      stagger: 0.12,
-      ease: 'power2.out',
-      immediateRender: false,
-    }
-  );
+    });
+  });
 });

@@ -2,7 +2,8 @@
 /**
  * Template Part: Experience Section
  *
- * Source: React Experience.tsx — timeline with vertical growing line.
+ * Reference: polished-portfolio Experience timeline.
+ * Vertical line + nodes.
  *
  * @package Malachy_Portfolio
  */
@@ -22,10 +23,11 @@ if ( $exp_query->have_posts() ) {
 		$exp_query->the_post();
 		$id = get_the_ID();
 		$exp[] = array(
-			'title'       => get_the_title(),
-			'org'         => get_post_meta( $id, '_exp_org', true ),
+			'role'        => get_the_title(),
+			'company'     => get_post_meta( $id, '_exp_org', true ),
 			'year'        => get_post_meta( $id, '_exp_year', true ),
-			'description' => get_the_excerpt(),
+			'text'        => get_the_excerpt(),
+			'details'     => '',
 		);
 	}
 	wp_reset_postdata();
@@ -34,75 +36,52 @@ if ( $exp_query->have_posts() ) {
 if ( empty( $exp ) ) :
 	$exp = array(
 		array(
-			'title'       => 'Founder & Systems/QA Consultant',
-			'org'         => 'IMaD Consulting',
-			'year'        => '2020 – Present',
-			'description' => 'Run a small freelance consultancy covering business email setup, DNS security, and web support, alongside AI-assisted automation work. Currently building and maintaining a self-hosted portfolio-tracking application from the ground up — backend, database, deployment, and testing — using a spec-first workflow where AI coding tools do the implementation and every change gets reviewed before it ships. Handle the server it runs on directly: containerized deployment, routing, and backups.',
+			'role'        => 'QA Engineer',
+			'company'     => 'Independent / contract',
+			'year'        => '2024 — now',
+			'text'        => 'Building quality into web products through thoughtful test strategy, automation and documentation.',
+			'details'     => 'Playwright · API testing · CI/CD',
 		),
 		array(
-			'title'       => 'Test Analyst / User Acceptance Tester',
-			'org'         => 'Imad Consulting (clients: zubbystudio, Okra Technology)',
-			'year'        => 'Mar 2019 – Oct 2022',
-			'description' => 'Documented functional requirements and wrote regression tests for an ERP platform. Worked directly with business owners to turn their needs into test cases, and ran the user-acceptance process that caught serious defects before they reached production.',
+			'role'        => 'Technical Support Engineer',
+			'company'     => 'Digital products',
+			'year'        => '2022 — 24',
+			'text'        => 'Untangling infrastructure and customer issues, then turning patterns into better systems and clearer help.',
+			'details'     => 'WordPress · DNS · Linux · Customer success',
 		),
 		array(
-			'title'       => 'Test Analyst / Front-End Development, Freelance',
-			'org'         => 'Imad Consulting (client: Fitzdanuk.org)',
-			'year'        => 'Jul 2017 – Mar 2019',
-			'description' => 'Owned testing end-to-end for a tax reporting system — functional, regression, and integration testing, plus exploratory testing to catch the bugs a checklist wouldn\'t. Wrote the SQL needed to validate data directly against the database, and ran load tests before major releases went live.',
-		),
-		array(
-			'title'       => 'Test Analyst (Planixs)',
-			'org'         => 'Planixs (clients: Barclays, RBS, Vodafone, Zenith Bank)',
-			'year'        => 'Jul 2017 – Aug 2018',
-			'description' => 'Turned tickets into test cases and ran them against a liquidity-reporting content management system, using Selenium and Cucumber alongside manual testing. Wrote the API scripts needed to check the data coming back from the backend actually matched what the front end showed.',
-		),
-		array(
-			'title'       => 'Test Analyst (Parcel Force / NatWest / Quick Light)',
-			'org'         => 'Parcel Force / NatWest / Quick Light',
-			'year'        => 'Jun 2014 – Aug 2018',
-			'description' => 'Several UK test-analyst roles in a row, each following the same core loop: turn requirements into a test plan, run smoke/regression/UAT cycles, and report clear results back to the business so decisions weren\'t made on guesswork.',
-		),
-		array(
-			'title'       => 'Desktop Support Engineer',
-			'org'         => 'British Telecoms',
-			'year'        => 'Jun 2011 – Dec 2013',
-			'description' => 'Supported a Windows server migration from 2003 to 2008 and helped bring order to a support environment that had been struggling to keep up with day-to-day demand.',
-		),
-		array(
-			'title'       => 'Network Administrator',
-			'org'         => 'Admiral Insurance',
-			'year'        => 'May 2010 – Oct 2012',
-			'description' => 'Rolled out and configured pre-built desktop systems for staff, and helped set up regular knowledge-sharing between support staff to speed up problem-solving.',
+			'role'        => 'IT Support Specialist',
+			'company'     => 'Growing teams',
+			'year'        => '2020 — 22',
+			'text'        => 'Keeping people productive across devices, accounts and the quiet technical details that make work possible.',
+			'details'     => 'Endpoint support · Identity · Process',
 		),
 	);
 endif;
 ?>
-<section id="experience" class="experience-section" aria-label="<?php esc_attr_e( 'Experience timeline', 'malachy-portfolio' ); ?>">
-	<div class="container-x">
-		<div class="experience-inner">
-			<p class="section-eyebrow">
-				<span class="hero-eyebrow-line"></span>
-				<?php esc_html_e( 'Timeline', 'malachy-portfolio' ); ?>
-			</p>
-			<h2 class="experience-heading">
-				<?php esc_html_e( 'Where I\'ve been.', 'malachy-portfolio' ); ?>
-			</h2>
-
-			<div class="experience-timeline" id="exp-timeline" style="margin-top:2rem">
-				<div aria-hidden="true" class="exp-line-bg"></div>
-				<div aria-hidden="true" class="exp-line-fill" id="exp-line-fill"></div>
-
-				<?php foreach ( $exp as $i => $e ) : ?>
-					<div class="exp-item" data-exp-index="<?php echo esc_attr( $i ); ?>">
-						<div aria-hidden="true" class="exp-item-dot"></div>
-						<div class="exp-item-year"><?php echo esc_html( $e['year'] ); ?></div>
-						<h3 class="exp-item-role"><?php echo esc_html( $e['title'] ); ?></h3>
-						<div class="exp-item-org"><?php echo esc_html( $e['org'] ); ?></div>
-						<p class="exp-item-desc"><?php echo esc_html( $e['description'] ); ?></p>
-					</div>
-				<?php endforeach; ?>
-			</div>
-		</div>
+<section id="experience" class="experience section-wrap" aria-labelledby="experience-title">
+	<div class="section-label reveal"><span>06</span><span><?php esc_html_e( 'A little history', 'malachy-portfolio' ); ?></span></div>
+	<div class="experience-heading reveal">
+		<h2 id="experience-title">
+			<?php esc_html_e( "Where I've", 'malachy-portfolio' ); ?><br />
+			<em><?php esc_html_e( 'been.', 'malachy-portfolio' ); ?></em>
+		</h2>
+		<p><?php esc_html_e( "The roles change. The instinct to make things better doesn't.", 'malachy-portfolio' ); ?></p>
+	</div>
+	<div class="experience-list">
+		<div class="experience-line" aria-hidden="true"></div>
+		<?php foreach ( $exp as $item ) : ?>
+			<article class="experience-item reveal">
+				<div class="experience-year"><?php echo esc_html( $item['year'] ); ?></div>
+				<div class="experience-node" aria-hidden="true"></div>
+				<div class="experience-copy">
+					<p class="experience-role"><?php echo esc_html( $item['role'] ); ?> <span>— <?php echo esc_html( $item['company'] ); ?></span></p>
+					<p><?php echo esc_html( $item['text'] ); ?></p>
+					<?php if ( ! empty( $item['details'] ) ) : ?>
+						<small><?php echo esc_html( $item['details'] ); ?></small>
+					<?php endif; ?>
+				</div>
+			</article>
+		<?php endforeach; ?>
 	</div>
 </section>

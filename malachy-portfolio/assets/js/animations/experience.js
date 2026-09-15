@@ -1,51 +1,65 @@
 /**
  * Experience Section Animation
  *
- * - Vertical growing timeline line.
- * - Milestones reveal as user scrolls.
+ * Reference: polished-portfolio timeline animation.
+ * - Vertical line grows on scroll.
+ * - Nodes scale in with stagger.
+ * - Items reveal.
  *
  * @package Malachy_Portfolio
  */
 
 document.addEventListener('DOMContentLoaded', function () {
   const section = document.getElementById('experience');
-  const timeline = document.getElementById('exp-timeline');
-  const lineFill = document.getElementById('exp-line-fill');
-  if (!section || !timeline) return;
+  const list = section ? section.querySelector('.experience-list') : null;
+  const line = section ? section.querySelector('.experience-line') : null;
 
-  const items = timeline.querySelectorAll('.exp-item');
+  if (!section || !list) return;
 
-  // Animate the vertical line growing
-  if (lineFill) {
-    gsap.to(lineFill, {
-      scrollTrigger: {
-        trigger: timeline,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        scrub: 1.5,
-        refreshPriority: -10,
-      },
-      scaleY: 1,
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+
+  if (line) {
+    gsap.from(line, {
+      scaleY: 0,
       transformOrigin: 'top center',
       ease: 'none',
+      scrollTrigger: {
+        trigger: list,
+        start: 'top 75%',
+        end: 'bottom 75%',
+        scrub: true,
+      },
     });
   }
 
-  // Animate each milestone item
-  items.forEach((item, i) => {
-    gsap.fromTo(item,
-      { y: 50, opacity: 0 },
-      {
-        y: 0, opacity: 1,
-        scrollTrigger: {
-          trigger: item,
-          start: 'top 85%',
-          end: 'top 50%',
-          scrub: 1,
-        },
-        ease: 'power2.out',
-        immediateRender: false,
-      }
-    );
+  const nodes = list.querySelectorAll('.experience-node');
+  if (nodes.length > 0) {
+    gsap.from(nodes, {
+      scale: 0.4,
+      opacity: 0,
+      stagger: 0.2,
+      ease: 'back.out(1.7)',
+      scrollTrigger: {
+        trigger: list,
+        start: 'top 72%',
+        once: true,
+      },
+    });
+  }
+
+  const items = list.querySelectorAll('.experience-item');
+  items.forEach(function (item) {
+    gsap.from(item, {
+      opacity: 0,
+      y: 34,
+      duration: 0.75,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: item,
+        start: 'top 88%',
+        once: true,
+      },
+    });
   });
 });

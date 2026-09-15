@@ -1,108 +1,62 @@
 /**
  * Navigation
  *
- * - Sticky glassmorphism header (scroll-based background).
- * - Mobile menu animation.
+ * - Mobile menu toggle (adds .is-open to .site-nav).
+ * - Close menu on link click.
  * - Active link highlighting.
- * - Smart anchor navigation (works on all pages).
- *
- * Uses GSAP/ScrollTrigger on desktop; falls back to IntersectionObserver
- * and native smooth scrolling when GSAP is not available (mobile).
+ * - Smart anchor navigation.
  *
  * @package Malachy_Portfolio
  */
 
 document.addEventListener('DOMContentLoaded', function () {
   var header = document.getElementById('site-header');
-  var logo = header && header.querySelector('.nav-logo');
+  var nav = document.getElementById('site-nav');
   var toggle = document.getElementById('mobile-menu-toggle');
-  var menu = document.getElementById('mobile-menu');
-  var links = menu && menu.querySelectorAll('a[data-section-link]');
+  var openIcon = document.getElementById('menu-icon-open');
+  var closeIcon = document.getElementById('menu-icon-close');
+  var navLinks = nav ? nav.querySelectorAll('a') : [];
   var hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
 
-  if (!header) return;
+  if (!header || !nav || !toggle) return;
 
-  // ---- Scroll-based glassmorphism nav background ----
-  if (hasGsap) {
-    // Desktop: GSAP ScrollTrigger
-    gsap.to(header, {
-      scrollTrigger: {
-        trigger: document.body,
-        start: 'top -80px',
-        end: 'top -120px',
-        onEnter: function () { header.classList.add('nav-scrolled'); },
-        onLeaveBack: function () { header.classList.remove('nav-scrolled'); },
-      },
-    });
-  } else {
-    // Mobile: IntersectionObserver on a 1px sentinel at page top
-    var sentinel = document.createElement('div');
-    sentinel.style.position = 'absolute';
-    sentinel.style.top = '0';
-    sentinel.style.left = '0';
-    sentinel.style.width = '1px';
-    sentinel.style.height = '1px';
-    sentinel.style.pointerEvents = 'none';
-    sentinel.style.opacity = '0';
-    document.body.prepend(sentinel);
-
-    var navObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) {
-          header.classList.add('nav-scrolled');
-        } else {
-          header.classList.remove('nav-scrolled');
-        }
-      });
-    }, { threshold: 0 });
-    navObserver.observe(sentinel);
+  function setMenuOpen(isOpen) {
+    if (isOpen) {
+      nav.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      if (openIcon) openIcon.style.display = 'none';
+      if (closeIcon) closeIcon.style.display = 'block';
+    } else {
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      if (openIcon) openIcon.style.display = 'block';
+      if (closeIcon) closeIcon.style.display = 'none';
+    }
   }
 
-  // ---- Mobile menu toggle ----
-  if (toggle && menu) {
-    toggle.addEventListener('click', function () {
-      var isOpen = menu.style.display !== 'none';
-      menu.style.display = isOpen ? 'none' : 'block';
-      var openIcon = document.getElementById('menu-icon-open');
-      var closeIcon = document.getElementById('menu-icon-close');
-      if (openIcon) openIcon.style.display = isOpen ? 'block' : 'none';
-      if (closeIcon) closeIcon.style.display = isOpen ? 'none' : 'block';
-    });
-  }
+  toggle.addEventListener('click', function () {
+    setMenuOpen(!nav.classList.contains('is-open'));
+  });
 
-  // Close mobile menu on link click
-  if (links) {
-    links.forEach(function (link) {
-      link.addEventListener('click', function () {
-        menu.style.display = 'none';
-        var openIcon = document.getElementById('menu-icon-open');
-        var closeIcon = document.getElementById('menu-icon-close');
-        if (openIcon) openIcon.style.display = 'block';
-        if (closeIcon) closeIcon.style.display = 'none';
-      });
+  navLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      setMenuOpen(false);
     });
-  }
+  });
 
-  // ---- Desktop link active state based on scroll position ----
-  var sectionIds = ['home', 'about', 'skills', 'projects', 'experience', 'blog', 'contact'];
-  var navLinks = header.querySelectorAll('.nav-desktop-link');
+  // ---- Active link highlighting ----
+  var sectionIds = ['work', 'experience', 'contact', 'blog'];
+  var desktopLinks = header.querySelectorAll('.site-nav a');
 
   function setActive(id) {
-    navLinks.forEach(function (link) {
-      var href = link.getAttribute('href');
-      var isActive = (id === 'home' && href === '/') ||
-                      href === '/#' + id ||
-                      href === '#' + id;
-      if (isActive) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
+    desktopLinks.forEach(function (link) {
+      var href = link.getAttribute('href') || '';
+      var isActive = href.indexOf('#' + id) !== -1 || (id === 'blog' && href.indexOf('/blog') !== -1);
+      link.classList.toggle('active', isActive);
     });
   }
 
   if (hasGsap) {
-    // Desktop: ScrollTrigger for smooth active highlighting
     sectionIds.forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -115,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   } else {
-    // Mobile: IntersectionObserver for active highlighting
     var activeObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -130,9 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ---- Smart Anchor Navigation ----
-  // Intercept clicks on section links to smooth-scroll.
-  // Falls back to native navigation when section doesn't exist on current page.
+  // ---- Smart anchor navigation ----
   document.querySelectorAll('a[data-section-link]').forEach(function (link) {
     link.addEventListener('click', function (e) {
       var sectionId = this.getAttribute('data-section-link');
@@ -144,15 +95,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var offset = 100;
         var top = target.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top: top, behavior: 'smooth' });
-        // Update URL to reflect current section (bookmarkable)
         history.pushState(null, '', sectionId === 'home' ? '/' : '/#' + sectionId);
       }
-      // If target doesn't exist, default browser navigation applies.
     });
   });
 
-  // ---- Hash-On-Load Scroll ----
-  // Scrolls to the correct section after a cross-page navigation (e.g. /blog/ -> /#about).
+  // ---- Hash-on-load scroll ----
   if (window.location.hash) {
     var hashId = window.location.hash.replace('#', '');
     if (hashId) {
