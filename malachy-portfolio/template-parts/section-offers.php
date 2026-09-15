@@ -2,12 +2,11 @@
 /**
  * Template Part: Offers Section
  *
- * Displays 9 service offers across 3 categories with CTAs.
+ * 2-column grid with oversized highlight card and GSAP stagger reveal.
  *
  * @package Malachy_Portfolio
  */
 
-// Offer data: id, title, description, price, slug, page_path, highlight, show_started.
 $offer_groups = array(
 	'Email Deliverability & Security' => array(
 		array(
@@ -19,6 +18,7 @@ $offer_groups = array(
 			'page_path'    => '/offers/fix-business-emails-going-to-spam/',
 			'highlight'    => true,
 			'show_started' => true,
+			'icon'         => 'spam',
 		),
 		array(
 			'id'           => 5,
@@ -27,8 +27,9 @@ $offer_groups = array(
 			'price'        => 'from £15',
 			'slug'         => 'email-audit',
 			'page_path'    => '/offers/audit-and-report-on-your-business-email-security-and-deliverability/',
-			'highlight'    => true,
+			'highlight'    => false,
 			'show_started' => true,
+			'icon'         => 'audit',
 		),
 		array(
 			'id'           => 6,
@@ -39,6 +40,7 @@ $offer_groups = array(
 			'page_path'    => '/offers/lock-down-your-domain-and-dns-against-spoofing-hijacking-and-email-fraud/',
 			'highlight'    => false,
 			'show_started' => false,
+			'icon'         => 'shield',
 		),
 		array(
 			'id'           => 7,
@@ -49,6 +51,7 @@ $offer_groups = array(
 			'page_path'    => '/offers/provide-ongoing-email-and-dns-health-monitoring-for-your-business/',
 			'highlight'    => false,
 			'show_started' => false,
+			'icon'         => 'monitor',
 		),
 	),
 	'Microsoft 365, Google Workspace & Migrations' => array(
@@ -61,6 +64,7 @@ $offer_groups = array(
 			'page_path'    => '/offers/set-up-microsoft-365-business-email-with-your-custom-domain/',
 			'highlight'    => true,
 			'show_started' => true,
+			'icon'         => 'mail',
 		),
 		array(
 			'id'           => 3,
@@ -69,8 +73,9 @@ $offer_groups = array(
 			'price'        => 'from £50',
 			'slug'         => 'migrate-email',
 			'page_path'    => '/offers/migrate-business-email-to-microsoft-365-google-workspace/',
-			'highlight'    => true,
+			'highlight'    => false,
 			'show_started' => true,
+			'icon'         => 'migrate',
 		),
 		array(
 			'id'           => 4,
@@ -79,8 +84,9 @@ $offer_groups = array(
 			'price'        => 'from £50',
 			'slug'         => 'migrate-website-email',
 			'page_path'    => '/offers/migrate-your-website-and-business-email-to-a-new-host/',
-			'highlight'    => true,
+			'highlight'    => false,
 			'show_started' => true,
+			'icon'         => 'server',
 		),
 	),
 	'AI & WordPress Modernization' => array(
@@ -94,6 +100,7 @@ $offer_groups = array(
 			'highlight'    => true,
 			'show_started' => false,
 			'show_discovery' => true,
+			'icon'         => 'wordpress',
 		),
 		array(
 			'id'           => 8,
@@ -104,11 +111,27 @@ $offer_groups = array(
 			'page_path'    => '/offers/assess-your-wordpress-site-for-ai-chatbot-integration/',
 			'highlight'    => false,
 			'show_started' => true,
+			'icon'         => 'ai',
 		),
 	),
 );
 
 $booking_url = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https://cal.com/malachy-egbuna';
+
+function malachy_offer_icon( $icon ) {
+	$icons = array(
+		'spam'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/><path d="M12 13l-2 2"/><path d="M12 13l2 2"/></svg>',
+		'audit'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+		'shield'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
+		'monitor'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 10l3 3 3-3"/><path d="M12 7v3"/></svg>',
+		'mail'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+		'migrate'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
+		'server'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>',
+		'wordpress'=> '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M6 11c1 4 3 8 6 8s5-4 6-8"/></svg>',
+		'ai'       => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>',
+	);
+	echo isset( $icons[ $icon ] ) ? $icons[ $icon ] : $icons['mail'];
+}
 ?>
 <section id="offers" class="offers-section" aria-label="<?php esc_attr_e( 'Services and offers', 'malachy-portfolio' ); ?>">
 	<div class="container-x">
@@ -136,6 +159,9 @@ $booking_url = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https:/
 							}
 						?>
 							<article class="offer-card<?php echo $is_highlight ? ' highlight' : ''; ?>">
+								<div class="offer-card-icon">
+									<?php malachy_offer_icon( $offer['icon'] ); ?>
+								</div>
 								<?php if ( $is_highlight ) : ?>
 									<span class="badge-highlight"><?php esc_html_e( 'Most Requested', 'malachy-portfolio' ); ?></span>
 								<?php endif; ?>

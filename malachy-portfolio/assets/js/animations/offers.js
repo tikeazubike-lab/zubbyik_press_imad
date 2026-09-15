@@ -1,32 +1,36 @@
 /**
  * Offers Section Animation
  *
- * - Offer cards stagger upward on scroll reveal.
- * - Hover lift handled by CSS.
+ * Staggered grid reveal from center outward using GSAP ScrollTrigger.
+ * Each offer group's cards animate independently.
  *
  * @package Malachy_Portfolio
  */
 
 document.addEventListener('DOMContentLoaded', function () {
   const section = document.getElementById('offers');
-  const grid = document.getElementById('offers-groups');
-  if (!section || !grid) return;
+  if (!section) return;
 
-  const cards = grid.querySelectorAll('.offer-card');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
 
-  gsap.fromTo(cards,
-    { y: 50, opacity: 0 },
-    {
-      y: 0, opacity: 1,
+  const groups = section.querySelectorAll('.offers-group');
+
+  groups.forEach(function (group) {
+    const cards = group.querySelectorAll('.offer-card');
+    if (cards.length === 0) return;
+
+    gsap.from(cards, {
+      scale: 0,
+      opacity: 0,
+      duration: 0.5,
+      stagger: { amount: 0.6, from: 'center' },
+      ease: 'back.out(1.4)',
       scrollTrigger: {
-        trigger: section,
+        trigger: group,
         start: 'top 80%',
-        end: 'bottom 40%',
-        scrub: 1,
+        once: true,
       },
-      stagger: 0.1,
-      ease: 'power2.out',
-      immediateRender: false,
-    }
-  );
+    });
+  });
 });
