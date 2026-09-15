@@ -22,6 +22,7 @@ if ( $proj_query->have_posts() ) {
 	while ( $proj_query->have_posts() ) {
 		$proj_query->the_post();
 		$id = get_the_ID();
+		$thumb_id = get_post_thumbnail_id( $id );
 		$projects[] = array(
 			'title'       => get_the_title(),
 			'category'    => get_post_meta( $id, '_project_tag', true ) ?: __( 'Project', 'malachy-portfolio' ),
@@ -29,6 +30,7 @@ if ( $proj_query->have_posts() ) {
 			'tags'        => get_post_meta( $id, '_project_tech', true ) ?: array(),
 			'url'         => get_post_meta( $id, '_project_url', true ),
 			'image'       => get_the_post_thumbnail_url( $id, 'large' ) ?: MALACHY_THEME_URI . '/assets/images/project-placeholder.svg',
+			'image_id'    => $thumb_id,
 		);
 	}
 	wp_reset_postdata();
@@ -82,24 +84,40 @@ $total = count( $projects );
 			?>
 			<article class="project reveal">
 				<div class="project-image-wrap">
-					<?php
-					$img_base = preg_replace( '/\.[^.]+$/', '', $project['image'] );
-					$webp_600 = $img_base . '-600w.webp';
-					$webp_900 = $img_base . '-900w.webp';
-					$webp_full = $img_base . '.webp';
-					$has_webp = file_exists( str_replace( MALACHY_THEME_URI, MALACHY_THEME_DIR, $webp_full ) );
-					?>
-					<img
-						src="<?php echo esc_url( $has_webp ? $webp_full : $project['image'] ); ?>"
-						<?php if ( $has_webp ) : ?>
-						srcset="<?php echo esc_url( $webp_600 ); ?> 600w, <?php echo esc_url( $webp_900 ); ?> 900w, <?php echo esc_url( $webp_full ); ?> 1200w"
-						sizes="(max-width: 800px) 100vw, (max-width: 1200px) 55vw, 720px"
-						<?php endif; ?>
-						alt="<?php echo esc_attr( $project['title'] ); ?> <?php esc_attr_e( 'case study preview', 'malachy-portfolio' ); ?>"
-						loading="lazy"
-						decoding="async"
-						width="1200"
-						height="800" />
+					<?php if ( ! empty( $project['image_id'] ) ) : ?>
+						<?php
+						echo wp_get_attachment_image(
+							$project['image_id'],
+							'large',
+							false,
+							array(
+								'alt'      => $project['title'] . ' ' . __( 'case study preview', 'malachy-portfolio' ),
+								'loading'  => 'lazy',
+								'decoding' => 'async',
+								'class'    => 'project-thumb',
+							)
+						);
+						?>
+					<?php else : ?>
+						<?php
+						$img_base = preg_replace( '/\.[^.]+$/', '', $project['image'] );
+						$webp_600 = $img_base . '-600w.webp';
+						$webp_900 = $img_base . '-900w.webp';
+						$webp_full = $img_base . '.webp';
+						$has_webp = file_exists( str_replace( MALACHY_THEME_URI, MALACHY_THEME_DIR, $webp_full ) );
+						?>
+						<img
+							src="<?php echo esc_url( $has_webp ? $webp_full : $project['image'] ); ?>"
+							<?php if ( $has_webp ) : ?>
+							srcset="<?php echo esc_url( $webp_600 ); ?> 600w, <?php echo esc_url( $webp_900 ); ?> 900w, <?php echo esc_url( $webp_full ); ?> 1200w"
+							sizes="(max-width: 800px) 100vw, (max-width: 1200px) 55vw, 720px"
+							<?php endif; ?>
+							alt="<?php echo esc_attr( $project['title'] ); ?> <?php esc_attr_e( 'case study preview', 'malachy-portfolio' ); ?>"
+							loading="lazy"
+							decoding="async"
+							width="1200"
+							height="800" />
+					<?php endif; ?>
 					<span class="project-index"><?php echo esc_html( sprintf( '%02d', $index + 1 ) ); ?></span>
 				</div>
 				<div class="project-details">
