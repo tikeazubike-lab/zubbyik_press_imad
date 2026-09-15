@@ -154,6 +154,15 @@ function malachy_enqueue_assets() {
 			'nonce'   => wp_create_nonce( 'malachy_contact_nonce' ),
 		)
 	);
+
+	// Theme toggle — loaded on all pages
+	wp_enqueue_script(
+		'malachy-theme-toggle',
+		MALACHY_THEME_URI . '/assets/js/theme-toggle.js',
+		array(),
+		MALACHY_THEME_VERSION,
+		true
+	);
 }
 
 // ---------------------------------------------------------------------------
