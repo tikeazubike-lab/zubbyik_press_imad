@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" />
+<link rel="icon" type="image/x-icon" href="<?php echo esc_url( MALACHY_THEME_URI . '/assets/images/favicon.ico' ); ?>" sizes="any">
+<link rel="icon" type="image/png" sizes="512x512" href="<?php echo esc_url( MALACHY_THEME_URI . '/assets/images/site-icon.png' ); ?>">
+<link rel="apple-touch-icon" href="<?php echo esc_url( MALACHY_THEME_URI . '/assets/images/apple-touch-icon.png' ); ?>">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
