@@ -208,15 +208,15 @@ function malachy_render_settings_page() {
 				</tr>
 				<tr>
 					<th scope="row"><label for="malachy_phone">Phone Number</label></th>
-					<td><input type="text" id="malachy_phone" name="malachy_phone" value="<?php echo esc_attr( get_option( 'malachy_phone', '+44 7000 000000' ) ); ?>" class="regular-text" placeholder="+44 7000 000000" /></td>
+								<td><input type="text" id="malachy_phone" name="malachy_phone" value="<?php echo esc_attr( get_option( 'malachy_phone', '+2348164162816' ) ); ?>" class="regular-text" placeholder="+2348164162816" /></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="malachy_whatsapp">WhatsApp Number</label></th>
-					<td><input type="text" id="malachy_whatsapp" name="malachy_whatsapp" value="<?php echo esc_attr( get_option( 'malachy_whatsapp', '447000000000' ) ); ?>" class="regular-text" placeholder="447000000000 (no + or spaces)" /></td>
+								<td><input type="text" id="malachy_whatsapp" name="malachy_whatsapp" value="<?php echo esc_attr( get_option( 'malachy_whatsapp', '2348162816' ) ); ?>" class="regular-text" placeholder="2348162816 (no + or spaces)" /></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="malachy_twitter">Twitter / X URL</label></th>
-					<td><input type="url" id="malachy_twitter" name="malachy_twitter" value="<?php echo esc_attr( get_option( 'malachy_twitter', 'https://x.com/zubbyik' ) ); ?>" class="regular-text" placeholder="https://x.com/username" /></td>
+								<td><input type="url" id="malachy_twitter" name="malachy_twitter" value="<?php echo esc_attr( get_option( 'malachy_twitter', 'https://x.com/azubike_ike' ) ); ?>" class="regular-text" placeholder="https://x.com/azubike_ike" /></td>
 				</tr>
 			</table>
 			<?php submit_button(); ?>

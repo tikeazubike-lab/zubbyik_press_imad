@@ -12,9 +12,9 @@
 
 $portrait_url  = get_theme_mod( 'malachy_portrait', MALACHY_THEME_URI . '/assets/images/malachy-portrait.webp' );
 $hero_subtitle = get_theme_mod( 'malachy_hero_subtitle', __( 'Portfolio · 2026', 'malachy-portfolio' ) );
-$phone         = get_option( 'malachy_phone', '+44 7000 000000' );
-$whatsapp      = get_option( 'malachy_whatsapp', '447000000000' );
-$twitter       = get_option( 'malachy_twitter', 'https://x.com/zubbyik' );
+$phone         = get_option( 'malachy_phone', '+2348164162816' );
+$whatsapp      = get_option( 'malachy_whatsapp', '2348162816' );
+$twitter       = get_option( 'malachy_twitter', 'https://x.com/azubike_ike' );
 $booking_url   = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https://cal.com/malachy-egbuna';
 ?>
 <section id="home" class="hero section-wrap" aria-labelledby="hero-title">
