@@ -63,6 +63,13 @@ while ( $testimonials_query->have_posts() ) {
 	);
 }
 wp_reset_postdata();
+
+// Shared-hosting safety (production): if the testimonial CPT has no
+// posts yet (DB not reconciled), render nothing rather than an empty
+// pinned section. Run "Reconcile Content" in the admin to populate.
+if ( empty( $quote_payload ) ) {
+	return;
+}
 ?>
 <section id="testimonials" class="testimonials-pin" aria-labelledby="testimonials-eyebrow"<?php echo ! empty( $quote_payload ) ? ' data-quotes="' . esc_attr( wp_json_encode( $quote_payload ) ) . '"' : ''; ?>>
 	<div class="testimonials-bg" aria-hidden="true"></div>

@@ -192,6 +192,36 @@ function malachy_render_settings_page() {
 			echo '<div class="notice notice-success is-dismissible"><p>Default data seeded successfully!</p></div>';
 		}
 	}
+
+	// HO-018 content reconciliation — safe to run repeatedly.
+	// Deletes stale experience entries, re-seeds canonical experience +
+	// testimonials, fixes the WhatsApp option, flushes the chatbot cache.
+	if ( isset( $_GET['reconcile_content'] ) && check_admin_referer( 'malachy_reconcile_content' ) ) {
+		$existing_exp = get_posts(
+			array(
+				'post_type'      => 'experience',
+				'posts_per_page' => -1,
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+			)
+		);
+		foreach ( $existing_exp as $exp_id ) {
+			wp_delete_post( $exp_id, true );
+		}
+
+		update_option( 'malachy_whatsapp', '2348164162816', false );
+
+		if ( class_exists( 'Malachy_Seeder' ) ) {
+			$seeder   = new Malachy_Seeder();
+			$seeder->seed( array(), array() );
+		}
+
+		delete_transient( 'malachy_chat_structured_context' );
+
+		$exp_count  = wp_count_posts( 'experience' )->publish ?? 0;
+		$test_count = wp_count_posts( 'testimonial' )->publish ?? 0;
+		echo '<div class="notice notice-success is-dismissible"><p>Reconciliation complete — ' . (int) $exp_count . ' experience entries, ' . (int) $test_count . ' testimonials. WhatsApp number updated.</p></div>';
+	}
 	?>
 	<div class="wrap">
 		<h1>Malachy Portfolio Settings</h1>
@@ -233,6 +263,11 @@ function malachy_render_settings_page() {
 		<h2>Seed Default Data</h2>
 		<p>Click below to create default projects, experience entries, and skills. Safe to run multiple times — won't overwrite existing entries.</p>
 		<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=malachy-portfolio&seed_data=1' ), 'malachy_seed_data' ) ); ?>" class="button button-primary">Seed Default Data</a>
+
+		<hr />
+		<h2>Reconcile Content (HO-018)</h2>
+		<p>Replaces stale experience entries with the canonical 7-entry timeline, creates the 9 client testimonials used by the testimonial section and chatbot, fixes the WhatsApp number, and flushes the chatbot cache. Safe to run multiple times.</p>
+		<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'options-general.php?page=malachy-portfolio&reconcile_content=1' ), 'malachy_reconcile_content' ) ); ?>" class="button button-primary">Reconcile Content</a>
 	</div>
 	<?php
 }
