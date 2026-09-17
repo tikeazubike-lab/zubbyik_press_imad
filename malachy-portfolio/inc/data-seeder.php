@@ -55,7 +55,7 @@ class Malachy_Seeder {
 	 * @param array $args       Positional arguments.
 	 * @param array $assoc_args Associative arguments.
 	 */
-	public function seed( $args, $assoc_args ) {
+	public function seed( $args = array(), $assoc_args = array() ) {
 		$this->seed_projects();
 		$this->seed_experience();
 		$this->seed_skills();
