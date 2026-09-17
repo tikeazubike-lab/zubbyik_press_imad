@@ -68,6 +68,48 @@ class Malachy_Seeder {
 	}
 
 	/**
+	 * HO-018 content reconciliation.
+	 *
+	 * Deletes stale experience CPT entries, re-seeds the canonical
+	 * experience timeline + testimonials, fixes the WhatsApp option,
+	 * syncs the site title, and flushes the chatbot context cache.
+	 * Safe to run repeatedly (identical to the admin "Reconcile Content"
+	 * button) — intended for environments without the admin UI.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp malachy reconcile
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
+	 */
+	public function reconcile( $args, $assoc_args ) {
+		$existing = get_posts(
+			array(
+				'post_type'      => 'experience',
+				'posts_per_page' => -1,
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+			)
+		);
+		foreach ( $existing as $post_id ) {
+			wp_delete_post( $post_id, true );
+		}
+		malachy_seeder_log( 'Deleted ' . count( $existing ) . ' stale experience posts.' );
+
+		update_option( 'malachy_whatsapp', '2348164162816', false );
+		update_option( 'blogname', 'Reliable - QA Engineer, SysAdmin & IT Support', false );
+		malachy_seeder_log( 'WhatsApp option + site title updated.' );
+
+		$this->seed();
+
+		delete_transient( 'malachy_chat_structured_context' );
+		malachy_seeder_log( 'Chatbot context cache flushed.' );
+
+		malachy_seeder_success( 'HO-018 reconciliation complete.' );
+	}
+
+	/**
 	 * Seed offer detail pages.
 	 */
 	private function seed_offer_pages() {
