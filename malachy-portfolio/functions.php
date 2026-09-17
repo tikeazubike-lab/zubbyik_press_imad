@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MALACHY_THEME_VERSION', '1.3.3' );
+define( 'MALACHY_THEME_VERSION', '1.3.4' );
 define( 'MALACHY_THEME_DIR', get_template_directory() );
 define( 'MALACHY_THEME_URI', get_template_directory_uri() );
 
@@ -210,6 +210,8 @@ function malachy_render_settings_page() {
 		}
 
 		update_option( 'malachy_whatsapp', '2348164162816', false );
+		// Site identity kept in sync with the rebrand (staging parity).
+		update_option( 'blogname', 'Reliable - QA Engineer, SysAdmin & IT Support', false );
 
 		if ( class_exists( 'Malachy_Seeder' ) ) {
 			$seeder   = new Malachy_Seeder();
