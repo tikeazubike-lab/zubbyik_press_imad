@@ -1951,10 +1951,24 @@ select:focus-visible,
   }
 
   .hero-visual::after {
-    background: linear-gradient(180deg, var(--background) 0%, transparent 32%, transparent 88%, var(--background) 100%);
+    background: linear-gradient(180deg, var(--background) 0%, transparent 18%, transparent 88%, var(--background) 100%);
   }
 
-  .hero-portrait { object-position: 58% 12%; }
+  .hero-portrait {
+    /* The source portrait is 2:3 with the top ~20% pure black and the
+       face at 25-42% down the frame. A full-height cover scale is
+       height-limited here, so it can never crop that dead top — the
+       head always landed ~25% down the frame, below the headline.
+       Make the image taller than the frame and lift it so the black
+       top is cropped and the head rises into the upper-right space. */
+    position: absolute;
+    top: -18%;
+    left: 0;
+    width: 100%;
+    height: 118%;
+    object-fit: cover;
+    object-position: 58% top;
+  }
 
   .portrait-note {
     /* Centred closing statement, lifted well above the old bottom anchor

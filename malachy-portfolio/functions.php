@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MALACHY_THEME_VERSION', '1.3.6' );
+define( 'MALACHY_THEME_VERSION', '1.3.7' );
 define( 'MALACHY_THEME_DIR', get_template_directory() );
 define( 'MALACHY_THEME_URI', get_template_directory_uri() );
 
