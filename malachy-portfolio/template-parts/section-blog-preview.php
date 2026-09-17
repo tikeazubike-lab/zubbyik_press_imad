@@ -9,7 +9,7 @@
  */
 ?>
 <section id="blog" class="journal section-wrap" aria-labelledby="journal-title">
-	<div class="section-label reveal"><span>07</span><span><?php esc_html_e( 'Notes from the shop', 'malachy-portfolio' ); ?></span></div>
+	<div class="section-label reveal"><span>08</span><span><?php esc_html_e( 'Notes from the shop', 'malachy-portfolio' ); ?></span></div>
 	<div class="journal-heading reveal">
 		<h2 id="journal-title">
 			<?php esc_html_e( 'News from', 'malachy-portfolio' ); ?><br />

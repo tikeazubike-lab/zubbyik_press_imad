@@ -15,7 +15,7 @@ $linkedin      = 'https://www.linkedin.com/in/malachy-egbuna';
 $github        = 'https://github.com/zubbyik';
 ?>
 <section id="contact" class="contact section-wrap" aria-labelledby="contact-title">
-	<div class="section-label reveal"><span>08</span><span><?php esc_html_e( 'Make something useful', 'malachy-portfolio' ); ?></span></div>
+	<div class="section-label reveal"><span>09</span><span><?php esc_html_e( 'Make something useful', 'malachy-portfolio' ); ?></span></div>
 	<div class="contact-layout">
 		<div class="contact-heading reveal">
 			<h2 id="contact-title">

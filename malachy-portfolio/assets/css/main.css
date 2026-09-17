@@ -1698,6 +1698,154 @@ select:focus-visible,
 .hover\:bg-primary\/90:hover { background-color: oklch(0.62 0.2 25 / 0.9); }
 
 /* =========================================================================
+   TESTIMONIALS — pinned parallax + typewriter (HO-019)
+   ========================================================================= */
+.testimonials-pin {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Tall background layer (160% of section) so the yPercent translation
+   never exposes a hard edge. Only transform/opacity are ever animated. */
+.testimonials-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160%;
+  background: url('../images/testimonials-bg.webp') center / cover no-repeat;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Legibility scrim + edge fades into the page background so entering/
+   leaving the pinned section reads as continuity, not a hard cut. */
+.testimonials-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, var(--background) 0%, transparent 18%, transparent 82%, var(--background) 100%),
+    linear-gradient(0deg, color-mix(in oklab, var(--background) 55%, transparent), color-mix(in oklab, var(--background) 55%, transparent));
+  pointer-events: none;
+}
+
+/* Animated typewriter stage — hidden until JS activates it. */
+.testimonials-content {
+  position: relative;
+  z-index: 2;
+  display: none;
+  min-height: 100svh;
+  justify-content: center;
+  padding-top: 0;
+  padding-block: clamp(120px, 18vw, 220px);
+}
+
+.testimonials-is-active .testimonials-content { display: grid; }
+
+.testimonials-is-active .testimonials-static { display: none; }
+
+.testimonials-stage {
+  display: grid;
+  align-content: center;
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+.testimonials-stage .section-label {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 22px;
+  color: var(--ink-faint);
+  margin-bottom: 40px;
+}
+
+.testimonials-stage .section-label span:first-child { color: var(--primary); }
+
+.testimonial-text {
+  min-height: 4.5em;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  max-width: 18em;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  min-height: 1em;
+  background: var(--primary);
+  margin-left: 3px;
+  animation: tm-cursor-blink 1s steps(1) infinite;
+  align-self: end;
+}
+
+@keyframes tm-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.testimonial-attribution {
+  min-height: 1.5em;
+  margin-top: 26px;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Static fallback list — visible by default (no-JS / mobile /
+   reduced-motion). Hidden once the animated presentation activates. */
+.testimonials-static {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 0;
+  padding-top: clamp(100px, 13vw, 190px);
+  padding-bottom: clamp(80px, 10vw, 140px);
+}
+
+.testimonial-static-item {
+  margin: 0;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.testimonial-static-item:first-of-type { border-top: 1px solid var(--primary); }
+
+.testimonial-static-quote {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  max-width: 22em;
+}
+
+.testimonial-static-item cite {
+  display: block;
+  margin-top: 18px;
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 800px) {
+  .testimonials-static { padding-top: 90px; }
+
+  .testimonial-static-item { padding: 28px 0; }
+}
+
+/* =========================================================================
    SKIP LINK & SCREEN READER UTILITIES
    ========================================================================= */
 .skip-link {

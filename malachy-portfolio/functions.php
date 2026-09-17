@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MALACHY_THEME_VERSION', '1.3.2' );
+define( 'MALACHY_THEME_VERSION', '1.3.3' );
 define( 'MALACHY_THEME_DIR', get_template_directory() );
 define( 'MALACHY_THEME_URI', get_template_directory_uri() );
 
@@ -95,18 +95,26 @@ function malachy_enqueue_assets() {
 			array( 'strategy' => 'defer' )
 		);
 
+		wp_enqueue_script(
+			'gsap-text-plugin',
+			MALACHY_THEME_URI . '/assets/js/vendor/TextPlugin.min.js',
+			array( 'gsap' ),
+			'3.12.5',
+			array( 'strategy' => 'defer' )
+		);
+
 		// Animation Manager
 		wp_enqueue_script(
 			'malachy-anim-manager',
 			MALACHY_THEME_URI . '/assets/js/animations/AnimationManager.js',
-			array( 'gsap', 'gsap-scroll-trigger' ),
+			array( 'gsap', 'gsap-scroll-trigger', 'gsap-text-plugin' ),
 			MALACHY_THEME_VERSION,
 			true
 		);
 
 		// Per-section animation modules — front page only
 		if ( is_front_page() ) {
-			$animations = array( 'hero', 'about', 'offers', 'skills', 'projects', 'experience', 'contact', 'global' );
+			$animations = array( 'hero', 'about', 'offers', 'skills', 'projects', 'experience', 'testimonials', 'contact', 'global' );
 			foreach ( $animations as $a ) {
 				wp_enqueue_script(
 					"malachy-anim-{$a}",
