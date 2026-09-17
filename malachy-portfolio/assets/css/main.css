@@ -1940,9 +1940,12 @@ select:focus-visible,
   }
 
   .hero-visual {
-    top: 300px;
+    /* Raised so the portrait's upper mass peeks into the negative space
+       beneath the header and interlocks with the headline, instead of
+       starting as a separate block below the copy. */
+    top: 148px;
     right: -24px;
-    bottom: 50px;
+    bottom: 40px;
     width: calc(100% + 16px);
     border-radius: 48% 0 0 52% / 30% 0 0 70%;
   }
@@ -1951,11 +1954,18 @@ select:focus-visible,
     background: linear-gradient(180deg, var(--background) 0%, transparent 32%, transparent 88%, var(--background) 100%);
   }
 
-  .hero-portrait { object-position: 56% top; }
+  .hero-portrait { object-position: 58% 12%; }
 
   .portrait-note {
-    right: 16px;
-    bottom: 11%;
+    /* Centred closing statement, lifted well above the old bottom anchor
+       and scaled to the visual's height so it holds across viewports.
+       The visual bleeds 24px past the right edge, so offset by half that
+       to centre against the page composition rather than the image box. */
+    right: auto;
+    left: calc(50% - 12px);
+    transform: translateX(-50%);
+    bottom: 24%;
+    text-align: center;
     font-size: 0.6rem;
   }
 
