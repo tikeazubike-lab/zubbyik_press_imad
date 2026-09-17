@@ -22,11 +22,11 @@
 		</p>
 		<div class="metrics">
 			<div>
-				<strong>8<span>+</span></strong>
+				<strong>10<span>+</span></strong>
 				<small><?php esc_html_e( 'Years in', 'malachy-portfolio' ); ?><br /><?php esc_html_e( 'QA', 'malachy-portfolio' ); ?></small>
 			</div>
 			<div>
-				<strong>40<span>+</span></strong>
+				<strong>20<span>+</span></strong>
 				<small><?php esc_html_e( 'Projects', 'malachy-portfolio' ); ?><br /><?php esc_html_e( 'shipped', 'malachy-portfolio' ); ?></small>
 			</div>
 			<div>

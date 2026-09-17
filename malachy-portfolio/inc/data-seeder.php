@@ -62,6 +62,7 @@ class Malachy_Seeder {
 		$this->seed_blog_posts();
 		$this->seed_offer_pages();
 		$this->seed_thank_you_page();
+		$this->seed_testimonials();
 
 		malachy_seeder_success( 'All data seeded successfully.' );
 	}
@@ -240,57 +241,64 @@ class Malachy_Seeder {
 	}
 
 	/**
-	 * Seed 4 experience entries.
+	 * Seed 7 canonical experience entries (HO-018).
 	 */
 	private function seed_experience() {
 		$entries = array(
 			array(
 				'title'      => 'Founder & Systems/QA Consultant',
-				'excerpt'    => 'Run a small freelance consultancy covering business email setup, DNS security, and web support, alongside AI-assisted automation work. Currently building and maintaining a self-hosted portfolio-tracking application from the ground up — backend, database, deployment, and testing — using a spec-first workflow where AI coding tools do the implementation and every change gets reviewed before it ships. Handle the server it runs on directly: containerized deployment, routing, and backups.',
+				'excerpt'    => 'Run a small consultancy covering business email setup, DNS security, and web support, alongside AI-assisted automation work. Currently building and maintaining a self-hosted portfolio-tracking application end to end — backend, deployment, and testing — using a spec-first workflow where AI coding tools handle implementation and every change gets reviewed before it ships.',
 				'org'        => 'IMaD Consulting',
 				'year'       => '2020 – Present',
+				'tags'       => 'Email & DNS · Docker · Spec-first AI workflows',
 				'menu_order' => 1,
 			),
 			array(
-				'title'      => 'Test Analyst / User Acceptance Tester',
+				'title'      => 'Test Analyst / UAT',
 				'excerpt'    => 'Documented functional requirements and wrote regression tests for an ERP platform. Worked directly with business owners to turn their needs into test cases, and ran the user-acceptance process that caught serious defects before they reached production.',
 				'org'        => 'Imad Consulting (clients: zubbystudio, Okra Technology)',
-				'year'       => 'Mar 2019 – Oct 2022',
+				'year'       => 'March 2017 – October 2020',
+				'tags'       => 'UAT · Regression testing · Requirements',
 				'menu_order' => 2,
 			),
 			array(
-				'title'      => 'Test Analyst / Front-End Development, Freelance',
-				'excerpt'    => 'Owned testing end-to-end for a tax reporting system — functional, regression, and integration testing, plus exploratory testing to catch the bugs a checklist wouldn\'t. Wrote the SQL needed to validate data directly against the database, and ran load tests before major releases went live.',
+				'title'      => 'Test Analyst / Front-End Development',
+				'excerpt'    => 'Owned testing end-to-end for a tax reporting system — functional, regression, and integration testing, plus exploratory testing. Wrote SQL to validate data directly against the database and ran load tests before major releases.',
 				'org'        => 'Imad Consulting (client: Fitzdanuk.org)',
-				'year'       => 'Jul 2017 – Mar 2019',
+				'year'       => 'July 2015 – March 2017',
+				'tags'       => 'SQL · Load testing · Exploratory QA',
 				'menu_order' => 3,
 			),
 			array(
 				'title'      => 'Test Analyst (Planixs)',
-				'excerpt'    => 'Turned tickets into test cases and ran them against a liquidity-reporting content management system, using Selenium and Cucumber alongside manual testing. Wrote the API scripts needed to check the data coming back from the backend actually matched what the front end showed.',
+				'excerpt'    => 'Turned tickets into test cases for a liquidity-reporting system, using Selenium and Cucumber alongside manual testing. Wrote API scripts to verify backend data matched what the front end displayed.',
 				'org'        => 'Planixs (clients: Barclays, RBS, Vodafone, Zenith Bank)',
-				'year'       => 'Jul 2017 – Aug 2018',
+				'year'       => 'July 2015 – August 2016',
+				'tags'       => 'Selenium · Cucumber · API testing',
 				'menu_order' => 4,
 			),
 			array(
 				'title'      => 'Test Analyst (Parcel Force / NatWest / Quick Light)',
-				'excerpt'    => 'Several UK test-analyst roles in a row, each following the same core loop: turn requirements into a test plan, run smoke/regression/UAT cycles, and report clear results back to the business so decisions weren\'t made on guesswork.',
+				'excerpt'    => 'A run of UK test-analyst roles: turning requirements into test plans, running smoke/regression/UAT cycles, and reporting clear results back to the business.',
 				'org'        => 'Parcel Force / NatWest / Quick Light',
-				'year'       => 'Jun 2014 – Aug 2018',
+				'year'       => 'June 2012 – August 2016',
+				'tags'       => 'Test planning · UAT · Regression',
 				'menu_order' => 5,
 			),
 			array(
 				'title'      => 'Desktop Support Engineer',
-				'excerpt'    => 'Supported a Windows server migration from 2003 to 2008 and helped bring order to a support environment that had been struggling to keep up with day-to-day demand.',
+				'excerpt'    => 'Supported a Windows server migration from 2003 to 2008 and helped bring order to a support environment under heavy day-to-day demand.',
 				'org'        => 'British Telecoms',
-				'year'       => 'Jun 2011 – Dec 2013',
+				'year'       => 'June 2008 – December 2012',
+				'tags'       => 'Windows Server · Migration · Support',
 				'menu_order' => 6,
 			),
 			array(
 				'title'      => 'Network Administrator',
-				'excerpt'    => 'Rolled out and configured pre-built desktop systems for staff, and helped set up regular knowledge-sharing between support staff to speed up problem-solving.',
+				'excerpt'    => 'Rolled out and configured desktop systems for staff, and helped set up regular knowledge-sharing between support staff to speed up problem-solving.',
 				'org'        => 'Admiral Insurance',
-				'year'       => 'May 2010 – Oct 2012',
+				'year'       => 'May 2001 – October 2004',
+				'tags'       => 'Desktop admin · Knowledge sharing',
 				'menu_order' => 7,
 			),
 		);
@@ -298,9 +306,96 @@ class Malachy_Seeder {
 		$this->create_posts( 'experience', $entries, function ( $id, $item ) {
 			update_post_meta( $id, '_exp_org', $item['org'] );
 			update_post_meta( $id, '_exp_year', $item['year'] );
+			update_post_meta( $id, '_exp_tags', $item['tags'] );
 		} );
 
 		malachy_seeder_log( '  → 7 experience entries created.' );
+	}
+
+	/**
+	 * Seed 9 client testimonials (HO-018).
+	 *
+	 * Sources: PeopleWorkPerHour (4) + Upwork relayed from client confirmation (5).
+	 * The chatbot is the only consumer of testimonial CPT posts.
+	 */
+	private function seed_testimonials() {
+		$testimonials = array(
+			// — PeopleWorkPerHour —
+			array(
+				'title'      => 'Nicholas R.',
+				'excerpt'    => 'Personal and on-hand.',
+				'role'       => 'London, GB · Rating: 5/5 · Aug 2018',
+				'org'        => 'Google AdWords event snippet implementation, Shopify store',
+				'menu_order' => 1,
+			),
+			array(
+				'title'      => 'Mimi R.',
+				'excerpt'    => 'Efficient and wonderful help! :)',
+				'role'       => 'Zagreb, HR · Rating: 5/5 · Nov 2017',
+				'org'        => 'Shopify store setup (payment gateways, tax configuration)',
+				'menu_order' => 2,
+			),
+			array(
+				'title'      => 'Lee J.',
+				'excerpt'    => 'We did run into difficulties but turned out to be a server side issue. Certainly can\'t question Malachy\'s work ethic, and professionalism.',
+				'role'       => 'London, GB · Rating: 4/5 · Nov 2017',
+				'org'        => 'Web.Config configuration, 301 redirects',
+				'menu_order' => 3,
+			),
+			array(
+				'title'      => 'Greg W.',
+				'excerpt'    => 'Great!',
+				'role'       => 'Birmingham, GB · Rating: 5/5 · Oct 2017',
+				'org'        => 'WordPress edits',
+				'menu_order' => 4,
+			),
+			// — Upwork (relayed, client-confirmed) —
+			array(
+				'title'      => 'Mkenny Properties',
+				'excerpt'    => 'Malachy helped us migrate our property management website from IONOS (1&1) to InMotion Hosting. He also transferred our business email during the move and resolved an initial deliverability issue that came up — everything\'s been running smoothly since.',
+				'role'       => 'Upwork client',
+				'org'        => 'Website migration & email hosting setup',
+				'menu_order' => 5,
+			),
+			array(
+				'title'      => 'Tig Michael',
+				'excerpt'    => 'Malachy tested our website thoroughly and caught bugs we hadn\'t noticed ourselves — issues that could have turned into costly problems down the line. Glad we had a second set of eyes on it before launch.',
+				'role'       => 'Upwork client',
+				'org'        => 'Website testing & bug fixes',
+				'menu_order' => 6,
+			),
+			array(
+				'title'      => 'Dimitry V.',
+				'excerpt'    => 'Malachy helped fix a stubborn 301 redirect error on my site. It took some back-and-forth with my hosting provider\'s support team, but he stayed frank and transparent throughout the process and got it resolved.',
+				'role'       => 'Upwork client',
+				'org'        => '301 redirect error troubleshooting',
+				'menu_order' => 7,
+			),
+			array(
+				'title'      => 'Stanley H.',
+				'excerpt'    => 'Malachy integrated Stripe into my Shopify store. Professional from start to finish — clear communication and delivered right on schedule.',
+				'role'       => 'Upwork client',
+				'org'        => 'Stripe payment gateway integration (Shopify)',
+				'menu_order' => 8,
+			),
+			array(
+				'title'      => 'Gracilis (Dishusbandmata)',
+				'excerpt'    => 'Malachy built my website from the ground up: logo design, layout, and all the content. He was genuinely open to learning throughout, and still delivered on schedule. Really happy with the result.',
+				'role'       => 'Upwork client',
+				'org'        => 'Full website build — design, logo, content & layout',
+				'menu_order' => 9,
+			),
+		);
+
+		$this->create_posts( 'testimonial', $testimonials, function ( $id, $item ) {
+			// create_posts stores the quote in the excerpt; mirror it to
+			// post_content so the chatbot reads it via get_the_content().
+			wp_update_post( array( 'ID' => $id, 'post_content' => $item['excerpt'] ) );
+			update_post_meta( $id, '_testimonial_role', $item['role'] );
+			update_post_meta( $id, '_testimonial_org', $item['org'] );
+		} );
+
+		malachy_seeder_log( '  → 9 testimonials created.' );
 	}
 
 	/**

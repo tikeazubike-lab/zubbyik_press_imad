@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MALACHY_THEME_VERSION', '1.3.1' );
+define( 'MALACHY_THEME_VERSION', '1.3.2' );
 define( 'MALACHY_THEME_DIR', get_template_directory() );
 define( 'MALACHY_THEME_URI', get_template_directory_uri() );
 
@@ -212,7 +212,7 @@ function malachy_render_settings_page() {
 				</tr>
 				<tr>
 					<th scope="row"><label for="malachy_whatsapp">WhatsApp Number</label></th>
-								<td><input type="text" id="malachy_whatsapp" name="malachy_whatsapp" value="<?php echo esc_attr( get_option( 'malachy_whatsapp', '2348162816' ) ); ?>" class="regular-text" placeholder="2348162816 (no + or spaces)" /></td>
+								<td><input type="text" id="malachy_whatsapp" name="malachy_whatsapp" value="<?php echo esc_attr( get_option( 'malachy_whatsapp', '2348164162816' ) ); ?>" class="regular-text" placeholder="2348164162816 (no + or spaces)" /></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="malachy_twitter">Twitter / X URL</label></th>

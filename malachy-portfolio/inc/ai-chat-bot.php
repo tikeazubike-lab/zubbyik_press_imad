@@ -778,7 +778,7 @@ class Malachy_AI_Chatbot {
 
 		// Experience — more specific, checked before Skills.
 		if ( preg_match( '/(experience|work history|career|job|role|employment)/i', $lower ) ) {
-			return "My experience spans QA, systems, and development:\n\n**2024 — Now:** Senior QA Engineer & Systems Consultant at IMaD Consulting\n**2021 — 2024:** QA Automation Engineer at an Enterprise SaaS company\n**2019 — 2021:** System Administrator at a Managed Services Firm\n**2017 — 2019:** IT Support Specialist at a Regional Bank\n\nI've been in tech for over 8 years. Want to know more about any role?";
+			return "I've run IMaD Consulting since 2020, covering email/DNS security, web support, and AI-assisted development. Before that, I spent close to two decades in QA and IT support roles across UK finance, telecoms, and insurance — Planixs, British Telecoms, Admiral Insurance, and others.";
 		}
 
 		// What I offer / services overview — highlighted offers first (HO-015).

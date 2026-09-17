@@ -95,6 +95,7 @@ function malachy_register_meta_keys() {
 		// Experience fields
 		'_exp_org'        => 'string',
 		'_exp_year'       => 'string',
+		'_exp_tags'       => 'string',
 		// Skill fields
 		'_skill_icon'     => 'string',
 		'_skill_level'    => 'integer',
@@ -210,6 +211,10 @@ function malachy_exp_meta_cb( $post ) {
 		<tr>
 			<th><label for="_exp_year"><?php esc_html_e( 'Date / Year Range', 'malachy-portfolio' ); ?></label></th>
 			<td><input type="text" id="_exp_year" name="_exp_year" value="<?php echo esc_attr( get_post_meta( $post->ID, '_exp_year', true ) ); ?>" class="regular-text" placeholder="e.g. 2024 — Present" /></td>
+		</tr>
+		<tr>
+			<th><label for="_exp_tags"><?php esc_html_e( 'Tags', 'malachy-portfolio' ); ?></label></th>
+			<td><input type="text" id="_exp_tags" name="_exp_tags" value="<?php echo esc_attr( get_post_meta( $post->ID, '_exp_tags', true ) ); ?>" class="large-text" placeholder="e.g. Email & DNS · Docker · Spec-first AI workflows" /></td>
 		</tr>
 	</table>
 	<?php
@@ -354,7 +359,7 @@ function malachy_save_meta_boxes( $post_id ) {
 	// String meta keys
 	$string_keys = array(
 		'_project_url', '_project_github', '_project_tag',
-		'_exp_org', '_exp_year', '_skill_icon', '_testimonial_role', '_testimonial_org',
+		'_exp_org', '_exp_year', '_exp_tags', '_skill_icon', '_testimonial_role', '_testimonial_org',
 		'_lead_magnet_headline', '_lead_magnet_list_uuid', '_lead_magnet_download_url', '_lead_magnet_tripwire_slug',
 	);
 	foreach ( $string_keys as $key ) {
