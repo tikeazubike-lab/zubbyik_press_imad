@@ -30,7 +30,9 @@ $testimonials_query = new WP_Query(
 		'post_type'      => 'testimonial',
 		'post_name__in'  => $curated_slugs,
 		'posts_per_page' => 4,
-		'orderby'        => 'post__in',
+		// 'post_name__in' ordering mirrors the curated narrative order —
+		// general reliability → strongest offer match → close (HO-019 §4).
+		'orderby'        => 'post_name__in',
 		'order'          => 'ASC',
 	)
 );
