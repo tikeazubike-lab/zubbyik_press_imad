@@ -9,7 +9,8 @@ db-data/
 wp-data/
 malachy-s-cinematic-canvas/
 human_image.png
-imadconsult.zubbystudio.shop*.json
+imadconsult.zubbystudio.site*.json
 instruction_claude.md
 My Blog*.png
 Tests/
+.env.imad

@@ -13,15 +13,18 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress_pass
       WORDPRESS_DB_NAME: malachy_portfolio
+      OPENCODE_API_KEY: ${OPENCODE_API_KEY}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_HOME', 'https://imadconsult.zubbystudio.shop');
-        define('WP_SITEURL', 'https://imadconsult.zubbystudio.shop');
+        define('WP_HOME', 'https://imadconsult.zubbystudio.site');
+        define('WP_SITEURL', 'https://imadconsult.zubbystudio.site');
         define('WP_DEBUG', true);
         define('WP_DEBUG_LOG', true);
         define('WP_DEBUG_DISPLAY', false);
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.malachy-wp.rule=Host(`imadconsult.zubbystudio.shop`)"
+      - "traefik.http.routers.malachy-wp.rule=Host(`imadconsult.zubbystudio.site`)"
       - "traefik.http.routers.malachy-wp.entrypoints=websecure"
       - "traefik.http.routers.malachy-wp.tls.certresolver=cloudflare"
       - "traefik.http.services.malachy-wp.loadbalancer.server.port=80"
@@ -43,6 +46,33 @@ services:
       MYSQL_ROOT_PASSWORD: root_pass
     networks:
       - traefik-public
+
+  imad-automation:
+    build: ./imad-automation
+    container_name: imad-automation
+    restart: unless-stopped
+    environment:
+      IMAD_DATABASE_URL: "postgresql://imad_user:imad_2026_secure@openagile_postgres:5432/imad"
+      IMAD_TELEGRAM_BOT_TOKEN: "${IMAD_TELEGRAM_BOT_TOKEN}"
+      IMAD_TELEGRAM_CHAT_ID: "${IMAD_TELEGRAM_CHAT_ID}"
+      IMAD_ANTHROPIC_API_KEY: "${IMAD_ANTHROPIC_API_KEY}"
+      IMAD_FORM_SECRET: "${IMAD_FORM_SECRET}"
+      IMAD_ADMIN_API_KEY: "${IMAD_ADMIN_API_KEY}"
+      IMAD_ALLOWED_ORIGINS: "https://imadconsulting.co.uk,https://imadconsult.zubbystudio.site"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/healthz')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.imad-automation.rule=Host(`api.imadconsulting.co.uk`)"
+      - "traefik.http.routers.imad-automation.entrypoints=websecure"
+      - "traefik.http.routers.imad-automation.tls=true"
+      - "traefik.http.routers.imad-automation.tls.certresolver=cloudflare"
+      - "traefik.http.services.imad-automation.loadbalancer.server.port=8090"
 
 volumes:
   wp-data:

@@ -67,7 +67,7 @@ function malachy_process_contact( $data ) {
 	}
 
 	// Honeypot
-	if ( ! empty( $data['malachy_hp'] ) ) {
+	if ( ! empty( $data['website'] ) ) {
 		return __( 'Thank you! Your message has been sent.', 'malachy-portfolio' ); // Fake success
 	}
 

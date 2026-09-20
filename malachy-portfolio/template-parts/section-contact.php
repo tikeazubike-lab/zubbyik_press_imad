@@ -44,29 +44,30 @@ $github        = 'https://github.com/zubbyik';
 			<input type="hidden" name="action" value="malachy_send_contact" />
 			<input type="hidden" name="malachy_service" id="malachy_service" value="" />
 
-			<!-- Honeypot -->
-			<div style="position:absolute;left:-9999px" aria-hidden="true">
-				<input type="text" name="malachy_hp" tabindex="-1" autocomplete="off" />
-			</div>
+		<!-- Honeypot: hidden from real users via CSS, bots that auto-fill every input will trip it. -->
+		<div style="position:absolute;left:-9999px" aria-hidden="true">
+			<input type="text" name="website" tabindex="-1" autocomplete="off" />
+		</div>
 
-			<p id="contact-service-context" class="contact-service-context" style="display:none"></p>
+		<p id="contact-service-context" class="contact-service-context" style="display:none"></p>
 
-			<label>
-				<span><?php esc_html_e( 'Your name', 'malachy-portfolio' ); ?></span>
-				<input type="text" id="malachy_name" name="malachy_name" placeholder="<?php esc_attr_e( 'Jane Smith', 'malachy-portfolio' ); ?>" required autocomplete="name" />
-			</label>
-			<label>
-				<span><?php esc_html_e( 'Email address', 'malachy-portfolio' ); ?></span>
-				<input type="email" id="malachy_email" name="malachy_email" placeholder="<?php esc_attr_e( 'jane@company.com', 'malachy-portfolio' ); ?>" required autocomplete="email" />
-			</label>
-			<label>
-				<span><?php esc_html_e( 'What can I help with?', 'malachy-portfolio' ); ?></span>
-				<textarea id="malachy_message" name="malachy_message" rows="4" placeholder="<?php esc_attr_e( 'A little context goes a long way...', 'malachy-portfolio' ); ?>" required></textarea>
-			</label>
-			<button type="submit" class="btn-primary" id="contact-submit">
-				<?php esc_html_e( 'Send enquiry', 'malachy-portfolio' ); ?>
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-			</button>
+		<label>
+			<span><?php esc_html_e( 'Your name', 'malachy-portfolio' ); ?></span>
+			<input type="text" id="malachy_name" name="malachy_name" placeholder="<?php esc_attr_e( 'Jane Smith', 'malachy-portfolio' ); ?>" required autocomplete="name" />
+		</label>
+		<label>
+			<span><?php esc_html_e( 'Email address', 'malachy-portfolio' ); ?></span>
+			<input type="email" id="malachy_email" name="malachy_email" placeholder="<?php esc_attr_e( 'jane@company.com', 'malachy-portfolio' ); ?>" required autocomplete="email" />
+		</label>
+		<label>
+			<span><?php esc_html_e( 'What are you trying to solve?', 'malachy-portfolio' ); ?></span>
+			<textarea id="malachy_message" name="malachy_message" rows="4" placeholder="<?php esc_attr_e( 'A little context goes a long way...', 'malachy-portfolio' ); ?>" required></textarea>
+		</label>
+		<input type="hidden" name="source_campaign" id="source_campaign" value="" />
+		<button type="submit" class="btn-primary" id="contact-submit">
+			<?php esc_html_e( 'Send enquiry', 'malachy-portfolio' ); ?>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+		</button>
 			<div id="contact-status" style="font-size:0.75rem;min-height:1.25rem;margin-top:0.5rem"></div>
 		</form>
 	</div>

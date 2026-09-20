@@ -1,0 +1,37 @@
+# Add this service to your existing docker-compose.yml on the VPS.
+# Adjust `networks:` to whatever your Traefik network is actually named.
+
+services:
+  imad-automation:
+    build: ./imad-automation
+    container_name: imad-automation
+    restart: unless-stopped        # <- process supervision: this is the direct
+                                    #    replacement for n8n's "always running"
+                                    #    guarantee. Docker restarts it on crash
+                                    #    or VPS reboot with zero extra config.
+    environment:
+      IMAD_DATABASE_URL: "postgresql://imad_user:CHANGE_ME@postgres:5432/imad"
+      IMAD_TELEGRAM_BOT_TOKEN: "${IMAD_TELEGRAM_BOT_TOKEN}"
+      IMAD_TELEGRAM_CHAT_ID: "${IMAD_TELEGRAM_CHAT_ID}"
+      IMAD_ANTHROPIC_API_KEY: "${IMAD_ANTHROPIC_API_KEY}"
+      IMAD_FORM_SECRET: "${IMAD_FORM_SECRET}"
+      IMAD_ADMIN_API_KEY: "${IMAD_ADMIN_API_KEY}"
+      IMAD_ALLOWED_ORIGINS: "https://imadconsulting.co.uk,https://imadconsult.zubbystudio.site"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/healthz')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - your_existing_traefik_network   # <- rename to match your setup
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.imad-automation.rule=Host(`api.imadconsulting.co.uk`)"
+      - "traefik.http.routers.imad-automation.entrypoints=websecure"
+      - "traefik.http.routers.imad-automation.tls=true"
+      - "traefik.http.routers.imad-automation.tls.certresolver=letsencrypt"
+      - "traefik.http.services.imad-automation.loadbalancer.server.port=8090"
+
+networks:
+  your_existing_traefik_network:
+    external: true

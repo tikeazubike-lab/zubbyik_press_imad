@@ -1,0 +1,81 @@
+<!--
+  Drop this markup into an existing section of your current site (e.g. a
+  "Let's talk about it" block on your homepage, or inside a modal). It is
+  intentionally unstyled here — wrap it in your site's existing CSS classes
+  so it looks like part of the page you already have, not a bolted-on form.
+
+  Nothing here navigates the visitor away. Submission happens via fetch()
+  in the background; you swap the form for a thank-you message in place.
+-->
+<form id="imad-brainstorm-form">
+  <input type="text" name="name" placeholder="Your name" required>
+  <input type="text" name="contact" placeholder="Email or WhatsApp number" required>
+  <textarea name="problem_text" placeholder="What are you trying to solve?" required></textarea>
+
+  <!-- Honeypot: hidden from real users via CSS, bots that auto-fill every
+       field will trip it. Do NOT use display:none (some bots detect that);
+       position it off-screen instead. -->
+  <input type="text" name="website" tabindex="-1" autocomplete="off"
+         style="position:absolute; left:-9999px;">
+
+  <button type="submit">Bring me the problem</button>
+</form>
+<div id="imad-brainstorm-success" style="display:none;">
+  Thanks — got it. I'll get back to you shortly.
+</div>
+
+<script>
+(function () {
+  const form = document.getElementById('imad-brainstorm-form');
+  const success = document.getElementById('imad-brainstorm-success');
+  const API_URL = 'https://api.imadconsulting.co.uk/api/leads';
+  const FORM_SECRET = 'PASTE_YOUR_IMAD_FORM_SECRET_HERE'; // matches IMAD_FORM_SECRET on the server
+
+  function urlParam(name) {
+    return new URLSearchParams(window.location.search).get(name) || null;
+  }
+
+  function idempotencyKey() {
+    // Stable per page-load so a double-click / double-submit doesn't create
+    // two lead rows, but unique enough across real submissions.
+    if (!window.__imad_idem) {
+      window.__imad_idem = crypto.randomUUID();
+    }
+    return window.__imad_idem;
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const payload = {
+      name: form.name.value,
+      contact: form.contact.value,
+      problem_text: form.problem_text.value,
+      website: form.website.value,               // honeypot, should be empty
+      source_campaign: urlParam('utm_campaign'),  // carried over from /r/{source} redirect
+      idempotency_key: idempotencyKey(),
+    };
+
+    try {
+      const resp = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Form-Secret': FORM_SECRET,
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) throw new Error('request failed');
+      form.style.display = 'none';
+      success.style.display = 'block';
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Bring me the problem';
+      alert("Something went wrong sending that — mind trying again, or just WhatsApp me directly?");
+    }
+  });
+})();
+</script>
