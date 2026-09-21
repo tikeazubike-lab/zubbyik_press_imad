@@ -52,7 +52,7 @@ services:
     container_name: imad-automation
     restart: unless-stopped
     environment:
-      IMAD_DATABASE_URL: "postgresql://imad_user:imad_2026_secure@openagile_postgres:5432/imad"
+      IMAD_DATABASE_URL: "${IMAD_DATABASE_URL}"
       IMAD_TELEGRAM_BOT_TOKEN: "${IMAD_TELEGRAM_BOT_TOKEN}"
       IMAD_TELEGRAM_CHAT_ID: "${IMAD_TELEGRAM_CHAT_ID}"
       IMAD_ANTHROPIC_API_KEY: "${IMAD_ANTHROPIC_API_KEY}"
@@ -71,7 +71,7 @@ services:
       - "traefik.http.routers.imad-automation.rule=Host(`api.imadconsulting.co.uk`)"
       - "traefik.http.routers.imad-automation.entrypoints=websecure"
       - "traefik.http.routers.imad-automation.tls=true"
-      - "traefik.http.routers.imad-automation.tls.certresolver=cloudflare"
+      - "traefik.http.routers.imad-automation.tls.certresolver=letsencrypt-http"
       - "traefik.http.services.imad-automation.loadbalancer.server.port=8090"
 
 volumes:
