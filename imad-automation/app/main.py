@@ -30,6 +30,15 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
 )
+
+# httpx logs the full request URL at INFO level. For Telegram calls that URL
+# contains the bot token, so a live token would otherwise be written to the
+# container log on every send (and from there into any log aggregation).
+# Keep httpx at WARNING so tokens never reach the logs; our own imad.*
+# loggers are unaffected.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+
 log = logging.getLogger("imad.main")
 
 limiter = Limiter(key_func=get_remote_address)
