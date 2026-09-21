@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMAD Lead Capture — Campaign Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #1a1a2e; color: #e0e0e0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+        h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #fff; }
+        .subtitle { color: #aaa; margin-bottom: 2.5rem; font-size: 0.95rem; }
+        .card { background: #16213e; border: 1px solid #0f3460; border-radius: 12px; padding: 2rem; max-width: 520px; width: 100%; margin-bottom: 1.5rem; }
+        .card h2 { font-size: 1.1rem; color: #e94560; margin-bottom: 0.5rem; }
+        .card p { color: #bbb; font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+        .link-box { background: #0f3460; padding: 1rem; border-radius: 8px; word-break: break-all; font-family: monospace; font-size: 0.8rem; color: #7ec8e3; margin-bottom: 1.2rem; }
+        a.btn { display: inline-block; background: #e94560; color: #fff; text-decoration: none; padding: 0.8rem 1.8rem; border-radius: 8px; font-weight: 600; font-size: 1rem; transition: background 0.2s; }
+        a.btn:hover { background: #c73650; }
+        .note { color: #777; font-size: 0.8rem; margin-top: 1.5rem; text-align: center; line-height: 1.5; }
+        .badge { display: inline-block; background: #0f3460; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; color: #7ec8e3; }
+    </style>
+</head>
+<body>
+
+<h1>IMAD Lead Capture Test</h1>
+<p class="subtitle">Click a link below to experience the full campaign flow.</p>
+
+<!-- Flow A: Campaign link -->
+<div class="card">
+    <h2>Flow A — Campaign Link (attributed)</h2>
+    <p>
+        This is the link you'd put on a QR code, WhatsApp Status, or any campaign channel.
+        Clicking it will: <strong>log the click</strong> → <strong>redirect to the homepage
+        with UTMs</strong> → <strong>swap the hero button</strong> → scroll to Contact.
+    </p>
+    <div class="link-box">
+        https://api.imadconsulting.co.uk/r/status?campaign=ep001
+    </div>
+    <a class="btn" href="https://api.imadconsulting.co.uk/r/status?campaign=ep001" target="_blank">
+        Click to test campaign flow →
+    </a>
+    <p><span class="badge">ep001</span> This campaign tag will appear on the lead in the database.</p>
+</div>
+
+<!-- Flow B: Direct visit -->
+<div class="card">
+    <h2>Flow B — Direct Visit (no attribution)</h2>
+    <p>
+        This is what an organic visitor sees — the normal homepage with no UTM
+        parameters. The hero button says "View My Projects" and scrolls to the
+        projects section. No change.
+    </p>
+    <a class="btn" href="https://imadconsulting.co.uk/" target="_blank" style="background:#333;">
+        Visit site normally →
+    </a>
+</div>
+
+<!-- All campaigns -->
+<div class="card">
+    <h2>Campaign Links — copy these</h2>
+    <p>
+        Adjust the <code>campaign=</code> value for each Status episode or QR code you publish.
+        The <code>source</code> label identifies the channel; <code>campaign</code> identifies
+        the specific content.
+    </p>
+    <div class="link-box">https://api.imadconsulting.co.uk/r/status?campaign=ep001</div>
+    <div class="link-box">https://api.imadconsulting.co.uk/r/status?campaign=ep002</div>
+    <div class="link-box">https://api.imadconsulting.co.uk/r/status?campaign=ep003</div>
+    <p>Change <code>r/status</code> to <code>r/qr</code>, <code>r/linkedin</code>, etc. to label different channels.</p>
+</div>
+
+<p class="note">
+    After clicking, check Telegram (<strong>@imadlead_bot</strong>) for the lead notification
+    and the database for campaign attribution:<br><code>docker exec -i openagile_postgres psql -U imad_user -d imad -c "SELECT id, name, source_campaign FROM leads ORDER BY id DESC LIMIT 3;"</code>
+</p>
+
+</body>
+</html>
