@@ -66,8 +66,10 @@ function malachy_process_contact( $data ) {
 		return new WP_Error( 'invalid_nonce', __( 'Security check failed. Please refresh and try again.', 'malachy-portfolio' ) );
 	}
 
-	// Honeypot
-	if ( ! empty( $data['website'] ) ) {
+	// Honeypot — the main contact form uses `website` (matches the
+	// imad-automation backend schema); the discovery panel form still uses
+	// `malachy_hp`. Reject if either is filled so both forms stay protected.
+	if ( ! empty( $data['website'] ) || ! empty( $data['malachy_hp'] ) ) {
 		return __( 'Thank you! Your message has been sent.', 'malachy-portfolio' ); // Fake success
 	}
 
