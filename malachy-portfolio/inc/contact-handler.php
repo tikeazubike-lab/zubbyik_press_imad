@@ -61,8 +61,13 @@ function malachy_ajax_contact() {
  * @return string|\WP_Error Success message or error.
  */
 function malachy_process_contact( $data ) {
-	// Nonce check
-	if ( ! isset( $data['malachy_nonce'] ) || ! wp_verify_nonce( $data['malachy_nonce'], 'malachy_contact_nonce' ) ) {
+	// Nonce check — the main contact form posts `malachy_nonce`; the
+	// discovery panel form historically posted `discovery_nonce`, which the
+	// handler never read (so that form always failed here). Accept either
+	// field name so both forms verify correctly, including any cached markup
+	// still posting the old name.
+	$nonce = $data['malachy_nonce'] ?? ( $data['discovery_nonce'] ?? '' );
+	if ( ! wp_verify_nonce( $nonce, 'malachy_contact_nonce' ) ) {
 		return new WP_Error( 'invalid_nonce', __( 'Security check failed. Please refresh and try again.', 'malachy-portfolio' ) );
 	}
 

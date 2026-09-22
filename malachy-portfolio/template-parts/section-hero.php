@@ -107,7 +107,7 @@ $booking_url   = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https
 		<div class="discovery-divider"><span><?php esc_html_e( 'or send a message', 'malachy-portfolio' ); ?></span></div>
 
 		<form class="discovery-form" id="discovery-form">
-			<?php wp_nonce_field( 'malachy_contact_nonce', 'discovery_nonce' ); ?>
+			<?php wp_nonce_field( 'malachy_contact_nonce', 'malachy_nonce' ); ?>
 			<input type="hidden" name="action" value="malachy_send_contact" />
 			<div style="position:absolute;left:-9999px" aria-hidden="true">
 				<input type="text" name="malachy_hp" tabindex="-1" autocomplete="off" />
