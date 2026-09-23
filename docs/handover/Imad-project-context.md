@@ -6,7 +6,6 @@ state of everything decided in HO-022 through HO-041 so you don't have to
 re-derive it from 20 handovers.
 
 **Last updated**: 2026-09-22, at session handoff (context transfer). GLM5.3-flash is Architect; Claude is Reviewer. See `AGENTS.md` and `opencode.json` at project root for the onboarding brief and auto-load configuration.
-GLM5.3-flash-as-Architect (see HO-042).
 
 ---
 
