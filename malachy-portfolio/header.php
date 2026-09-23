@@ -3,7 +3,9 @@
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="<?php echo esc_attr(get_bloginfo('description') ?: 'Reliable — QA Engineer, SysAdmin & IT Support Specialist. Portfolio and blog.'); ?>">
+<!-- Google Search Console verification — replace token after setup -->
+<meta name="google-site-verification" content="YOUR_VERIFICATION_TOKEN">
+<meta name="description" content="<?php echo esc_attr(get_bloginfo('description') ?: 'IMAD Consulting helps businesses fix email deliverability, migrate to Microsoft 365, secure their domain, and modernize WordPress with AI chatbot integration. QA engineering, system administration, and IT support.'); ?>">
 <?php wp_head(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

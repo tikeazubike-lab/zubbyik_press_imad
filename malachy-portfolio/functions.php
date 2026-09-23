@@ -25,6 +25,24 @@ add_action( 'after_setup_theme', 'malachy_setup' );
 
 function malachy_setup() {
 	add_theme_support( 'title-tag' );
+
+/**
+ * SEO: Customize the document title to include the business name.
+ * The default title-tag output uses the blog name + tagline, which
+ * currently reads "Reliable – QA Engineer..." — the business name
+ * "IMAD Consulting" is missing entirely (HO-042 §3 item 3).
+ */
+function malachy_seo_title( $title_parts ) {
+	// Only customize the home/front page title.
+	if ( is_front_page() || is_home() ) {
+		$title_parts['title'] = 'IMAD Consulting — QA Engineer, SysAdmin & IT Support Specialist';
+		$title_parts['tagline'] = ''; // Remove "Portfolio · 2026" from the title
+	}
+	return $title_parts;
+}
+add_filter( 'document_title_parts', 'malachy_seo_title' );
+
+
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support(
 		'html5',
