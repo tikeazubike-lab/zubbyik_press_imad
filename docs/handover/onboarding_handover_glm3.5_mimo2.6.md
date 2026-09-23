@@ -13,7 +13,7 @@ priority: HIGH
 
 This is the onboarding handover for the IMAD Consulting project's new
 multi-model workflow. Every new session reads this file first. It replaces
-the previous GLM5.3-flash single-model setup and defines a four-role
+the previous single-model setup (GLM5.3-flash) and defines a four-role
 workflow.
 
 ## 2. Role definitions
