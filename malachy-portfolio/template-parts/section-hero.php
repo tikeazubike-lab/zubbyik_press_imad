@@ -28,11 +28,11 @@ $booking_url   = defined( 'MALACHY_BOOKING_URL' ) ? MALACHY_BOOKING_URL : 'https
 			<em><?php esc_html_e( 'Malachy.', 'malachy-portfolio' ); ?></em>
 		</h1>
 		<p class="hero-role">
-			<?php esc_html_e( 'QA Engineer', 'malachy-portfolio' ); ?>
+			<a href="<?php echo esc_url( home_url( '/#work' ) ); ?>" data-section-link="work"><?php esc_html_e( 'QA Engineer', 'malachy-portfolio' ); ?></a>
 			<span>·</span>
-			<?php esc_html_e( 'System Admin', 'malachy-portfolio' ); ?>
+			<a href="<?php echo esc_url( home_url( '/#offers' ) ); ?>" data-section-link="offers"><?php esc_html_e( 'Web Development', 'malachy-portfolio' ); ?></a>
 			<span>·</span>
-			<?php esc_html_e( 'IT Support Specialist', 'malachy-portfolio' ); ?>
+			<a href="<?php echo esc_url( home_url( '/#offers' ) ); ?>" data-section-link="offers"><?php esc_html_e( 'IT Support Specialist', 'malachy-portfolio' ); ?></a>
 		</p>
 		<p class="hero-copy">
 			<?php esc_html_e( "I engineer confidence into software and infrastructure — from automated test suites to resilient servers, with a fondness for LLM-driven, spec-first workflows.", 'malachy-portfolio' ); ?>

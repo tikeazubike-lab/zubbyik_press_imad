@@ -35,7 +35,7 @@ function malachy_setup() {
 function malachy_seo_title( $title_parts ) {
 	// Only customize the home/front page title.
 	if ( is_front_page() || is_home() ) {
-		$title_parts['title'] = 'IMAD Consulting — QA Engineer, SysAdmin & IT Support Specialist';
+		$title_parts['title'] = 'IMAD Consulting — QA Engineer, Web Development & IT Support Specialist';
 		$title_parts['tagline'] = ''; // Remove "Portfolio · 2026" from the title
 	}
 	return $title_parts;
