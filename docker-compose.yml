@@ -11,7 +11,7 @@ services:
     environment:
       WORDPRESS_DB_HOST: malachy-db:3306
       WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress_pass
+      WORDPRESS_DB_PASSWORD: 2379957c298a4c2b38791c5ffcf4e3db19d62c490c76940c
       WORDPRESS_DB_NAME: malachy_portfolio
       OPENCODE_API_KEY: ${OPENCODE_API_KEY}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
@@ -42,8 +42,8 @@ services:
     environment:
       MYSQL_DATABASE: malachy_portfolio
       MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress_pass
-      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_PASSWORD: 2379957c298a4c2b38791c5ffcf4e3db19d62c490c76940c
+      MYSQL_ROOT_PASSWORD: 3ebec09a2103c8519badcf8b6af3796010ae6302d2cad1a6
     networks:
       - traefik-public
 
