@@ -92,6 +92,8 @@ function malachy_register_meta_keys() {
 		'_project_github' => 'string',
 		'_project_tag'    => 'string',
 		'_project_tech'   => 'array',
+		'_project_tldr'   => 'string',
+		'_project_image'  => 'string',
 		// Experience fields
 		'_exp_org'        => 'string',
 		'_exp_year'       => 'string',
@@ -151,6 +153,11 @@ function malachy_project_meta_cb( $post ) {
 		<tr>
 			<th><label for="_project_tag"><?php esc_html_e( 'Tag / Category Label', 'malachy-portfolio' ); ?></label></th>
 			<td><input type="text" id="_project_tag" name="_project_tag" value="<?php echo esc_attr( get_post_meta( $post->ID, '_project_tag', true ) ); ?>" class="regular-text" /></td>
+		</tr>
+		<tr>
+			<th><label for="_project_tldr"><?php esc_html_e( 'TL;DR (card summary)', 'malachy-portfolio' ); ?></label></th>
+			<td><textarea id="_project_tldr" name="_project_tldr" rows="2" class="large-text"><?php echo esc_textarea( get_post_meta( $post->ID, '_project_tldr', true ) ); ?></textarea>
+			<p class="description"><?php esc_html_e( 'One-line summary shown on the showcase card.', 'malachy-portfolio' ); ?></p></td>
 		</tr>
 		<tr>
 			<th><label for="_project_url"><?php esc_html_e( 'Project URL', 'malachy-portfolio' ); ?></label></th>
@@ -358,7 +365,7 @@ function malachy_save_meta_boxes( $post_id ) {
 
 	// String meta keys
 	$string_keys = array(
-		'_project_url', '_project_github', '_project_tag',
+		'_project_url', '_project_github', '_project_tag', '_project_tldr', '_project_image',
 		'_exp_org', '_exp_year', '_exp_tags', '_skill_icon', '_testimonial_role', '_testimonial_org',
 		'_lead_magnet_headline', '_lead_magnet_list_uuid', '_lead_magnet_download_url', '_lead_magnet_tripwire_slug',
 	);

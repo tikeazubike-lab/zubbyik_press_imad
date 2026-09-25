@@ -574,11 +574,24 @@ select:focus-visible,
 .intro,
 .services,
 .stack,
-.projects,
-.experience,
 .journal,
 .contact {
   padding-top: clamp(100px, 13vw, 190px);
+}
+
+/* Work showcase (#work) opts out of the shared rhythm above — its own
+   tighter top/bottom rhythm, controlled independently. */
+#work.projects {
+  padding-top: clamp(100px, 5vw, 190px);
+  padding-bottom: clamp(100px, 5vw, 190px);
+}
+
+/* Experience (#experience) also opts out — tighter top rhythm, plus bottom
+   space so the timeline doesn't run flush into the pinned testimonials
+   section (which opens with a dark void while its bg fades in — HO-052). */
+#experience.experience {
+  padding-top: clamp(100px, 5vw, 190px);
+  padding-bottom: clamp(120px, 12vw, 220px);
 }
 
 .intro {
@@ -778,8 +791,13 @@ select:focus-visible,
    PROJECTS SECTION
    ========================================================================= */
 .projects {
-  background: var(--card);
-  padding-bottom: 150px;
+  /* Continuous flow with the previous section — no visible band change
+     (spec: 3D-carousel-for-jobs-section.txt).
+     NOTE: no overflow clip here — the section is itself .section-wrap, so
+     clipping would crop the full-bleed 100vw mobile track. The global
+     .portfolio-shell (overflow: hidden) already prevents page scrollbars.
+     Top/bottom padding lives on #work.projects (owns its own rhythm). */
+  background: transparent;
 }
 
 .projects-top {
@@ -809,97 +827,435 @@ select:focus-visible,
   font-size: 0.9rem;
 }
 
-.project-list { margin-top: 70px; }
-
-.project {
-  display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.55fr);
-  gap: 5%;
-  align-items: center;
-  padding: 54px 0;
-  border-top: 1px solid var(--line);
+.project-count {
+  color: var(--ink-faint);
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
 }
 
-.project-image-wrap {
+.projects-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 68px;
+}
+
+.projects-heading h2 { margin: 0; }
+
+.projects-heading > p {
+  margin: 0 0 10px;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* =========================================================================
+   HO-051 JOBS SHOWCASE — 3D looping cards
+   Spec: docs/handover/3D-carousel-for-jobs-section.txt
+   Reference: docs/handover/Webflow-3D-Looping-Card-Animation.png
+
+   Mobile  (<=767px):  full-viewport stacked slides, native swipe only.
+   Tablet  (768–1199): desktop composition scaled down, swipe-driven.
+   Desktop (>=1200px): full composition, autoplay + dot timeline.
+   ========================================================================= */
+.jc {
   position: relative;
-  overflow: hidden;
-  aspect-ratio: 14 / 9;
-  background: var(--background);
+  margin-top: 70px;
+  --jc-card-w: min(34vw, 430px);
+  --jc-card-h: min(64vh, 500px);
 }
 
-.project-image-wrap img {
+/* ---------- Left copy stage (desktop/tablet) ---------- */
+.jc-copy {
+  display: none;
+}
+
+.jc-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35em;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.jc-cat {
+  font-size: clamp(2.2rem, 4.2vw, 3.9rem);
+  color: var(--foreground);
+}
+
+.jc-dash {
+  color: var(--ink-faint);
+  font-weight: 300;
+}
+
+.jc-job {
+  font-family: var(--font-sans);
+  font-size: clamp(1.05rem, 1.7vw, 1.55rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink-soft);
+}
+
+.jc-char {
+  display: inline-block;
+  will-change: transform, filter, opacity;
+}
+
+.jc-desc {
+  position: relative;
+  margin-top: 34px;
+  max-width: 560px;
+}
+
+.jc-desc-back {
+  position: absolute;
+  top: -0.35em;
+  left: -0.05em;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 5.4rem;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--foreground);
+  opacity: 0.08;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  pointer-events: none;
+  user-select: none;
+  transform: translateX(calc(var(--drag, 0) * -18px));
+}
+
+.jc-desc-mid {
+  position: relative;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transform: translateX(calc(var(--drag, 0) * -9px));
+}
+
+.jc-desc-front {
+  position: relative;
+  margin: 18px 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--foreground);
+  opacity: 0.5;
+  transform: translateX(calc(var(--drag, 0) * -4px));
+}
+
+/* ---------- Right deck (desktop/tablet) ---------- */
+.jc-stage {
+  display: none;
+  position: relative;
+  perspective: 1600px;
+  min-height: calc(var(--jc-card-h) + 40px);
+}
+
+.jc-card {
+  /* Base (mobile) look — full-viewport slide. */
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100dvh;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  overflow: hidden;
+}
+
+.jc-card-media {
+  flex: 0 0 58%;
+  min-height: 0;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  overflow: hidden;
+  background: var(--secondary);
+}
+
+.jc-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  transition: transform 600ms ease;
+  display: block;
 }
 
-.project:hover img { transform: scale(1.025); }
-
-.project-index {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  display: grid;
-  width: 30px;
-  height: 30px;
-  place-items: center;
-  background: var(--primary);
-  color: var(--primary-foreground);
+.jc-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 26px 4px 0;
+  overflow: auto;
+  scrollbar-width: none;
 }
 
-.project-details h3 {
-  margin-top: 18px;
-  font-family: var(--font-serif);
-  font-size: clamp(2.2rem, 4vw, 4.3rem);
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 0.88;
+.jc-card-body::-webkit-scrollbar { display: none; }
+
+.jc-card-job {
+  display: none;
 }
 
-.project-category { color: var(--primary); }
-
-.project-description {
-  margin-top: 24px;
-  color: var(--ink-soft);
-  font-size: 0.85rem;
-  line-height: 1.7;
+.jc-card-tldr {
+  display: none;
 }
 
-.project-bottom {
+.jc-write-title {
+  margin: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  margin-top: 34px;
-}
-
-.tag-list {
-  display: flex;
+  align-items: baseline;
   flex-wrap: wrap;
-  gap: 7px;
-}
-
-.tag-list span {
-  padding: 6px 8px;
-  border: 1px solid var(--line);
-  color: var(--ink-soft);
-  font-size: 0.6rem;
-}
-
-.project-bottom .btn-ghost {
-  padding: 0;
+  gap: 0.35em;
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
   color: var(--foreground);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
 }
 
-.project-bottom .btn-ghost:hover { color: var(--primary); }
+.jc-write-cat {
+  color: var(--primary);
+}
+
+.jc-write-desc {
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* ---------- Mobile track ---------- */
+.jc-track {
+  display: flex;
+  width: 100vw;
+  height: 100dvh;
+  margin-left: calc(50% - 50vw);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 0;
+}
+
+.jc-track::-webkit-scrollbar { display: none; }
+
+/* ---------- Chrome ---------- */
+.jc-dots {
+  display: none;
+}
+
+.jc-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--line);
+  cursor: pointer;
+  transition: background 180ms ease, width 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.jc-dot[aria-current="true"] {
+  background: var(--primary);
+  width: 18px;
+}
+
+.jc-dot:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* HO-051 mobile: full-bleed stacked slides, no chrome beyond the counter.
+   Cutoff is 767px (not the theme's 800px) so iPad portrait gets the
+   tablet deck — matches the JS matchMedia gates. */
+@media (max-width: 767px) {
+  .jc { margin-top: 42px; }
+  .jc-copy { display: none; }
+  .jc-stage { display: block; min-height: 0; }
+  .jc-card-media { margin: 0; }
+
+  /* Dotted progression overlay (HO-053) — the swipe affordance. Each dot
+     maps 1:1 to a card/image; the active pill moves as the visitor swipes,
+     so the direction/progress is legible. Tapping a dot pages the track. */
+  .jc-dots {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    z-index: 6;
+    transform: translateX(-50%);
+    gap: 9px;
+    align-items: center;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--background) 45%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .jc-dot {
+    width: 6px;
+    height: 6px;
+    background: color-mix(in oklab, var(--foreground) 35%, transparent);
+  }
+
+  .jc-dot[aria-current="true"] { width: 20px; }
+
+  /* Keep the write-up clear of the dot overlay. */
+  .jc-card-body { padding-bottom: 66px; }
+}
+
+/* =========================================================================
+   TABLET — desktop composition scaled down ("zoomed out"), swipe-driven.
+   ========================================================================= */
+@media (min-width: 768px) {
+  .jc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 6%;
+    align-items: center;
+    --jc-card-w: min(30vw, 330px);
+    --jc-card-h: min(56vh, 430px);
+  }
+
+  .jc-copy {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  .jc-stage {
+    display: block;
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+  }
+
+  /* Dot progression — visible on tablet too (swipe-driven, no autoplay).
+     Desktop inherits this; only the group gap differs by size. */
+  .jc-dots {
+    display: flex;
+    grid-column: 1;
+    grid-row: 2;
+    gap: 7px;
+    align-items: center;
+    margin-top: 36px;
+    align-self: start;
+  }
+
+  /* Category groups (2 jobs each) separated by a wider gap. */
+  .jc-dot[data-jc-dot="2"],
+  .jc-dot[data-jc-dot="4"] {
+    margin-left: 14px;
+  }
+
+  /* Cards become the 3D deck (JS slots drive transform/opacity). */
+  .jc-track {
+    display: block;
+    position: relative;
+    width: auto;
+    height: var(--jc-card-h);
+    margin-left: 0;
+    overflow: visible;
+    transform-style: preserve-3d;
+  }
+
+  .jc-card {
+    position: absolute;
+    top: 0;
+    right: 0;
+    flex: none;
+    width: var(--jc-card-w);
+    height: var(--jc-card-h);
+    scroll-snap-align: none;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.1rem;
+    overflow: hidden;
+    background: var(--card);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 55%);
+    will-change: transform, opacity, filter;
+  }
+
+  .jc-card-media {
+    flex: 0 0 62%;
+    border: none;
+    border-radius: 1.1rem 1.1rem 0 0;
+  }
+
+  .jc-card-body {
+    padding: 20px 22px 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .jc-card-job {
+    display: block;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: var(--foreground);
+  }
+
+  .jc-card-tldr {
+    display: block;
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .jc-card-write {
+    display: none;
+  }
+
+  /* Front card image keeps the only visible border in the section. */
+  .jc-card[data-slot="0"] .jc-card-media {
+    border: 1px solid var(--line);
+    border-radius: 1.1rem;
+    margin: 12px 12px 0;
+    flex-basis: calc(62% - 12px);
+  }
+}
+
+/* =========================================================================
+   DESKTOP — full composition + autoplay + dot timeline.
+   ========================================================================= */
+@media (min-width: 1200px) {
+  .jc {
+    --jc-card-w: min(32vw, 430px);
+    --jc-card-h: min(64vh, 520px);
+    gap: 8%;
+    grid-template-rows: auto auto;
+  }
+
+  .jc-desc-back {
+    font-size: 6.2rem;
+  }
+}
+
+@media (min-width: 1200px) and (max-height: 760px) {
+  .jc {
+    --jc-card-h: min(58vh, 440px);
+  }
+  .jc-desc { margin-top: 22px; }
+  .jc-desc-back { font-size: 4.6rem; }
+}
 
 /* =========================================================================
    EXPERIENCE SECTION
@@ -2108,29 +2464,12 @@ select:focus-visible,
     margin-top: 55px;
   }
 
-  .projects { padding-bottom: 95px; }
-
   .projects-heading {
     display: block;
     margin-top: 52px;
   }
 
   .projects-heading > p { margin-top: 25px; }
-
-  .project-list { margin-top: 42px; }
-
-  .project {
-    grid-template-columns: 1fr;
-    gap: 26px;
-    padding: 38px 0 46px;
-  }
-
-  .project-details h3 { font-size: 3rem; }
-  .project-description { margin-top: 18px; }
-  .project-bottom {
-    align-items: flex-end;
-    margin-top: 26px;
-  }
 
   .experience-list { margin-top: 60px; }
 
@@ -2223,4 +2562,5 @@ select:focus-visible,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .jc-track { scroll-behavior: auto; }
 }

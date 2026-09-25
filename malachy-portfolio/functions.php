@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MALACHY_THEME_VERSION', '1.3.14' );
+define( 'MALACHY_THEME_VERSION', '1.3.21' );
 define( 'MALACHY_THEME_DIR', get_template_directory() );
 define( 'MALACHY_THEME_URI', get_template_directory_uri() );
 
@@ -27,16 +27,24 @@ function malachy_setup() {
 	add_theme_support( 'title-tag' );
 
 /**
- * SEO: Customize the document title to include the business name.
- * The default title-tag output uses the blog name + tagline, which
- * currently reads "Reliable – QA Engineer..." — the business name
- * "IMAD Consulting" is missing entirely (HO-042 §3 item 3).
+ * SEO: full control of document title parts (HO-042 §3 item 3, HO-049).
+ *
+ * WP core (wp_get_document_title) joins non-empty parts with " - ":
+ *   front/home → title + tagline (site is not added by core)
+ *   other views → title + site   (site = blogname — still the pre-rebrand
+ *                                  "Reliable - QA Engineer, SysAdmin & IT
+ *                                  Support" on production's DB)
+ * So: front page gets the full brand string with tagline and site cleared
+ * (prevents the /blogs/ doubling), every other view swaps the stale
+ * blogname suffix for the business name.
  */
 function malachy_seo_title( $title_parts ) {
-	// Only customize the home/front page title.
 	if ( is_front_page() || is_home() ) {
-		$title_parts['title'] = 'IMAD Consulting — QA Engineer, Web Development & IT Support Specialist';
-		$title_parts['tagline'] = ''; // Remove "Portfolio · 2026" from the title
+		$title_parts['title']   = 'IMAD Consulting — QA Engineer, Web Development & IT Support Specialist';
+		$title_parts['tagline'] = '';
+		$title_parts['site']    = '';
+	} else {
+		$title_parts['site'] = 'IMAD Consulting';
 	}
 	return $title_parts;
 }
@@ -132,7 +140,7 @@ function malachy_enqueue_assets() {
 
 		// Per-section animation modules — front page only
 		if ( is_front_page() ) {
-			$animations = array( 'hero', 'about', 'offers', 'skills', 'projects', 'experience', 'testimonials', 'contact', 'global' );
+			$animations = array( 'hero', 'about', 'offers', 'skills', 'experience', 'testimonials', 'contact', 'global' );
 			foreach ( $animations as $a ) {
 				wp_enqueue_script(
 					"malachy-anim-{$a}",
@@ -143,6 +151,20 @@ function malachy_enqueue_assets() {
 				);
 			}
 		}
+	}
+
+	// HO-051 showcase (projects) — vanilla, no GSAP, needed on ALL devices
+	// (mobile = swipe track, tablet = swipe deck, desktop = autoplay deck).
+	// wp_is_mobile() is UA-based and true on most tablets, so this must not
+	// live inside the GSAP block above.
+	if ( is_front_page() ) {
+		wp_enqueue_script(
+			'malachy-anim-projects',
+			MALACHY_THEME_URI . '/assets/js/animations/projects.js',
+			array(),
+			MALACHY_THEME_VERSION,
+			true
+		);
 	}
 
 	// Navigation — loaded everywhere, adapts to GSAP availability
@@ -228,8 +250,9 @@ function malachy_render_settings_page() {
 		}
 
 		update_option( 'malachy_whatsapp', '2348164162816', false );
-		// Site identity kept in sync with the rebrand (staging parity).
-		update_option( 'blogname', 'Reliable - QA Engineer, SysAdmin & IT Support', false );
+		// Site identity — business name. The previous value re-poisoned
+		// blogname with the pre-rebrand "Reliable - ..." string (HO-049).
+		update_option( 'blogname', 'IMAD Consulting', false );
 
 		if ( class_exists( 'Malachy_Seeder' ) ) {
 			$seeder   = new Malachy_Seeder();
@@ -263,6 +286,13 @@ function malachy_render_settings_page() {
 				<tr>
 					<th scope="row"><label for="malachy_contact_email">Contact Form Email</label></th>
 					<td><input type="email" id="malachy_contact_email" name="malachy_contact_email" value="<?php echo esc_attr( get_option( 'malachy_contact_email', 'malachy.egbuna@imadconsulting.co.uk' ) ); ?>" class="regular-text" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="malachy_gsc_token">Google Search Console Token</label></th>
+					<td>
+						<input type="text" id="malachy_gsc_token" name="malachy_gsc_token" value="<?php echo esc_attr( get_option( 'malachy_gsc_token', '' ) ); ?>" class="regular-text" placeholder="Paste token from Search Console → Settings → Ownership verification" />
+						<p class="description">The <code>google-site-verification</code> meta tag is only rendered on the site when this is set. Leave empty to hide it.</p>
+					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="malachy_phone">Phone Number</label></th>
@@ -303,6 +333,18 @@ function malachy_register_contact_email() {
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_email',
 			'default'           => 'malachy.egbuna@imadconsulting.co.uk',
+		)
+	);
+
+	// Google Search Console verification token — empty by default; the
+	// verification meta tag is only emitted from header.php when set (HO-049).
+	register_setting(
+		'malachy_theme_settings',
+		'malachy_gsc_token',
+		array(
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
+			'default'           => '',
 		)
 	);
 }

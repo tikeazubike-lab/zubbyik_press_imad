@@ -27,8 +27,12 @@ function malachy_register_contact_route() {
 		array(
 			'methods'             => 'POST',
 			'callback'            => 'malachy_rest_contact',
-			'permission_callback' => function () {
-				return wp_verify_nonce( $_POST['malachy_nonce'] ?? '', 'malachy_contact_nonce' );
+			// Parity with malachy_process_contact(): accept either nonce field
+			// name (discovery form historically posted discovery_nonce — HO-041).
+			// Read via $request so JSON bodies work too, not just $_POST.
+			'permission_callback' => function ( $request ) {
+				$nonce = $request->get_param( 'malachy_nonce' ) ?? $request->get_param( 'discovery_nonce' ) ?? '';
+				return (bool) wp_verify_nonce( $nonce, 'malachy_contact_nonce' );
 			},
 		)
 	);

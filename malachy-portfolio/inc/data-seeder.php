@@ -98,7 +98,7 @@ class Malachy_Seeder {
 		malachy_seeder_log( 'Deleted ' . count( $existing ) . ' stale experience posts.' );
 
 		update_option( 'malachy_whatsapp', '2348164162816', false );
-		update_option( 'blogname', 'Reliable - QA Engineer, SysAdmin & IT Support', false );
+		update_option( 'blogname', 'IMAD Consulting', false );
 		malachy_seeder_log( 'WhatsApp option + site title updated.' );
 
 		$this->seed();
@@ -235,57 +235,215 @@ class Malachy_Seeder {
 	}
 
 	/**
-	 * Seed 3 project entries.
+	 * Canonical 6-job showcase content (HO-051).
+	 *
+	 * Cycle order = category groups in order, jobs within group in order:
+	 * Test Engineering (2) → Web Platforms (2) → Automation & Infrastructure (2).
+	 * `legacy_title` lets the upsert find posts seeded under HO-050 titles.
 	 */
-	private function seed_projects() {
-		$projects = array(
+	private function get_project_items() {
+		return array(
 			array(
-				'title'       => 'Test Automation Framework',
-				'excerpt'     => 'End-to-end test automation framework built with Playwright, TypeScript, and Docker. Features parallel test execution across 5 environments, CI integration, and AI-augmented flaky test detection.',
-				'tag'         => 'QA',
-				'tech'        => array( 'Playwright', 'TypeScript', 'Docker', 'GitHub Actions', 'Python', 'Allure' ),
-				'url'         => '#',
-				'github'      => 'https://github.com/zubbyik',
-				'image'       => 'project-qa.png',
-				'menu_order'  => 1,
+				'title'        => 'Test Automation Framework',
+				'legacy_title' => 'EPM Test Taxonomy — Automated Test Framework',
+				'excerpt'      => 'A structured, non-negotiable test taxonomy (DOMAIN-WORKFLOW-LAYER-TYPE-NNN) built to catch what mocked tests miss. A real-database integration test proved a join-fix regression that a mocked session couldn\'t detect — now the standing rule for anything touching SQL correctness.',
+				'tldr'         => 'A DOMAIN-WORKFLOW-LAYER-TYPE taxonomy that catches what mocks miss — proven against a real-database join regression.',
+				'tag'          => 'Test Engineering',
+				'tech'         => array( 'pytest', 'pytest-asyncio', 'PostgreSQL', 'GitHub Actions' ),
+				'url'          => '#',
+				'github'       => 'https://github.com/zubbyik',
+				'image'        => 'work-test-automation-framework',
+				'menu_order'   => 1,
 			),
 			array(
-				'title'       => 'Infrastructure as Code',
-				'excerpt'     => 'Server provisioning and configuration management toolkit. Automates deployment of secure Linux servers, Docker hosts, monitoring stacks, and CI/CD runners using Python and Bash.',
-				'tag'         => 'DevOps',
-				'tech'        => array( 'Linux', 'Docker', 'Python', 'Nginx', 'Ansible', 'Prometheus' ),
-				'url'         => '#',
-				'github'      => 'https://github.com/zubbyik',
-				'image'       => 'project-sysadmin.png',
-				'menu_order'  => 2,
+				'title'        => 'Specforge Tooling',
+				'legacy_title' => 'Specforge',
+				'excerpt'      => 'A live pipeline visualizer for Gherkin-driven development — "Swagger for Gherkin." Turns behavioral specs into a visible spec → IR → test pipeline instead of a black box.',
+				'tldr'         => '"Swagger for Gherkin" — a live visualizer turning behavioral specs into a visible spec → IR → test pipeline.',
+				'tag'          => 'Test Engineering',
+				'tech'         => array( 'FastAPI', 'Python', 'Mermaid' ),
+				'url'          => '#',
+				'github'       => 'https://github.com/zubbyik',
+				'image'        => 'work-specforge-tooling',
+				'menu_order'   => 2,
 			),
 			array(
-				'title'       => 'Custom WordPress Platform',
-				'excerpt'     => 'Full-featured portfolio and blog platform built on WordPress with GSAP animations, dark mode, contact forms, and a custom CPT-driven content architecture. No page builders, no ACF — pure native WordPress.',
-				'tag'         => 'Web Dev',
-				'tech'        => array( 'WordPress', 'PHP', 'GSAP', 'JavaScript', 'CSS', 'Docker' ),
-				'url'         => 'https://imadconsult.zubbystudio.site',
-				'github'      => 'https://github.com/zubbyik',
-				'image'       => 'project-wordpress.png',
-				'menu_order'  => 3,
+				'title'        => 'Custom WordPress Platform',
+				'legacy_title' => 'WordPress Chatbot-Readiness Assessment',
+				'excerpt'      => 'A bespoke WordPress theme and plugin ecosystem for high-traffic portfolio and directory sites — rich motion, custom post types, and zero page-builder dependency.',
+				'tldr'         => 'A bespoke theme + plugin ecosystem for high-traffic sites — rich motion, zero page-builder dependency.',
+				'tag'          => 'Web Platforms',
+				'tech'         => array( 'WordPress', 'PHP', 'WP-CLI', 'GSAP' ),
+				'url'          => '#',
+				'github'       => 'https://github.com/zubbyik',
+				'image'        => 'work-custom-wordpress-platform',
+				'menu_order'   => 3,
+			),
+			array(
+				'title'        => 'Estate Portfolio Manager',
+				'legacy_title' => 'EPM v2 — Estate Portfolio Manager',
+				'excerpt'      => 'Self-hosted alternative to Jira Cloud for tracking a single estate\'s stock portfolio. FastAPI backend, React 18 SPA, spec-driven feature workflow with formal acceptance testing at every gate.',
+				'tldr'         => 'Self-hosted Jira alternative for estate stock tracking — FastAPI + React 18, acceptance-tested at every gate.',
+				'tag'          => 'Web Platforms',
+				'tech'         => array( 'FastAPI', 'React 18', 'PostgreSQL', 'Docker', 'Traefik' ),
+				'url'          => '#',
+				'github'       => 'https://github.com/zubbyik',
+				'image'        => 'work-estate-portfolio-manager',
+				'menu_order'   => 4,
+			),
+			array(
+				'title'        => 'Infrastructure as Code',
+				'legacy_title' => 'Self-Hosted Service Stack',
+				'excerpt'      => 'A Docker Compose + Traefik stack on a single VPS — reverse proxy, automatic HTTPS via Let\'s Encrypt, and one shared PostgreSQL instance serving multiple production apps (CI/CD, wikis, version control) without duplicating infrastructure per service.',
+				'tldr'         => 'One VPS, one Compose file, one shared Postgres — Traefik + Let\'s Encrypt automating HTTPS across every service.',
+				'tag'          => 'Automation & Infrastructure',
+				'tech'         => array( 'Docker Compose', 'Traefik', 'Let\'s Encrypt', 'PostgreSQL' ),
+				'url'          => '#',
+				'github'       => 'https://github.com/zubbyik',
+				'image'        => 'work-infrastructure-as-code',
+				'menu_order'   => 5,
+			),
+			array(
+				'title'        => 'IMAD Consulting Automation Platform',
+				'legacy_title' => 'IMAD Consulting Automation Platform',
+				'excerpt'      => 'Self-hosted lead capture and notification system replacing a would-be n8n dependency. Dual-channel delivery (Telegram + email) that fails independently rather than together, with full campaign attribution from WhatsApp Status through to a stored lead.',
+				'tldr'         => 'Self-hosted lead capture with dual-channel Telegram + email that fails independently, not together.',
+				'tag'          => 'Automation & Infrastructure',
+				'tech'         => array( 'FastAPI', 'PostgreSQL', 'Telegram Bot API', 'Traefik', 'Let\'s Encrypt' ),
+				'url'          => '#',
+				'github'       => 'https://github.com/zubbyik',
+				'image'        => 'work-imad-automation-platform',
+				'menu_order'   => 6,
 			),
 		);
+	}
 
-		$this->create_posts( 'project', $projects, function ( $id, $item ) {
-			update_post_meta( $id, '_project_tag', $item['tag'] );
-			update_post_meta( $id, '_project_tech', $item['tech'] );
-			update_post_meta( $id, '_project_url', $item['url'] );
-			update_post_meta( $id, '_project_github', $item['github'] );
-			$this->set_featured_image( $id, $item['image'] );
-		} );
+	/**
+	 * Seed/refresh the 6 project entries (HO-051).
+	 *
+	 * Upserts: matches existing posts by new title OR legacy (HO-050) title and
+	 * updates them in place — no duplicates on already-seeded environments.
+	 */
+	private function seed_projects() {
+		foreach ( $this->get_project_items() as $item ) {
+			$existing = 0;
+			foreach ( array( $item['title'], $item['legacy_title'] ) as $needle ) {
+				$hits = get_posts( array(
+					'post_type'      => 'project',
+					'title'          => $needle,
+					'post_status'    => 'any',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+				) );
+				if ( ! empty( $hits ) ) {
+					$existing = (int) $hits[0];
+					break;
+				}
+			}
 
-		malachy_seeder_log( '  → 3 projects created.' );
+			if ( $existing ) {
+				wp_update_post( array(
+					'ID'           => $existing,
+					'post_title'   => $item['title'],
+					'post_excerpt' => $item['excerpt'],
+					'post_status'  => 'publish',
+					'menu_order'   => $item['menu_order'],
+				) );
+				$id = $existing;
+			} else {
+				$id = wp_insert_post( array(
+					'post_type'    => 'project',
+					'post_title'   => $item['title'],
+					'post_excerpt' => $item['excerpt'],
+					'post_status'  => 'publish',
+					'menu_order'   => $item['menu_order'],
+				) );
+			}
+
+			if ( $id && ! is_wp_error( $id ) ) {
+				update_post_meta( $id, '_project_tag', $item['tag'] );
+				update_post_meta( $id, '_project_tldr', $item['tldr'] );
+				update_post_meta( $id, '_project_tech', $item['tech'] );
+				update_post_meta( $id, '_project_url', $item['url'] );
+				update_post_meta( $id, '_project_github', $item['github'] );
+				update_post_meta( $id, '_project_image', $item['image'] );
+				$this->set_featured_image( $id, $item['image'] . '-1400.webp', true );
+			}
+		}
+
+		malachy_seeder_log( '  → 6 projects upserted (HO-051 showcase content).' );
+	}
+
+	/**
+	 * HO-051 migration entry point — safe to re-run.
+	 *
+	 *     wp malachy migrate_projects
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
+	 */
+	public function migrate_projects( $args = array(), $assoc_args = array() ) {
+		$this->seed_projects();
+		malachy_seeder_success( 'Project migration complete.' );
+	}
+
+	/**
+	 * HO-052 migration entry point — removes duplicate experience entries
+	 * (same sanitized title, lowest ID kept) then re-seeds the canonical 7.
+	 *
+	 *     wp malachy migrate_experience
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
+	 */
+	public function migrate_experience( $args = array(), $assoc_args = array() ) {
+		$removed = $this->dedupe_cpt( 'experience' );
+		malachy_seeder_log( "  → removed {$removed} duplicate experience entries." );
+		$this->seed_experience();
+		malachy_seeder_success( 'Experience migration complete.' );
+	}
+
+	/**
+	 * Delete duplicate posts of a CPT sharing the same sanitized title,
+	 * keeping the lowest post ID (the original). Returns the delete count.
+	 *
+	 * @param string $post_type CPT slug.
+	 * @return int
+	 */
+	private function dedupe_cpt( $post_type ) {
+		$ids = get_posts( array(
+			'post_type'      => $post_type,
+			'posts_per_page' => -1,
+			'post_status'    => 'any',
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+			'fields'         => 'ids',
+		) );
+
+		$seen    = array();
+		$deleted = 0;
+		foreach ( $ids as $pid ) {
+			$key = sanitize_title( get_the_title( $pid ) );
+			if ( isset( $seen[ $key ] ) ) {
+				wp_delete_post( $pid, true );
+				++$deleted;
+			} else {
+				$seen[ $key ] = $pid;
+			}
+		}
+		return $deleted;
 	}
 
 	/**
 	 * Seed 7 canonical experience entries (HO-018).
 	 */
 	private function seed_experience() {
+		// Self-heal: drop any duplicates before the idempotent upsert.
+		$removed = $this->dedupe_cpt( 'experience' );
+		if ( $removed ) {
+			malachy_seeder_log( "  → removed {$removed} duplicate experience entries." );
+		}
+
 		$entries = array(
 			array(
 				'title'      => 'Founder & Systems/QA Consultant',
@@ -559,6 +717,12 @@ class Malachy_Seeder {
 	/**
 	 * Generic post creator.
 	 *
+	 * Matches existing posts by slug (post_name), not raw title: WordPress
+	 * runs title_save_pre -> wp_filter_kses, which stores `&` as `&amp;`,
+	 * so an exact-title lookup silently fails for titles containing `&`
+	 * (that bug created 8 duplicate "Founder & Systems/QA Consultant"
+	 * experience entries — HO-052).
+	 *
 	 * @param string   $post_type        CPT slug.
 	 * @param array    $items            Array of item data arrays.
 	 * @param callable $meta_callback    Callback to set meta after insert. Receives ( $post_id, $item ).
@@ -567,7 +731,8 @@ class Malachy_Seeder {
 		foreach ( $items as $item ) {
 			$existing = get_posts( array(
 				'post_type'      => $post_type,
-				'title'          => $item['title'],
+				'name'           => sanitize_title( $item['title'] ),
+				'post_status'    => 'any',
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
 			) );
@@ -595,8 +760,9 @@ class Malachy_Seeder {
 	 *
 	 * @param int    $post_id Post ID.
 	 * @param string $file    Filename in assets/images/ (e.g. 'project-qa.png').
+	 * @param bool   $force   Replace an existing thumbnail (HO-051 migration).
 	 */
-	private function set_featured_image( $post_id, $file ) {
+	private function set_featured_image( $post_id, $file, $force = false ) {
 		$source_path = MALACHY_THEME_DIR . '/assets/images/' . $file;
 
 		if ( ! file_exists( $source_path ) ) {
@@ -605,8 +771,16 @@ class Malachy_Seeder {
 		}
 
 		// Check if already set
-		if ( has_post_thumbnail( $post_id ) ) {
+		if ( has_post_thumbnail( $post_id ) && ! $force ) {
 			return;
+		}
+
+		if ( has_post_thumbnail( $post_id ) && $force ) {
+			$old_id = (int) get_post_thumbnail_id( $post_id );
+			delete_post_thumbnail( $post_id );
+			if ( $old_id ) {
+				wp_delete_attachment( $old_id, true );
+			}
 		}
 
 		// Copy to uploads dir so WordPress can process it correctly.

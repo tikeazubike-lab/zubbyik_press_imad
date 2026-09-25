@@ -3,9 +3,19 @@
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Google Search Console verification — replace token after setup -->
-<meta name="google-site-verification" content="YOUR_VERIFICATION_TOKEN">
-<meta name="description" content="<?php echo esc_attr(get_bloginfo('description') ?: 'IMAD Consulting helps businesses fix email deliverability, migrate to Microsoft 365, secure their domain, and modernize WordPress with AI chatbot integration. QA engineering, system administration, and IT support.'); ?>">
+<?php
+// Google Search Console verification — only emitted once Malachy pastes the
+// token into Settings → Malachy Portfolio (never ship a placeholder, HO-049).
+$malachy_gsc = (string) get_option( 'malachy_gsc_token', '' );
+if ( '' !== $malachy_gsc ) {
+	echo '<meta name="google-site-verification" content="' . esc_attr( $malachy_gsc ) . '">' . "\n";
+}
+// Curated description — deliberately NOT blogdescription: production's tagline
+// is the stale "Portfolio · 2026" and staging's is empty (HO-047's fallback
+// only ever fired on staging). Same text on every page until per-page
+// descriptions arrive with the SEO plugin (Phase 1, blocked on Malachy).
+?>
+<meta name="description" content="<?php echo esc_attr( 'IMAD Consulting helps businesses fix email deliverability, migrate to Microsoft 365, secure their domain, and modernize WordPress with AI chatbot integration. QA engineering, web development, and IT support.' ); ?>">
 <?php wp_head(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,7 +28,7 @@
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Malachy Egbuna",
-  "jobTitle": "QA Engineer, SysAdmin & IT Support Specialist",
+  "jobTitle": "QA Engineer, Web Development & IT Support Specialist",
   "url": "<?php echo esc_url( home_url( '/' ) ); ?>"
 }
 </script>

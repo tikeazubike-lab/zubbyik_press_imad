@@ -1,9 +1,16 @@
 <?php
 /**
- * Template Part: Projects Section
+ * Template Part: Projects Section — 3D looping card showcase (HO-051).
  *
- * Reference: polished-portfolio Projects section.
- * Large project cards with image + details.
+ * Spec: docs/handover/3D-carousel-for-jobs-section.txt
+ * Reference: docs/handover/Webflow-3D-Looping-Card-Animation.png
+ *
+ * Desktop (>=1200px): borderless two-half showcase — left copy stage
+ * (spotlight title + layered parallax description), right 3-card deck that
+ * recedes into the dark on a 5s autoplay loop with a clickable dot timeline.
+ * Tablet (768–1199px): same composition scaled down, swipe-driven, no autoplay.
+ * Mobile (<=767px): full-viewport stacked slides (image + write-up inside the
+ * card), native swipe only — no 3D, no peeking cards, no autoplay.
  *
  * @package Malachy_Portfolio
  */
@@ -22,123 +29,170 @@ if ( $proj_query->have_posts() ) {
 	while ( $proj_query->have_posts() ) {
 		$proj_query->the_post();
 		$id = get_the_ID();
-		$thumb_id = get_post_thumbnail_id( $id );
 		$projects[] = array(
 			'title'       => get_the_title(),
 			'category'    => get_post_meta( $id, '_project_tag', true ) ?: __( 'Project', 'malachy-portfolio' ),
 			'description' => get_the_excerpt(),
-			'tags'        => get_post_meta( $id, '_project_tech', true ) ?: array(),
-			'url'         => get_post_meta( $id, '_project_url', true ),
-			'image'       => get_the_post_thumbnail_url( $id, 'large' ) ?: MALACHY_THEME_URI . '/assets/images/project-placeholder.svg',
-			'image_id'    => $thumb_id,
+			'tldr'        => get_post_meta( $id, '_project_tldr', true ) ?: get_the_excerpt(),
+			'image'       => get_post_meta( $id, '_project_image', true ),
+			'thumb_id'    => (int) get_post_thumbnail_id( $id ),
 		);
 	}
 	wp_reset_postdata();
 }
 
 if ( empty( $projects ) ) :
+	// Last-resort fallback when the CPT is empty (staging/local without a seed).
 	$projects = array(
 		array(
 			'title'       => 'Test Automation Framework',
-			'category'    => 'Quality assurance',
-			'description' => 'A comprehensive Playwright-based E2E framework for multi-environment regression testing, featuring parallel execution, visual diffing, and CI integration.',
-			'tags'        => array( 'Playwright', 'React', 'Data viz' ),
-			'url'         => '#',
-			'image'       => MALACHY_THEME_URI . '/assets/images/project-qa.png',
+			'category'    => 'Test Engineering',
+			'description' => 'A structured, non-negotiable test taxonomy (DOMAIN-WORKFLOW-LAYER-TYPE-NNN) built to catch what mocked tests miss.',
+			'tldr'        => 'A DOMAIN-WORKFLOW-LAYER-TYPE taxonomy that catches what mocks miss — proven against a real-database join regression.',
+			'image'       => 'work-test-automation-framework',
+			'thumb_id'    => 0,
 		),
 		array(
-			'title'       => 'Infrastructure as Code',
-			'category'    => 'Web / CMS',
-			'description' => 'Automation for server provisioning using Docker Compose, monitoring stacks, and automated backup rotations across 4 environments.',
-			'tags'        => array( 'WordPress', 'PHP', 'Performance' ),
-			'url'         => '#',
-			'image'       => MALACHY_THEME_URI . '/assets/images/project-sysadmin.png',
+			'title'       => 'Specforge Tooling',
+			'category'    => 'Test Engineering',
+			'description' => 'A live pipeline visualizer for Gherkin-driven development — "Swagger for Gherkin." Turns behavioral specs into a visible pipeline instead of a black box.',
+			'tldr'        => '"Swagger for Gherkin" — a live visualizer turning behavioral specs into a visible spec → IR → test pipeline.',
+			'image'       => 'work-specforge-tooling',
+			'thumb_id'    => 0,
 		),
 		array(
 			'title'       => 'Custom WordPress Platform',
-			'category'    => 'Product systems',
-			'description' => 'A bespoke WordPress theme and plugin ecosystem for high-traffic portfolio and directory sites, with GSAP animations and zero page builder reliance.',
-			'tags'        => array( 'Product design', 'UX strategy', 'Systems' ),
-			'url'         => 'https://imadconsult.zubbystudio.site',
-			'image'       => MALACHY_THEME_URI . '/assets/images/project-wordpress.png',
+			'category'    => 'Web Platforms',
+			'description' => 'A bespoke WordPress theme and plugin ecosystem for high-traffic portfolio and directory sites — rich motion and zero page-builder dependency.',
+			'tldr'        => 'A bespoke theme + plugin ecosystem for high-traffic sites — rich motion, zero page-builder dependency.',
+			'image'       => 'work-custom-wordpress-platform',
+			'thumb_id'    => 0,
+		),
+		array(
+			'title'       => 'Estate Portfolio Manager',
+			'category'    => 'Web Platforms',
+			'description' => 'Self-hosted alternative to Jira Cloud for tracking a single estate\'s stock portfolio. FastAPI backend, React 18 SPA, spec-driven feature workflow.',
+			'tldr'        => 'Self-hosted Jira alternative for estate stock tracking — FastAPI + React 18, acceptance-tested at every gate.',
+			'image'       => 'work-estate-portfolio-manager',
+			'thumb_id'    => 0,
+		),
+		array(
+			'title'       => 'Infrastructure as Code',
+			'category'    => 'Automation & Infrastructure',
+			'description' => 'A Docker Compose + Traefik stack on a single VPS with automatic HTTPS and one shared PostgreSQL instance serving multiple production apps.',
+			'tldr'        => 'One VPS, one Compose file, one shared Postgres — Traefik + Let\'s Encrypt automating HTTPS across every service.',
+			'image'       => 'work-infrastructure-as-code',
+			'thumb_id'    => 0,
+		),
+		array(
+			'title'       => 'IMAD Consulting Automation Platform',
+			'category'    => 'Automation & Infrastructure',
+			'description' => 'Self-hosted lead capture and notification system replacing a would-be n8n dependency. Dual-channel delivery that fails independently rather than together.',
+			'tldr'        => 'Self-hosted lead capture with dual-channel Telegram + email that fails independently, not together.',
+			'image'       => 'work-imad-automation-platform',
+			'thumb_id'    => 0,
 		),
 	);
 endif;
 
-$total = count( $projects );
+$total     = count( $projects );
+$first     = $projects[0];
+$comma     = __( ', ', 'malachy-portfolio' );
 ?>
+
 <section id="work" class="projects section-wrap" aria-labelledby="projects-title">
 	<div class="projects-top">
 		<div class="section-label reveal"><span>05</span><span><?php esc_html_e( 'Selected work', 'malachy-portfolio' ); ?></span></div>
-		<p class="project-count"><?php echo esc_html( sprintf( '%02d / %02d', $total, $total ) ); ?></p>
+		<p class="project-count" id="work-count" data-jc-counter aria-live="polite" aria-atomic="true"><?php echo esc_html( sprintf( '%02d / %02d', 1, $total ) ); ?></p>
 	</div>
 	<div class="projects-heading reveal">
 		<h2 id="projects-title"><?php esc_html_e( 'Recent', 'malachy-portfolio' ); ?> <em><?php esc_html_e( 'projects.', 'malachy-portfolio' ); ?></em></h2>
 		<p><?php esc_html_e( 'A few useful things I\'ve helped bring into the world.', 'malachy-portfolio' ); ?></p>
 	</div>
-	<div class="project-list">
-		<?php foreach ( $projects as $index => $project ) : ?>
-			<?php
-			$project_url = ( ! empty( $project['url'] ) && '#' !== $project['url'] ) ? $project['url'] : home_url( '/#contact' );
-			$is_external = strpos( $project_url, home_url() ) === false;
-			?>
-			<article class="project reveal">
-				<div class="project-image-wrap">
-					<?php if ( ! empty( $project['image_id'] ) ) : ?>
-						<?php
-						echo wp_get_attachment_image(
-							$project['image_id'],
-							'large',
-							false,
-							array(
-								'alt'      => $project['title'] . ' ' . __( 'case study preview', 'malachy-portfolio' ),
-								'loading'  => 'lazy',
-								'decoding' => 'async',
-								'class'    => 'project-thumb',
-							)
-						);
-						?>
-					<?php else : ?>
-						<?php
-						$img_base = preg_replace( '/\.[^.]+$/', '', $project['image'] );
-						$webp_600 = $img_base . '-600w.webp';
-						$webp_900 = $img_base . '-900w.webp';
-						$webp_full = $img_base . '.webp';
-						$has_webp = file_exists( str_replace( MALACHY_THEME_URI, MALACHY_THEME_DIR, $webp_full ) );
-						?>
-						<img
-							src="<?php echo esc_url( $has_webp ? $webp_full : $project['image'] ); ?>"
-							<?php if ( $has_webp ) : ?>
-							srcset="<?php echo esc_url( $webp_600 ); ?> 600w, <?php echo esc_url( $webp_900 ); ?> 900w, <?php echo esc_url( $webp_full ); ?> 1200w"
-							sizes="(max-width: 800px) 100vw, (max-width: 1200px) 55vw, 720px"
-							<?php endif; ?>
-							alt="<?php echo esc_attr( $project['title'] ); ?> <?php esc_attr_e( 'case study preview', 'malachy-portfolio' ); ?>"
-							loading="lazy"
-							decoding="async"
-							width="1200"
-							height="800" />
-					<?php endif; ?>
-					<span class="project-index"><?php echo esc_html( sprintf( '%02d', $index + 1 ) ); ?></span>
-				</div>
-				<div class="project-details">
-					<p class="project-category"><?php echo esc_html( $project['category'] ); ?></p>
-					<h3><?php echo esc_html( $project['title'] ); ?></h3>
-					<p class="project-description"><?php echo esc_html( $project['description'] ); ?></p>
-					<div class="project-bottom">
-						<?php if ( ! empty( $project['tags'] ) ) : ?>
-							<div class="tag-list">
-								<?php foreach ( $project['tags'] as $tag ) : ?>
-									<span><?php echo esc_html( $tag ); ?></span>
-								<?php endforeach; ?>
-							</div>
-						<?php endif; ?>
-						<a href="<?php echo esc_url( $project_url ); ?>" class="btn-ghost" <?php echo $is_external ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
-							<?php esc_html_e( 'View case', 'malachy-portfolio' ); ?>
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
-						</a>
+
+	<div class="jc" data-jc data-jc-total="<?php echo (int) $total; ?>">
+
+		<?php // Left copy stage — desktop/tablet only (mobile write-up lives in each card). ?>
+		<div class="jc-copy" data-jc-copy>
+			<h3 class="jc-title">
+				<span class="jc-cat" data-jc-cat><?php echo esc_html( $first['category'] ); ?></span><span class="jc-dash">–</span><span class="jc-job" data-jc-job><?php echo esc_html( $first['title'] ); ?></span>
+			</h3>
+			<div class="jc-desc">
+				<p class="jc-desc-back" data-jc-desc-back aria-hidden="true"><?php echo esc_html( $first['category'] ); ?></p>
+				<p class="jc-desc-mid" data-jc-desc-mid><?php echo esc_html( $first['description'] ); ?></p>
+				<p class="jc-desc-front" data-jc-desc-front><?php echo esc_html( $first['tldr'] ); ?></p>
+			</div>
+		</div>
+
+		<div class="jc-stage" data-jc-stage>
+			<div class="jc-track" data-jc-track>
+				<?php foreach ( $projects as $index => $project ) : ?>
+				<?php
+				$slide_label = sprintf(
+					/* translators: 1: slide number, 2: total slides, 3: job title */
+					__( '%1$d of %2$d: %3$s', 'malachy-portfolio' ),
+					$index + 1,
+					$total,
+					$project['title']
+				);
+
+				if ( ! empty( $project['image'] ) ) {
+					$src_800  = MALACHY_THEME_URI . '/assets/images/' . $project['image'] . '-800.webp';
+					$src_1400 = MALACHY_THEME_URI . '/assets/images/' . $project['image'] . '-1400.webp';
+					$img_html = sprintf(
+						'<img src="%1$s" srcset="%1$s 800w, %2$s 1400w" sizes="(max-width: 767px) 100vw, 420px" alt="%3$s" class="jc-card-img"%4$s decoding="async">',
+						esc_url( $src_800 ),
+						esc_url( $src_1400 ),
+						esc_attr( $project['title'] ),
+						0 === $index ? ' loading="eager" fetchpriority="high"' : ' loading="lazy"'
+					);
+				} elseif ( $project['thumb_id'] ) {
+					$img_html = wp_get_attachment_image(
+						$project['thumb_id'],
+						'full',
+						false,
+						array(
+							'class'   => 'jc-card-img',
+							'loading' => 0 === $index ? 'eager' : 'lazy',
+							'alt'     => $project['title'],
+						)
+					);
+				} else {
+					$img_html = '';
+				}
+				?>
+				<article
+					class="jc-card"
+					data-jc-card
+					data-index="<?php echo (int) $index; ?>"
+					data-category="<?php echo esc_attr( $project['category'] ); ?>"
+					data-job="<?php echo esc_attr( $project['title'] ); ?>"
+					data-desc="<?php echo esc_attr( $project['description'] ); ?>"
+					data-tldr="<?php echo esc_attr( $project['tldr'] ); ?>"
+					role="group"
+					aria-roledescription="slide"
+					aria-label="<?php echo esc_attr( $slide_label ); ?>"
+				>
+					<div class="jc-card-media">
+						<?php echo $img_html; // phpcs:ignore WordPress.Security.EscapeOutput -- assembled above from escaped parts. ?>
 					</div>
-				</div>
-			</article>
-		<?php endforeach; ?>
+					<div class="jc-card-body">
+						<h4 class="jc-card-job"><?php echo esc_html( $project['title'] ); ?></h4>
+						<p class="jc-card-tldr"><?php echo esc_html( $project['tldr'] ); ?></p>
+						<div class="jc-card-write">
+							<h4 class="jc-write-title"><span class="jc-write-cat"><?php echo esc_html( $project['category'] ); ?></span><span class="jc-dash">–</span><span><?php echo esc_html( $project['title'] ); ?></span></h4>
+							<p class="jc-write-desc"><?php echo esc_html( $project['description'] ); ?></p>
+						</div>
+					</div>
+				</article>
+				<?php endforeach; ?>
+			</div>
+		</div>
+
+		<div class="jc-dots" data-jc-dots role="tablist" aria-label="<?php esc_attr_e( 'Go to project', 'malachy-portfolio' ); ?>">
+			<?php for ( $i = 0; $i < $total; $i++ ) : ?>
+				<button type="button" role="tab" class="jc-dot" data-jc-dot="<?php echo (int) $i; ?>" aria-current="<?php echo 0 === $i ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: project number */ __( 'Project %d', 'malachy-portfolio' ), $i + 1 ) ); ?>"></button>
+			<?php endfor; ?>
+		</div>
 	</div>
 </section>
