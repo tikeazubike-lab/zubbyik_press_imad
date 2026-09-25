@@ -14,3 +14,9 @@ instruction_claude.md
 My Blog*.png
 Tests/
 .env.imad
+
+# Local-only caches and visual-test artifacts (never commit these):
+# .playwright-browsers/ is ~656 MB; visual-baseline/ is regenerable output
+.playwright-browsers/
+.playwright-mcp/
+tests/visual/visual-baseline/

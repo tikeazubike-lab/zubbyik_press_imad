@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "visual:routes": "node tests/visual/discover-routes.js",
+    "visual:capture": "npx playwright test --config=tests/visual/config/visual.config.ts",
+    "visual:interactions": "npx playwright test --config=tests/visual/config/visual.config.ts tests/visual/capture-interactions.spec.ts",
+    "visual:report": "node tests/visual/generate-report.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +24,8 @@
   "homepage": "https://github.com/tikeazubike-lab/zubbyik_press_imad#readme",
   "dependencies": {
     "playwright": "^1.61.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
   }
 }
