@@ -373,10 +373,18 @@ the shared host would land the theme *without* the production data steps listed 
 HO-052 §9.3 (production project reseed, experience dedupe). Those must run as part of the same
 deploy, not after it.
 
-Deliberately **not** committed: the untracked root-level strays (`HANDOVER.md`/`Handover.md`
-duplicates, `HO-013`, `HO-014`, `HO-016-checkwebsite`, `gemini_vision_qa_report.md`), the ~15
-debugging screenshots at the repo root, `malachy-portfolio.tar.gz`, `imad-automation_2/3.zip`,
-`assets/`, and the 28 MB of regenerable `visual-baseline/` output. Consolidation remains T-07.
+**Post-push audit (same day): 30 theme images were missing from git.** Committed in `f2a2981` —
+12 `work-*-{800,1400}.webp` showcase variants plus 18 `project-*-{600w,900w}.webp` card images,
+1.6 MB total. `template-parts/section-projects.php:140-141` and `inc/data-seeder.php:369-370`
+build those paths at runtime from `$item['image']`, so a production pull before this commit would
+have shipped the showcase with broken images. **Correction to `f2a2981`'s own message**: it says
+"39 files"; the staged set was 32 (30 images + `docs/handover/HO-055.md` + the `vim` brief). The
+count was taken from a `find` that matched a broader pattern than what was staged — recorded here
+rather than rewritten, since rewriting a pushed commit is not worth the risk.
+
+---
+
+
 
 `AGENTS.md` and `opencode.json` were not modified — conflict B-04 (which instruction source is
 authoritative) is still Malachy's call.
