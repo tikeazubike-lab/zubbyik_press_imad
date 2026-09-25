@@ -324,12 +324,47 @@ without a pipe — piped through `tail`, the shell reports `tail`'s status (0), 
 
 ---
 
-## 11. Application code modified: NONE
+## 11. Application code modified by the discovery run: NONE
 
 Nothing in `malachy-portfolio/`, `imad-automation/`, the database, the VPS, Traefik, HERD or the
-OpenCode configuration was changed. `git status --porcelain` went from 232 to 233 entries during
-this session, the single new entry being the untracked `.agent/` directory. No commit, no push,
-no deploy, no container action.
+OpenCode configuration was changed **by the run itself**. `git status --porcelain` went from 232
+to 233 entries during it, the single new entry being the untracked `.agent/` directory. No commit,
+no push, no deploy, no container action was taken while investigating; the commit and push in §12
+happened after the run, on the owner's explicit go-ahead.
+
+---
+
+## 12. Addendum — go-ahead given, work committed and pushed (same day)
+
+After review of the findings above, Malachy gave the go-ahead (the B-01 gate). Four commits
+pushed to `origin/main` (`828e852..b51ce43`); local `HEAD` and `origin/main` verified identical.
+
+| Commit | Contents |
+|---|---|
+| `ab38508` | theme v1.3.21 — the HO-049→HO-053 workstream (9 files, 1 388 insertions, 260 deletions) |
+| `92d1b71` | handover record, 48 files — the previously untracked HO-001…HO-053 series, `docs/manual/`, `docs/report/`, `.hermes/plans/` |
+| `d542e07` | tooling: `tests/visual/` sources, npm scripts, `opencode.json`, `.gitignore` hardening |
+| `b51ce43` | this handover + the three `.agent/` artifacts |
+
+**No production deploy was performed** — that remains its own tracked step, and production is
+still on v1.3.14 serving the placeholder GSC token and stale description.
+
+**New prerequisite for that deploy**: now that v1.3.21 is on `origin/main`, a bare `git pull` on
+the shared host would land the theme *without* the production data steps listed in HO-049 §7 and
+HO-052 §9.3 (production project reseed, experience dedupe). Those must run as part of the same
+deploy, not after it.
+
+Deliberately **not** committed: the untracked root-level strays (`HANDOVER.md`/`Handover.md`
+duplicates, `HO-013`, `HO-014`, `HO-016-checkwebsite`, `gemini_vision_qa_report.md`), the ~15
+debugging screenshots at the repo root, `malachy-portfolio.tar.gz`, `imad-automation_2/3.zip`,
+`assets/`, and the 28 MB of regenerable `visual-baseline/` output. Consolidation remains T-07.
+
+`AGENTS.md` and `opencode.json` were not modified — conflict B-04 (which instruction source is
+authoritative) is still Malachy's call.
+
+---
+
+
 
 **Review request:** please verify the two live production defects (§2) against your own read of
 `header.php` and the live page, and specifically check the shared-code claim in §6.3 — this
