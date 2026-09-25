@@ -1,0 +1,94 @@
+# OpenCode CLI Prompt — WordPress Chatbot Readiness Audit (Live Site)
+
+Copy everything below the line into OpenCode CLI as your task prompt. It assumes OpenCode CLI has shell access to the server where the site's codebase lives, and is acting as both architect and implementer for this task (no separate Zone 1/Zone 2 split — this is a solo portfolio project).
+
+---
+
+## PROMPT
+
+You are acting as both architect and implementer for a WordPress Chatbot Readiness Assessment on this live server. This is a real audit of my own portfolio WordPress site — treat it exactly as you would a paying client's site, because the output becomes a real case study for a freelance offering. Do not skip steps or estimate anything you can actually check.
+
+**Ground rule: read-only investigation first.** Do not install, modify, deactivate, or configure anything until Phase 4 explicitly authorizes it. If a check requires a destructive or state-changing command, stop and ask before running it.
+
+**Ground rule: raw output, not narrated summaries.** Every finding must be backed by the actual command output you ran, quoted or attached — not your paraphrase of what you expect it to say. If you can't verify something directly, say so explicitly rather than inferring.
+
+---
+
+### Phase 1 — Environment discovery
+
+Run these (or your best equivalents if WP-CLI isn't available) and report raw output for each:
+
+1. Hosting/server facts:
+   - `php -v`
+   - Web server in use (nginx/Apache) and version
+   - Confirm hosting type: shared/cPanel, managed WordPress, or self-managed VPS — state how you determined this (don't guess)
+   - Any resource limits visible (memory_limit, max_execution_time, process/connection caps if discoverable)
+
+2. WordPress core and content:
+   - `wp core version`
+   - `wp theme list`
+   - `wp plugin list` (active/inactive, versions)
+   - Whether a caching plugin is active, and its current config (especially anything that could strip dynamic content or block external scripts)
+   - Whether a security plugin is active, and whether it restricts external script domains by default
+
+3. Traffic basis:
+   - Check for existing analytics (Google Analytics, server logs, hosting dashboard stats)
+   - If none available, state that explicitly rather than estimating — for a portfolio site, note that traffic is likely low/personal-scale, and flag that this affects how much weight to put on the traffic-pattern score
+
+Output Phase 1 as a findings block, one item per line, each tagged with the command or method used to get it.
+
+---
+
+### Phase 2 — Intake & scoping (fill this out with real answers, don't skip fields)
+
+Answer each of these based on what you actually find or what I tell you, not assumptions:
+
+- What kind of chatbot is this for? [Simple FAQ widget / Conversational AI assistant / Data-aware assistant] — I'll answer this if you ask; default assumption should be an FAQ or lightly conversational assistant for a portfolio site unless told otherwise
+- What should it answer that a search bar can't?
+- Does it need any live data lookups (unlikely for a portfolio site, but confirm)?
+- Access available: confirm what you actually have access to right now (WP admin, SSH, hosting panel, etc.)
+
+If I haven't told you the chatbot type yet, ask me directly before proceeding to scoring — don't assume.
+
+---
+
+### Phase 3 — Score against the 5-category rubric
+
+Score each category 0–2, with your reasoning tied directly to Phase 1 findings (cite the specific finding, don't just assert a score):
+
+1. Hosting resource limits
+2. Persistent/near-persistent connection support
+3. Theme/plugin architecture (conflicts with caching/security plugins, page builder if any)
+4. Traffic pattern fit
+5. Data/architecture fit for the chatbot type from Phase 2
+
+Flag any category that scores 0 as a hard blocker even if the total lands in a higher band.
+
+Produce the total (/10) and the resulting verdict:
+- 8–10 → Lightweight embed works as-is
+- 4–7 → Partial decouple needed
+- 0–3 → Full rebuild needed
+
+---
+
+### Phase 4 — Deliverables
+
+Produce two separate files:
+
+1. **`chatbot-readiness-report.md`** — following this structure:
+   - Section 1: Summary (verdict + plain-language paragraph + estimated cost/timeline range)
+   - Section 2: What we assessed (chatbot type, hosting, access reviewed, traffic basis — note whether hosting was self-identified or would've needed onboarding research, for consistency with the client-facing version of this template)
+   - Section 3: Scoring breakdown table
+   - Section 4: Findings in plain terms (only categories scoring below 2)
+   - Section 5: Recommended path forward, matched to the verdict
+   - Section 6: What happens if nothing changes and a chatbot gets bolted on anyway
+   - Section 7: Appendix — raw findings from Phase 1
+   - Add a disclosure line at the top: "This assessment was performed on the author's own portfolio site as a live demonstration of the assessment methodology."
+
+2. **`chatbot-build-checklist.md`** — a concrete, ordered TODO list for actually building the chatbot given the verdict reached in Phase 3. Structure it as checkboxes, grouped into logical phases (e.g. "Pre-work / config fixes" → "Integration" → "Testing" → "Launch"). Only include steps relevant to the verdict reached — don't pad it with steps for a rebuild if the verdict was a lightweight embed.
+
+Only begin Phase 4 after Phase 3's verdict is confirmed with me — don't generate the report and checklist speculatively before scoring is final.
+
+---
+
+*After OpenCode CLI finishes, review both files before treating this as your finished portfolio case study — especially Phase 1's raw output, since that's what makes the report credible rather than templated.*

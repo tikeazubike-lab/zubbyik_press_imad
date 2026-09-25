@@ -20,3 +20,26 @@ Tests/
 .playwright-browsers/
 .playwright-mcp/
 tests/visual/visual-baseline/
+
+# ---------------------------------------------------------------------------
+# Heavy / regenerable local artifacts — keep on disk, never commit.
+# Root-anchored (leading /) on purpose: theme images under
+# malachy-portfolio/assets/images/ and the already-tracked
+# docs/handover/*.png are NOT affected by these rules.
+# ---------------------------------------------------------------------------
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+/*.gif
+/*.zip
+/*.tar.gz
+/*-snapshot.yml
+/imadconsult*.json
+__pycache__/
+*.pyc
+
+# Test output and the untracked React reference project
+# (polished-portfolio was deliberately removed from tracking in 5ec4df4)
+/assets/tests/
+/polished-portfolio/

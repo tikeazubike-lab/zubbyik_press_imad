@@ -245,7 +245,7 @@ The full list is 19 items in the companion investigation; the load-bearing ones:
 | C3 | `AGENTS.md` and `opencode.json` disagree on which docs auto-load; the onboarding doc calls one of `AGENTS.md`'s named docs "superseded" | Two loaders, two answers |
 | C4 | Model identity: this session runs `deepseek-v4.1-flash`; the brief says "Kimi K2.7 Code"; `opencode.json` pins `mimo-v2.6-pro/flash`; the context doc refers to a GLM5.3 architect | Unresolved — needs Malachy (B-04) |
 | C5 | `HO-041` still reads `Status: OPEN` while the context doc marks its item CLOSED with ancestor confirmation | Closing evidence exists; the doc was never edited |
-| C6 | Production deploy method: `HO-039:155` `git pull` vs theme `README.md:20-23` zip/FTP | Two procedures, no canonical one |
+| C6 | Production deploy method: `HO-039:155` `git pull` vs theme `README.md:20-23` zip/FTP | **RESOLVED by the owner 2026-09-25**: production is updated by a **manual `git pull` on the shared host, performed by Malachy**. No agent pushes files to the server — no `scp`, no `rsync` (both were attempted historically and fail). The README's FTP/cPanel route is historical. This closes the "undocumented deploy gap" that HO-048 §4 / HO-049 §7 flagged. `[V]` |
 | C7 | Honeypot/nonce field names documented at three points, resolved in code by dual-name fallbacks rather than convergence | Code is tolerant; the contract is undocumented |
 | C8 | August 2026: handovers record work dated to 2026-08-27, git records **zero commits** that month (2026-07: 22, 2026-09: 65) | Docs-only history — treat as UNCERTAIN |
 | C9 | `HO-051` is referenced by `HO-052 §7` but was never written | Record gap |
