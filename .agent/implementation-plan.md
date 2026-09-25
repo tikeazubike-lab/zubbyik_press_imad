@@ -106,24 +106,37 @@ to `AGENTS.md` / `opencode.json` / HERD / OpenCode configuration.
 
 ## Phase 2 — Supporting work
 
-### T-04 — Remove live secrets from tracked files and rotate
-- **Objective**: no live credential remains in a git-tracked, publicly served file.
-- **Reason**: the 64-hex `IMAD_FORM_SECRET` in `assets/js/contact.js:97` is **byte-identical** to
-  the live `.env` value (sha `96ef7cc2fbf5` both sides, verified [V]); tracked
-  `docker-compose.yml` holds three literal 48-char DB passwords [V]. Both contradict the
-  repo's own `AGENTS.md:57` rule and `HO-022:239`'s claim.
-- **Dependencies**: none, but **coordinate** with T-03 (same file, `contact.js`) and with the
-  backend (`verify_form_secret`). Rotation order matters: rotate, deploy backend, deploy theme.
-- **Affected area**: `assets/js/contact.js`, `docker-compose.yml`, `.env` (VPS), backend
-  config; also the tracked docs that reproduce secrets (`HO-026`).
-- **Acceptance criteria**: `git grep` for the old secret returns nothing; a POST to
-  `/api/leads` with the old secret is rejected (401) and with the new one accepted; compose
-  values are `${VAR}` refs; `.env` is not world-readable; a short note records *that* a
-  rotation happened — never the value.
+### T-04 — Credential hygiene: un-hardcode the tracked DB passwords (the form secret is NOT a target)
+- **Objective**: no live credential remains hardcoded in a tracked file — and the public-by-design
+  bot-filter value is documented as such instead of being "fixed".
+- **Reason**: **HO-055 §2.2 accepted.** The `IMAD_FORM_SECRET` in `contact.js` is a documented,
+  deliberate design decision, not an exposure: `HO-026:129` ("Intentional per README design
+  (bot filter, not auth)"), `HO-036:54-55` ("intentional by design… visible in page source"),
+  `docs/manual/imad-automation-workflow.md:180` (listed as a knob). Rotating a value whose purpose
+  is public visibility restores nothing. The real item is the **tracked DB passwords**: at HEAD,
+  `docker-compose.yml:14/45/46` hold literal 48-char hex for `WORDPRESS_DB_PASSWORD` /
+  `MYSQL_PASSWORD` / `MYSQL_ROOT_PASSWORD`, and the `41dd54e` diff shows those replaced the strings
+  `wordpress_pass`/`root_pass` — so the **current** credential is committed, not only the retired
+  weak one. The project's own current context doc already records this as an open decision
+  (`Imad-project-context.md:101-104`); its stale twin contradicts it (`imad-project-context.md:96`).
+  `[V]` + HO-055 §2.2
+- **Dependencies**: a decision from the owner on history rewriting (the retired weak values stay in
+  history), and **B-05** (whether the form secret stays public-by-design, and whether `/api/leads`
+  needs rate-limiting or an origin check).
+- **Affected area**: `docker-compose.yml`, the VPS `.env`, `docs/handover/HO-026` (reproduces values
+  in prose); documentation of the form-secret design in the manual.
+- **Acceptance criteria**: the three values are `${VAR}` refs — the same pattern
+  `IMAD_DATABASE_URL` and `IMAD_FORM_SECRET` already use at HEAD lines 55/59; the DB container is
+  recreated with rotated values and comes back healthy; `git grep` finds no literal password;
+  the history-rewrite decision is recorded (yes/no + reason); the form secret is documented as
+  public-by-design **with its residual exposure stated plainly** (anyone can POST `/api/leads`)
+  and handled by B-05, not by rotation.
 - **Suggested worker**: Implementer; independent verification required (Co-reviewer class).
-- **Test requirements**: raw `curl` showing 401/200 either side of rotation; `git grep`
-  output for the retired secret; `ls -l .env` for the permission fix.
-- **Expected artifact**: HO-056 + a one-time credential-hygiene note.
+- **Model class**: Flash-class; Pro-class only if the history decision is taken.
+- **Test requirements**: `docker compose config` still resolves after the change; recreated
+  container healthy (`docker ps`); `git grep -E 'PASSWORD: '` returns nothing; raw output of all
+  three in the handover.
+- **Expected artifact**: HO-057.
 
 ### T-05 — Make the follow-up reminder real, or delete it
 - **Objective**: stop advertising a feature that cannot fire.

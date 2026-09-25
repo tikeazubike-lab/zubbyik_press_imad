@@ -284,23 +284,36 @@ theme logic; "does it work" is currently answered by screenshots of the live sit
 - **Documentation duplication**: two case-variant context docs; `HO-016` used twice; missing
   `HO-023` (exists as `Ho-reply-023`), `HO-027`, `HO-028` (quoted only), `HO-051` (never
   written); empty `docs/adr/`. `[I]`
-- **Secrets** `[V]` (my own measurements):
+- **Secrets** `[V]` (my own measurements), **corrected against HO-055 §2.2**:
   - `malachy-portfolio/assets/js/contact.js:97` ships a 64-hex literal **byte-identical to
     `IMAD_FORM_SECRET` in `.env`** (sha256 prefix `96ef7cc2fbf5` both sides), sent as
-    `X-Form-Secret`, in a file that is git-tracked and publicly served. Documented as
-    intentional ("bot filter, not auth", `HO-026:129`) — accepted risk, but it means anyone
-    can POST to the live lead endpoint.
+    `X-Form-Secret`, in a git-tracked and publicly served file. This is **documented deliberate
+    design, not an exposure**: `HO-026:129` ("Intentional per README design (bot filter, not
+    auth)"), `HO-036:54-55` ("intentional by design… bot filter visible in page source"),
+    `docs/manual/imad-automation-workflow.md:180`. **No rotation is warranted** — the value is
+    public by design and rotating it restores no protection. The residual exposure is real and
+    stated plainly: anyone can POST to the live `/api/leads` endpoint. Decision on rate-limiting
+    or an origin check sits with the owner (B-05), not with a rotation task.
   - Tracked `docker-compose.yml` @HEAD holds three **literal 48-char hex DB passwords**
-    (`WORDPRESS_DB_PASSWORD:14`, `MYSQL_PASSWORD:45`, `MYSQL_ROOT_PASSWORD:46`). I verified
-    they do **not** equal the live Postgres credential in `.env`, so these are the local/VPS
-    stack's values, not the production API credential — but they are committed, and the
-    history retains weak human-typed values from `a09a221`/`4524cde`/`f7c5594` until the
-    `41dd54e` rotation. This **contradicts** `HO-022:239` ("No secrets committed") and
-    `AGENTS.md:57` ("Never commit secrets"). `[V]` + `[I]` C digest S1/S2
+    (`WORDPRESS_DB_PASSWORD:14`, `MYSQL_PASSWORD:45`, `MYSQL_ROOT_PASSWORD:46`). The `41dd54e`
+    diff shows those lines previously read `wordpress_pass` / `wordpress_pass` / `root_pass`, so
+    the rotation **was** performed — and the **rotated** values are what remain committed. Verified
+    they do not equal the Postgres credential in `.env` (`imad_user`), so they are this stack's
+    credentials rather than the production API's. The project's own current context doc records
+    this as an open decision (`Imad-project-context.md:101-104`); its stale case-variant twin says
+    "weak, never given an actual date" (`imad-project-context.md:96`) — a contradiction between
+    the two docs that **I committed in 92d1b71** and that T-07 must resolve. This
+    **contradicts** `HO-022:239` ("No secrets committed") and `AGENTS.md:57` ("Never commit
+    secrets"). `[V]` + `[I]` C digest S1/S2 + HO-055 §2.2
   - Secrets are also reproduced in prose inside tracked handovers (`HO-026` prints the form
     secret and a Postgres password literal; `HO-036:141` shows a bot-token fragment). `[I]`
   - File-hygiene inversion: `.env` is mode `664` (world-readable) while the compose file
     holding some of the same material is `600`. `[V]`
+  - **Correction to a claim carried from a delegated inventory**: the assertion that `f7c5594`'s
+    commit message "falsely claimed no hardcoded DB password" is **wrong**. That message is scoped
+    to `IMAD_DATABASE_URL`/`imad_user` ("now reads ${IMAD_DATABASE_URL} from .env instead of the
+    hardcoded value") and is accurate. Verified by reading the message and the file at that
+    revision. `[V]`
 - **Stale build artifact**: `malachy-portfolio/malachy-portfolio-v1.0.0.zip` is committed
   from `bin/package.sh`'s hardcoded `VERSION=1.0.0` while the theme is at 1.3.21. `[I]`
 - **Dead code inventory**: `AnimationManager.js`, `content_items`, `/internal/draft`,

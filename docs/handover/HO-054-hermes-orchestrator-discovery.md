@@ -5,7 +5,7 @@ title: HO-054 — Hermes orchestrator discovery: project state, recorded conflic
 date: 2026-09-25
 from: Hermes (orchestrator, deepseek-v4.1-flash) — first run, DISCOVERY / ALIGNMENT MODE
 to: Claude[Sonnet] Web (Reviewer) / ChatGPT (Co-reviewer)
-status: DISCOVERY COMPLETE — AWAITING REVIEW BEFORE IMPLEMENTATION. Nothing committed, nothing pushed, nothing deployed, no application code modified.
+status: DISCOVERY COMPLETE — REVIEWED AS HO-055 (PARTIAL; §1 open with Malachy). The discovery run itself changed no application code and deployed nothing. On Malachy's explicit in-session go-ahead the discovery artifacts and the outstanding v1.3.21 workstream were then committed and pushed (5 commits, 828e852..3088dbd) — see §12, and note this status line previously read "nothing committed" before §12 existed (HO-055 §2.3). §1 of HO-055 — whether Hermes is a commissioned role above the four-role model, and conflict C4 — is Malachy's to answer and blocks T-01 onward.
 priority: HIGH
 ---
 
@@ -190,19 +190,34 @@ Two important consequences:
 4. **The daily follow-up reminder cannot fire** while `docs/manual/imad-automation-workflow.md`
    §4 tells the owner to mark leads `contacted` — a feature advertised as working that has no
    code path to ever run.
-5. **Live secrets in tracked files** (values never printed anywhere in this record):
+5. **Credential findings** (values never printed anywhere in this record) — **item corrected by
+   HO-055 §2.2; the correction is accepted**:
    - `assets/js/contact.js:97` holds a 64-hex literal **byte-identical** to `IMAD_FORM_SECRET` in
      the VPS `.env` (sha256 prefix `96ef7cc2fbf5` on both sides), sent as `X-Form-Secret`, in a
-     tracked and publicly served file.
+     tracked and publicly served file. **This is documented deliberate design, not an exposure**
+     (`HO-026:129`, `HO-036:54-55`, `docs/manual/imad-automation-workflow.md:180`): a bot filter
+     meant to be visible in page source, not an authentication credential. It should **not** be
+     rotated — rotation restores no protection. Residual exposure, stated plainly: anyone can POST
+     to the live `/api/leads` endpoint; whether to add rate-limiting/origin checks is the owner's
+     call (B-05).
    - Tracked `docker-compose.yml` at HEAD holds three **literal 48-char hex DB passwords**
-     (`WORDPRESS_DB_PASSWORD:14`, `MYSQL_PASSWORD:45`, `MYSQL_ROOT_PASSWORD:46`). Verified they
-     do **not** equal the live Postgres credential in `.env`, so these are the stack's own values
-     rather than the API credential — but they are committed, and history retains the weak
-     human-typed values from `a09a221`/`4524cde`/`f7c5594` until the `41dd54e` rotation.
-   - This **contradicts** `HO-022:239` ("No secrets committed") and `AGENTS.md`'s own "Never
-     commit secrets" rule. `HO-026` also reproduces a form secret and a Postgres password in
-     prose inside a tracked handover.
-   - Hygiene inversion: `.env` is mode `664` (world-readable) while the compose file is `600`.
+     (`WORDPRESS_DB_PASSWORD:14`, `MYSQL_PASSWORD:45`, `MYSQL_ROOT_PASSWORD:46`). The `41dd54e`
+     diff shows those lines previously read `wordpress_pass` / `wordpress_pass` / `root_pass` —
+     so the rotation **was** performed, and what remains committed is the **new** credential, not
+     merely the retired weak one. Verified they do not equal the live Postgres credential in
+     `.env` (`imad_user`), so they are this stack's values rather than the production API's. The
+     project's current context doc already records this as an open decision
+     (`Imad-project-context.md:101-104`); its stale case-variant twin says the credentials are
+     "weak, never given an actual date" (`imad-project-context.md:96`) — a contradiction between
+     the two docs that I committed in `92d1b71` and that T-07 must resolve.
+   - This **contradicts** `HO-022:239` ("No secrets committed") and `AGENTS.md:57` ("Never commit
+     secrets"). `[V]` + `[I]` + HO-055 §2.2
+   - Hygiene inversion: `.env` is mode `664` (world-readable) while the compose file holding some
+     of the same material is `600`. `[V]`
+   - **Correction to a claim I carried from a delegated inventory**: the assertion that
+     `f7c5594`'s commit message "falsely claimed no hardcoded DB password" is **wrong** — that
+     message is scoped to `IMAD_DATABASE_URL`/`imad_user` and is accurate (verified by reading it
+     and the file at that revision). `[V]`
 6. **Stale duplicate theme** at `build/malachy-portfolio/` (v1.2.1, gitignored) still carrying
    pre-HO-041 honeypot logic — any repo-wide grep that does not exclude `build/` returns
    contradictory answers about form security.
@@ -257,8 +272,12 @@ handover on execution. Full acceptance criteria, test requirements and expected 
   `build/` copy.
 
 **Phase 2 — Supporting work.**
-- **T-04** Remove live secrets from tracked files and rotate `IMAD_FORM_SECRET` (coordinate with
-  T-03 — same file — and with the backend's `verify_form_secret`).
+- **T-04** Credential hygiene on the tracked DB passwords — **reframed after HO-055 §2.2**: the
+  `IMAD_FORM_SECRET` in `contact.js` is *not* a target (documented public-by-design bot filter;
+  rotating it restores nothing). The item is `docker-compose.yml:14/45/46`, which hold the
+  **rotated** 48-hex values — i.e. the current credential is committed, not just the retired weak
+  one. Needs an owner decision on history rewriting, and B-05 for the form secret's residual
+  exposure.
 - **T-05** Make the follow-up reminder real or delete it (owner's product call — B-07).
 - **T-06** One canonical release procedure + a read-only drift probe (local/staging/production
   version + live head tags) so "is production current?" is one command instead of manual curls.
