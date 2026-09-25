@@ -320,7 +320,7 @@ RewriteRule . /index.php [L]
 
 **Step 2: Verify caching headers**
 
-Run: `curl -I https://imadconsult.zubbystudio.shop/wp-content/themes/malachy-portfolio/assets/css/main.css?ver=1.0.5 | grep -i cache`
+Run: `curl -I https://imadconsult.zubbystudio.site/wp-content/themes/malachy-portfolio/assets/css/main.css?ver=1.0.5 | grep -i cache`
 
 Expected: `Cache-Control: public, max-age=31536000, immutable`
 
@@ -363,7 +363,7 @@ This uses the WordPress tagline set in Settings → General.
 
 **Step 3: Caching verification**
 ```bash
-curl -I https://imadconsult.zubbystudio.shop/wp-content/themes/malachy-portfolio/assets/css/main.css?ver=1.0.5
+curl -I https://imadconsult.zubbystudio.site/wp-content/themes/malachy-portfolio/assets/css/main.css?ver=1.0.5
 ```
 Expected header: `Cache-Control: public, max-age=31536000, immutable`
 

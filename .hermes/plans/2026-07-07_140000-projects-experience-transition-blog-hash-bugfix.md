@@ -140,7 +140,7 @@ scrollTrigger: {
 ```
 
 **Verification:**
-1. Load `https://imadconsult.zubbystudio.shop/`
+1. Load `https://imadconsult.zubbystudio.site/`
 2. Scroll past the 3 project cards into the experience section
 3. Expected: smooth transition — last project card fades out as first experience milestone fades in, no freeze, no jump
 
@@ -190,9 +190,9 @@ Update the desktop rendering to handle three types:
 Do the same for mobile menu links.
 
 **Verification:**
-1. Visit `https://imadconsult.zubbystudio.shop/blog/`
+1. Visit `https://imadconsult.zubbystudio.site/blog/`
 2. Click "Home" in the nav
-3. Expected: navigates to `https://imadconsult.zubbystudio.shop/` (not `/blog/#home`)
+3. Expected: navigates to `https://imadconsult.zubbystudio.site/` (not `/blog/#home`)
 4. Click "About" from front page
 5. Expected: smooth scrolls to #about, URL updates to `/#about`
 
@@ -246,7 +246,7 @@ Best approach: Move the smart anchor navigation code into `navigation.js` (which
 So in `navigation.js`, add the smart anchor handler. Remove the old handler from `global.js`.
 
 **Verification:**
-1. Visit `https://imadconsult.zubbystudio.shop/`
+1. Visit `https://imadconsult.zubbystudio.site/`
 2. Click each nav link
 3. Expected: smooth scrolls to each section, URL updates to `/#about`, `/#skills`, etc.
 4. Click "Blog" → navigates to `/blog/`
@@ -303,7 +303,7 @@ This handles both formats during transition.
 **Objective:** Verify both bugs are fixed, no regressions.
 
 **Steps:**
-1. Open `https://imadconsult.zubbystudio.shop/` in browser
+1. Open `https://imadconsult.zubbystudio.site/` in browser
 2. Scroll through all sections — hero, about, skills, projects, experience, blog, contact
 3. Verify projects→experience transition is smooth (no freeze/jump)
 4. Click each nav link — verify smooth scroll works

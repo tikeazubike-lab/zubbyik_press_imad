@@ -166,7 +166,7 @@ Add `Person` schema to `header.php` or via dedicated plugin function:
   "@type": "Person",
   "name": "Malachy Egbuna",
   "jobTitle": "QA Engineer, SysAdmin & IT Support Specialist",
-  "url": "https://imadconsult.zubbystudio.shop",
+  "url": "https://imadconsult.zubbystudio.site",
   "sameAs": [
     "https://github.com/malachy",
     "https://linkedin.com/in/malachy-egbuna"
@@ -273,7 +273,7 @@ Unzip to a temp directory, activate on a clean WordPress instance (or the Docker
 
 ### Task 11.4: Replace staging URLs
 
-Search for any hardcoded `imadconsult.zubbystudio.shop` URLs in PHP files and replace with `home_url('/')` or template constants. This ensures the theme works on any domain without manual find-and-replace.
+Search for any hardcoded `imadconsult.zubbystudio.site` URLs in PHP files and replace with `home_url('/')` or template constants. This ensures the theme works on any domain without manual find-and-replace.
 
 ---
 
@@ -315,7 +315,7 @@ Strip list, zip command, post-upload smoke test.
 
 ### Task 12.8: Verify all docs references
 
-Check internal cross-links in docs are correct. All absolute domain references match `imadconsult.zubbystudio.shop`.
+Check internal cross-links in docs are correct. All absolute domain references match `imadconsult.zubbystudio.site`.
 
 ---
 

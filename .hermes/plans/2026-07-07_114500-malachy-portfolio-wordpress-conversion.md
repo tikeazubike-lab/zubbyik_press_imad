@@ -30,7 +30,7 @@ php --version
 
 **Step 2: Spin up WordPress via Docker Compose**
 Create a staging `docker-compose.yml` with:
-- WordPress container (with Traefik labels for `testdrive.malachy.zubbystudio.shop` or similar)
+- WordPress container (with Traefik labels for `testdrive.malachy.zubbystudio.site` or similar)
 - MySQL 8 container
 - The theme mounted as a volume for live editing
 
@@ -679,7 +679,7 @@ Docs to produce:
 ## Open Questions
 
 1. **Portrait image:** The `portrait.asset.json` references a Lovable CDN URL. Can you provide the actual portrait PNG file, or should I attempt to download it from the CDN URL? The URL in the JSON is: `/__l5e/assets-v1/6300ed05-f1bf-44fe-8485-1d8438e1ae49/malachy-portrait.png`
-2. **Domain:** What domain/subdomain should the staging WordPress instance live at? (e.g., `testdrive.malachy.zubbystudio.shop`)
+2. **Domain:** What domain/subdomain should the staging WordPress instance live at? (e.g., `testdrive.malachy.zubbystudio.site`)
 3. **Contact email:** The React has `hello@imadconsulting.com` — is this the correct email for the contact form, or should it be configurable?
 4. **Existing WordPress install:** Is there an existing WordPress setup on this VPS, or should I create a fresh one via Docker?
 5. **GSAP license:** GSAP 3.15 requires a license for commercial use on a public website. Do you have a GSAP license, or should I note "GSAP CDN with local fallback" given this will be deployed on a public portfolio site?

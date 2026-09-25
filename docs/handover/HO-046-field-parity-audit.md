@@ -101,3 +101,18 @@ None. The audit was performed exactly as scoped.
 3. `wordpress_pass` / `root_pass` rotation
 4. Test data cleanup
 5. SEO Phase 0
+
+---
+
+## 7. Correction note (2026-09-23, HO-049 session)
+
+The list above was accurate when written (2026-09-22) but is now stale.
+Re-verified against raw command output:
+
+| # | Item | Status now |
+|---|---|---|
+| 1 | `f1eca1f` prod deploy + honeypot re-test | **CLOSED** — production serves v1.3.14 (ancestor-confirmed); honeypot re-test passed both field names 2026-09-23 (raw output: HO-049 §4b) |
+| 2 | `wp_mail()` inbox delivery | **Still open** — but a fresh production submission returned `success:true` 2026-09-23 (handler-level proof; inbox screenshot still missing) |
+| 3 | MySQL credential rotation | **DONE** in `41dd54e` (same commit as this audit); new values now live in tracked `docker-compose.yml` — `.env` move still pending |
+| 4 | Test data cleanup | **DONE** in `41dd54e` — `leads`=0, `dead_letters`=0 verified 2026-09-23 in `openagile_postgres`/`imad` |
+| 5 | SEO Phase 0 | §2/§3 executed (HO-047); follow-up fixes in HO-049 pending v1.3.15 production deploy; plugin + GSC token still blocked on Malachy |

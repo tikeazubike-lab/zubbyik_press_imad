@@ -1,0 +1,62 @@
+Animation of the card
+=====================
+Start:
+The Section is divided into two halfs without a physical border and not visible border around the sections container. There is not border anywhere. It should be a continious flow without a visible distinction between the previous section and this section
+
+ - Left of the section - On the card [Borderless card]
+  - Large Title -> on the same line and after tile is a hyphene and Title of Job
+  - Below Title -> Description of the Job
+ 
+ - Right of the section - On the right card [Borderless card]
+  - Stacked cards [ 3 at start]
+  - The front card has two section
+    - image above
+    - short tldr of the job description
+    - only destinct border between image and the text is the border aroundd the image
+    - Two cards under the leading/front cards peeps through, revealing themselves on the left, with the second card roughly 20% away on the left and the third cards under the second another 20% away to the left of the second card
+
+Animation:
+ The section stays as it is but the content in the left and right will be the elements involved in the animation 
+ - Left of the section [All Text Section]
+ - Big Title & Smaller Title
+  - From the starting position, The Big Title[Category] and the smaller title [The job] -> will use the `Spotlight reveal` animation, snippet code pasted below:
+
+ *code*
+  `
+  <h3 class="text">Spotlight Reveal</h3>
+
+  gsap.registerPlugin(SplitText);
+const split = SplitText.create(".text", { type: "chars" });
+
+gsap.from(split.chars, {
+  opacity: 0.1, scale: 0.8, filter: "blur(4px)",
+  stagger: { each: 0.06, from: "center" },
+  duration: 0.4, ease: "power2.out"
+}); 
+`
+to reveal itself, the category will stay same till all the jobs associated with it has animated before itself dissaperaing to reveal the next category and its associated jobs. This is an unending cycle
+
+- Description 
+  - From the starting position, the description -> will use the `parallex Text` animation to reveal its content. The code for this animation:
+ 
+*code*
+`
+<div class="parallax-layers">
+  <h3 class="back" style="position:absolute;opacity:0.15;font-size:6rem;">PARALLAX</h3>
+  <h3 class="mid">Parallax</h3>
+  <h3 class="front" style="font-size:1.2rem;opacity:0.5;">scroll-driven depth</h3>
+</div>
+
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.to(".back",  { y: -80, scrollTrigger: { scrub: true } });
+gsap.to(".mid",   { y: -40, scrollTrigger: { scrub: true } });
+gsap.to(".front", { y: -20, scrollTrigger: { scrub: true } });
+`
+
+-Right of the section-
+ Starting from the stacked position. The deepest card dissapears in the dark backround and the card on top of it makes a sliding motion to the bottom to replace the dissapeared one and the front card takes the position of the second, then the front cards simultaneously appears and slips into the start position. 
+
+The screenshot of the sections in their still starting position is attached in @carousel.png
+
+The scroll bar should never appear in any of the vertical or horizontal positions.

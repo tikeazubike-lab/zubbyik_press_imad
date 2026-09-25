@@ -119,3 +119,29 @@ identified, and it's done.
 3. SEO plugin install (RankMath/Yoast) — blocked on Malachy (WordPress admin)
 4. Search Console verification token — blocked on Malachy (Google account)
 5. "Request Indexing" on homepage and `/offers/` pages — blocked on Malachy
+
+---
+
+## 5. Errata (2026-09-23, HO-049 session)
+
+**The §2 item 3 "After" block above was wrong for production.** It claimed
+deploying the written code would yield the curated meta description. Raw
+evidence gathered 2026-09-23:
+
+```
+production serves: name="description" content="Portfolio · 2026"
+```
+
+Root cause: `header.php` used `get_bloginfo('description') ?: '<curated>'`.
+Production's tagline is the non-empty stale string `Portfolio · 2026`, so
+the `?:` fallback **never fires there** — deploying `9286f7b` could not
+have changed production's meta description. (Staging's tagline is empty,
+which is why staging showed the curated text and the gap was missed.)
+
+The title half of item 3 *did* work on production (v1.3.14 serves the new
+`<title>`). The meta description is superseded by HO-049's hardcoded
+version (v1.3.15, staging-verified, pending production deploy).
+
+Also: item 1's placeholder approach (shipping
+`YOUR_VERIFICATION_TOKEN` live) was replaced in HO-049 with an
+option-gated tag — placeholder no longer ships.

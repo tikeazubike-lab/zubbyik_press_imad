@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Selected Work — Project Showcase Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EEF0F3;
+    --surface: #FFFFFF;
+    --ink: #171A1F;
+    --ink-muted: #5B6472;
+    --line: #DCE0E6;
+    --accent: #3054A6;
+    --accent-light: #7C9CE0;
+    --accent-soft: #E7ECF7;
+    --tag: #C0793A;
+    --tag-soft: #F5E9DB;
+    --card-border: rgba(23, 26, 31, 0.06);
+    --radius: 14px;
+    --font-head: "Space Grotesk", sans-serif;
+    --font-body: "Inter", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161A;
+      --surface: #1C1F25;
+      --ink: #ECEEF1;
+      --ink-muted: #9AA2AE;
+      --line: #2C3038;
+      --accent: #7C9CE0;
+      --accent-light: #A9BFEC;
+      --accent-soft: #232C40;
+      --tag: #E0A56A;
+      --tag-soft: #362A1E;
+      --card-border: rgba(236, 238, 241, 0.08);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14161A; --surface: #1C1F25; --ink: #ECEEF1; --ink-muted: #9AA2AE;
+    --line: #2C3038; --accent: #7C9CE0; --accent-light: #A9BFEC; --accent-soft: #232C40;
+    --tag: #E0A56A; --tag-soft: #362A1E; --card-border: rgba(236, 238, 241, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 64px 0 96px;
+  }
+  .wrap > .inner-pad { padding: 0 28px; }
+
+  h2.section-title {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 38px);
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+  p.section-sub {
+    color: var(--ink-muted);
+    max-width: 52ch;
+    margin: 0 0 36px;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* --- Countdown line: one bar, full width, drains for the active card --- */
+  .countdown-track {
+    height: 2px;
+    background: var(--line);
+    border-radius: 999px;
+    margin: 0 28px 18px;
+    overflow: hidden;
+  }
+  .countdown-fill {
+    height: 100%;
+    width: 100%;
+    background: var(--accent-light);
+    border-radius: 999px;
+    transform-origin: left;
+  }
+  .countdown-fill.draining {
+    transition: transform var(--autoplay-ms, 5000ms) linear;
+    transform: scaleX(0);
+  }
+
+  /* --- Carousel --- */
+  .carousel {
+    position: relative;
+  }
+  .track {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 28px 14px;
+    scrollbar-width: none;
+  }
+  .track::-webkit-scrollbar { display: none; }
+
+  .card {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    width: min(78vw, 360px);
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (min-width: 900px) {
+    .card { width: 340px; }
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--tag);
+    background: var(--tag-soft);
+    padding: 5px 12px;
+    border-radius: 999px;
+    width: fit-content;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0 0 10px;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+  .card p.desc {
+    color: var(--ink-muted);
+    line-height: 1.6;
+    font-size: 15px;
+    margin: 0 0 18px;
+    flex: 1;
+  }
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .stack span {
+    font-size: 12px;
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 9px;
+  }
+  .view-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14.5px;
+    border-bottom: 1px solid transparent;
+    width: fit-content;
+  }
+  .view-link:hover { border-bottom-color: var(--accent); }
+
+  /* --- Controls row: prev/next + dots --- */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    margin-top: 4px;
+  }
+  .arrows { display: flex; gap: 8px; }
+  .arrows button {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background 150ms ease;
+  }
+  .arrows button:hover { background: var(--accent-soft); }
+  .arrows button:disabled { opacity: 0.35; cursor: default; }
+  .arrows button:disabled:hover { background: var(--surface); }
+
+  .dots { display: flex; gap: 6px; }
+  .dots button {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border-radius: 999px;
+    border: none;
+    background: var(--line);
+    cursor: pointer;
+    transition: background 150ms ease, width 150ms ease;
+  }
+  .dots button[aria-current="true"] {
+    background: var(--accent-light);
+    width: 18px;
+  }
+
+  .arrows button:focus-visible,
+  .dots button:focus-visible,
+  .view-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .note {
+    margin-top: 28px;
+    padding: 0 28px;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .countdown-fill, .track { transition: none !important; scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="inner-pad">
+    <h2 class="section-title">Selected work</h2>
+    <p class="section-sub">A running record of the systems I've built — from CI test suites to self-hosted infrastructure.</p>
+  </div>
+
+  <div class="countdown-track"><div class="countdown-fill" id="countdownFill"></div></div>
+
+  <div class="carousel" id="carousel" role="region" aria-roledescription="carousel" aria-label="Selected work" tabindex="0">
+    <div class="track" id="track">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="dots" id="dots" role="tablist" aria-label="Go to project"></div>
+    <div class="arrows">
+      <button id="prevBtn" aria-label="Previous project">‹</button>
+      <button id="nextBtn" aria-label="Next project">›</button>
+    </div>
+  </div>
+
+  <p class="note">Prototype only — placeholder copy for the three previously-empty cards has now been filled in below; swap in real project links during integration.</p>
+</div>
+
+<script>
+const projects = [
+  {
+    tag: "Testing",
+    title: "EPM Test Taxonomy — Automated Test Framework",
+    desc: "A structured, non-negotiable test taxonomy (DOMAIN-WORKFLOW-LAYER-TYPE-NNN) built to catch what mocked tests miss. A real-database integration test proved a join-fix regression that a mocked session couldn't detect — now the standing rule for anything touching SQL correctness.",
+    stack: ["pytest", "pytest-asyncio", "PostgreSQL", "GitHub Actions"],
+    link: "#"
+  },
+  {
+    tag: "DevOps",
+    title: "Self-Hosted Service Stack",
+    desc: "A Docker Compose + Traefik stack on a single VPS — reverse proxy, automatic HTTPS via Let's Encrypt, and one shared PostgreSQL instance serving multiple production apps (CI/CD, wikis, version control) without duplicating infrastructure per service.",
+    stack: ["Docker Compose", "Traefik", "Let's Encrypt", "PostgreSQL"],
+    link: "#"
+  },
+  {
+    tag: "WordPress",
+    title: "WordPress Chatbot-Readiness Assessment",
+    desc: "A scored, honest diagnostic for WordPress sites eyeing an AI chatbot. Hosting, theme/plugin architecture, and traffic pattern run through a five-category rubric to answer one question before a client pays for a build: can this stack actually support it?",
+    stack: ["WP-CLI", "PHP", "Hosting Diagnostics"],
+    link: "#"
+  },
+  {
+    tag: "Full-stack",
+    title: "EPM v2 — Estate Portfolio Manager",
+    desc: "Self-hosted alternative to Jira Cloud for tracking a single estate's stock portfolio. FastAPI backend, React 18 SPA, spec-driven feature workflow with formal acceptance testing at every gate.",
+    stack: ["FastAPI", "React 18", "PostgreSQL", "Docker", "Traefik"],
+    link: "#"
+  },
+  {
+    tag: "Tooling",
+    title: "Specforge",
+    desc: "A live pipeline visualizer for Gherkin-driven development — \"Swagger for Gherkin.\" Turns behavioral specs into a visible spec → IR → test pipeline instead of a black box.",
+    stack: ["FastAPI", "Python", "Mermaid"],
+    link: "#"
+  },
+  {
+    tag: "Automation",
+    title: "IMAD Consulting Automation Platform",
+    desc: "Self-hosted lead capture and notification system replacing a would-be n8n dependency. Dual-channel delivery (Telegram + email) that fails independently rather than together, with full campaign attribution from WhatsApp Status through to a stored lead.",
+    stack: ["FastAPI", "PostgreSQL", "Telegram Bot API", "Traefik", "Let's Encrypt"],
+    link: "#"
+  }
+];
+
+const AUTOPLAY_MS = 5000;
+const trackEl = document.getElementById('track');
+const dotsEl = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const countdownFill = document.getElementById('countdownFill');
+const carouselEl = document.getElementById('carousel');
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.documentElement.style.setProperty('--autoplay-ms', AUTOPLAY_MS + 'ms');
+
+let current = 0;
+let timer = null;
+let isPaused = false;
+let cardEls = [];
+
+function renderCards() {
+  trackEl.innerHTML = projects.map((p, i) => `
+    <article class="card" id="card-${i}">
+      <span class="tag">${p.tag}</span>
+      <h3>${p.title}</h3>
+      <p class="desc">${p.desc}</p>
+      <div class="stack">${p.stack.map(s => `<span>${s}</span>`).join('')}</div>
+      <a class="view-link" href="${p.link}">View project →</a>
+    </article>
+  `).join('');
+  cardEls = [...trackEl.querySelectorAll('.card')];
+}
+
+function renderDots() {
+  dotsEl.innerHTML = projects.map((_, i) =>
+    `<button role="tab" aria-current="${i === current}" aria-label="Project ${i + 1}" data-i="${i}"></button>`
+  ).join('');
+  [...dotsEl.querySelectorAll('button')].forEach(btn => {
+    btn.addEventListener('click', () => goTo(parseInt(btn.dataset.i), true));
+  });
+}
+
+function updateDots() {
+  [...dotsEl.querySelectorAll('button')].forEach((btn, i) => {
+    btn.setAttribute('aria-current', i === current);
+  });
+}
+
+function updateArrows() {
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === projects.length - 1;
+}
+
+function scrollToCurrent() {
+  const card = cardEls[current];
+  if (!card) return;
+  trackEl.scrollTo({
+    left: card.offsetLeft - trackEl.offsetLeft,
+    behavior: reduceMotion ? 'auto' : 'smooth'
+  });
+}
+
+function goTo(index, userTriggered) {
+  const clamped = Math.max(0, Math.min(projects.length - 1, index));
+  if (clamped === current && !userTriggered) return;
+  current = clamped;
+  scrollToCurrent();
+  updateDots();
+  updateArrows();
+  if (userTriggered) restartCountdown();
+}
+
+function restartCountdown() {
+  clearInterval(timer);
+  countdownFill.classList.remove('draining');
+  void countdownFill.offsetWidth; // restart transition
+  if (reduceMotion || current === projects.length - 1) return;
+  requestAnimationFrame(() => countdownFill.classList.add('draining'));
+  timer = setInterval(() => {
+    if (isPaused) return;
+    if (current >= projects.length - 1) { clearInterval(timer); return; }
+    goTo(current + 1, false);
+    restartCountdown();
+  }, AUTOPLAY_MS);
+}
+
+function pause() {
+  isPaused = true;
+  countdownFill.classList.remove('draining');
+}
+function resume() {
+  isPaused = false;
+  if (!reduceMotion) restartCountdown();
+}
+
+prevBtn.addEventListener('click', () => goTo(current - 1, true));
+nextBtn.addEventListener('click', () => goTo(current + 1, true));
+
+carouselEl.addEventListener('mouseenter', pause);
+carouselEl.addEventListener('mouseleave', resume);
+carouselEl.addEventListener('focusin', pause);
+carouselEl.addEventListener('focusout', resume);
+carouselEl.addEventListener('touchstart', pause, { passive: true });
+
+// keep dots/current in sync if the person drags/swipes manually
+let scrollTimeout;
+trackEl.addEventListener('scroll', () => {
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => {
+    let closest = 0;
+    let closestDist = Infinity;
+    cardEls.forEach((card, i) => {
+      const dist = Math.abs(card.offsetLeft - trackEl.offsetLeft - trackEl.scrollLeft);
+      if (dist < closestDist) { closestDist = dist; closest = i; }
+    });
+    if (closest !== current) {
+      current = closest;
+      updateDots();
+      updateArrows();
+      restartCountdown();
+    }
+  }, 120);
+});
+
+renderCards();
+renderDots();
+updateArrows();
+if (!reduceMotion) restartCountdown();
+</script>
+</body>
+</html>
+

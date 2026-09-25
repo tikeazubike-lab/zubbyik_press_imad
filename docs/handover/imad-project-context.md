@@ -2,21 +2,11 @@
 
 **Purpose**: bootstrap document for whoever is acting as Architect on this
 project. Read this before making any new decision — it's the condensed
-state of everything decided in HO-022 through HO-049 so you don't have to
-re-derive it from 25+ handovers.
+state of everything decided in HO-022 through HO-041 so you don't have to
+re-derive it from 20 handovers.
 
-**Last updated**: 2026-09-24 (HO-052/053 session: jobs-showcase overhauled to
-the 3D looping card design (v1.3.17, still iterating on staging) + mobile
-dotted progression re-enabled (v1.3.21), experience duplicates removed +
-`create_posts` slug-match fix (v1.3.20), section rhythm/spacing fixes,
-experience→testimonials seam separated — nothing committed or pushed per
-Malachy's instruction). Prior: HO-050 session
-(flat work carousel v1.3.16, outstanding item 2 closed); HO-048/049
-(title/meta, REST nonce parity, GSC). MiMo-V2.6-Pro is Architect
-(decision-making); MiMo-V2.6-Flash is Implementer
-(code/deploy); Claude[Sonnet] Web is Reviewer (every handover); ChatGPT is
-Co-reviewer (critical changes). See `AGENTS.md` and `opencode.json` at
-project root for the onboarding brief and auto-load configuration.
+**Last updated**: 2026-09-22, at the handoff from Claude-as-Architect to
+GLM5.3-flash-as-Architect (see HO-042).
 
 ---
 
@@ -45,13 +35,30 @@ Reverse proxy:     Traefik, two certresolvers now exist:
                      - `letsencrypt-http` (HTTP-01, added specifically for
                        api.imadconsulting.co.uk because the Cloudflare
                        token can't see that zone — see Locked Decisions)
-Theme repo:        malachy-portfolio (WordPress theme). Staging runs
-                   v1.3.21 (HO-053, bind-mounted = live). Production runs
-                   v1.3.14. Check MALACHY_THEME_VERSION + curl both sites
+Theme repo:        malachy-portfolio (WordPress theme), version currently
+                   1.3.13 pending deploy — check MALACHY_THEME_VERSION
                    before assuming what's live
 ```
 
-## Locked decisions — do not revisit without a documented reason
+## Team structure (current, as of HO-045)
+
+**Four-role model**, deliberately chosen by Malachy based on model
+capability and budget available in OpenCode — confirmed directly, not
+just asserted by an agent:
+
+| Role | Model | Authority |
+|---|---|---|
+| Architect | MiMo-V2.6-Pro | Decision-making, design, planning, writes handovers |
+| Implementer | MiMo-V2.6-Flash | Code, file edits, deployments, testing |
+| Reviewer | Claude | Reviews every handover without exception, verifies claims against raw evidence |
+| Co-reviewer | ChatGPT | Recommends only — no edit authority, no direct credential/server access; input routes through the Reviewer, treated as one more claim to verify, not accepted on its own authority |
+
+Any future change to this structure (model swap, new participant, changed
+authority) should come from Malachy directly, not from an agent's own
+account of a restructuring — this was the standard applied when MiMo
+replaced GLM as Architect and should hold for any future change too.
+
+
 
 | Decision | Why |
 |---|---|
@@ -73,61 +80,30 @@ form has never worked at all since it was created). Before touching any
 handler, template, or JS file shared by more than one form/feature, check
 *every* caller, not just the one being changed.
 
-## Outstanding items (re-verified 2026-09-23 with raw output)
+## Outstanding items as of this handoff
 
-1. ~~`f1eca1f` production deploy + honeypot re-test~~ — **CLOSED 2026-09-23.**
-   Production serves v1.3.14 (includes `f1eca1f`; `merge-base --is-ancestor`
-   confirmed) and the discovery form renders `name="malachy_nonce"`.
-   Honeypot re-test on production passed: filled `website` → fake success;
-   filled `malachy_hp` → fake success; legacy `discovery_nonce` field name
-   accepted; invalid nonce → "Security check failed". Full raw output in
-   HO-049 §4b.
-   **Discovery form finding (historical)**: the Discovery Call panel form
-   had **never** worked — nonce field `discovery_nonce` vs handler checking
-   `malachy_nonce`, mismatched since `2b0b0ce`. Fixed in `f1eca1f`; the
-   handler now accepts either field name.
-2. ~~Real inbox delivery of `wp_mail()` on production~~ — **CLOSED
-   2026-09-23.** Received-email proof delivered by Malachy:
-   `assets/tests/gmail_DiscTestScreenshot.png` shows the DiscTest test
-   email in the inbox (HO-049 §4b test, received 19:16). Handler-level
-   success from HO-049 now backed by actual delivery. Side observation
-   from the same screenshot: the From display name is the stale
-   production `blogname` ("Malachy – QA Engineer, SysAdmin & IT Support
-   Specialist") — cosmetic, note only (fix follows the production
-   blogname cleanup).
-3. ~~Field-name parity audit~~ — **DONE**: HO-046 (commit `41dd54e`),
-   all shared fields match, handler accepts both nonce and honeypot
-   variants.
-4. **MySQL credentials** — `wordpress_pass`/`root_pass` **rotated**
-   2026-09-23 (`41dd54e`, new 48-char hex; DB container recreated). Old
-   weak values remain in git history (agreed non-blocking). **Open
-   decision**: the *new* values are committed in tracked
-   `docker-compose.yml` — should move to `.env` (untracked) at next
-   compose change. No date set.
-5. ~~Test data cleanup~~ — **DONE**: `leads` = 0 rows, `dead_letters` = 0
-   rows, verified 2026-09-23 in `openagile_postgres` / `imad` DB
-   (`imad_user`).
-6. **SEO Phase 0** — §2 checks + §3 items 2–4 executed (HO-047); title /
-   meta / jobTitle / subpage-title / GSC-placeholder fixes written and
-   verified on staging (HO-049, v1.3.15) — **needs production deploy**.
-   Still blocked on Malachy: SEO plugin install, GSC verification token
-   (paste into Settings → Malachy Portfolio once deployed), "Request
-   Indexing". Known false claim corrected: HO-047's meta description
-   "fix" could never work on production (see HO-047 errata); superseded by
-   HO-049's hardcoded description.
-7. **v1.3.15 → v1.3.21 production deploy** — everything from HO-049 through
-   HO-053 is staged and verified on staging only (title/meta/GSC v1.3.15;
-   **jobs-showcase overhaul** v1.3.17 replacing the HO-050 flat carousel, still
-   being iterated; padding/rhythm + experience dedupe + seam fix v1.3.18–20;
-   mobile dotted progression v1.3.21). Production deploy is its own tracked step
-   and must also reseed the 6 project posts + experience de-dupe on production
-   (see HO-049 §7, HO-051, HO-052 §9, HO-053).
-   Blocked on Malachy's go-ahead; **no commit/push until he says so.**
+1. **`f1eca1f` (v1.3.13, discovery-form nonce fix)** — written, tested on
+   staging, **not yet deployed to production**. This is the current
+   blocker on closing HO-041.
+2. **Real inbox delivery of `wp_mail()` on production** — never actually
+   confirmed with a screenshot/received email, only inferred from a
+   handler returning a success response. Shared-hosting `mail()`
+   deliverability is a known risk (weak SPF/DKIM, easily spam-filtered).
+3. **Field-name parity audit** — given two separate field-mismatch bugs
+   found so far, a full audit of every shared field name between the
+   Contact form and Discovery form hasn't been done, only the two
+   specific bugs that happened to surface.
+4. **`wordpress_pass` / `root_pass`** — live MySQL credentials, weak, in
+   git history, internal-network-only (no external port exposure). Agreed
+   non-blocking but was never given an actual date.
+5. **Test data cleanup** — `leads` table has ~8 test rows mixed with (by
+   now, possibly) real submissions; `dead_letters` has 4 test rows.
+6. **SEO Phase 0** — see the separate SEO handover; Google's index is
+   currently showing stale, unrelated content (dated ~Dec 2023) for the
+   domain, likely from before the current theme existed.
 
 ## Where to find things
 
-- Onboarding brief: `AGENTS.md` (project root, auto-loaded)
-- Auto-loaded context: `opencode.json` (project root, `instructions` field)
 - Backend code: `~/wordpress_project/imad-automation/`
 - WordPress theme: `~/wordpress_project/malachy-portfolio/`
 - Handover history: `~/wordpress_project/docs/handover/HO-*.md` (read
