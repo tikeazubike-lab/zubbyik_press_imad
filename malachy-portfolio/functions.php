@@ -203,6 +203,26 @@ function malachy_enqueue_assets() {
 		MALACHY_THEME_VERSION,
 		true
 	);
+
+	// Business Checkup — page-scoped only (HO-063 §16). No GSAP, never site-wide.
+	// is_page_template() covers the assigned template; is_page() covers a page slug that
+	// exists without the template being assigned yet.
+	if ( is_page_template( 'template-business-checkup.php' ) || is_page( 'business-checkup' ) ) {
+		wp_enqueue_style(
+			'malachy-business-checkup',
+			MALACHY_THEME_URI . '/assets/css/business-checkup.css',
+			array( 'malachy-main' ),
+			MALACHY_THEME_VERSION
+		);
+
+		wp_enqueue_script(
+			'malachy-business-checkup',
+			MALACHY_THEME_URI . '/assets/js/business-checkup.js',
+			array(),
+			MALACHY_THEME_VERSION,
+			true
+		);
+	}
 }
 
 // ---------------------------------------------------------------------------

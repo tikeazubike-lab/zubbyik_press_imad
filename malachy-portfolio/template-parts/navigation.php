@@ -12,6 +12,7 @@ $nav_links = array(
 	array( 'href' => '/#experience', 'label' => __( 'Experience', 'malachy-portfolio' ), 'section' => 'experience' ),
 	array( 'href' => '/#contact', 'label' => __( 'Contact', 'malachy-portfolio' ), 'section' => 'contact' ),
 	array( 'href' => '/blog', 'label' => __( 'Blog', 'malachy-portfolio' ), 'route' => true ),
+	array( 'href' => '/business-checkup/', 'label' => __( 'Business Checkup', 'malachy-portfolio' ), 'route' => true ),
 );
 ?>
 <header id="site-header" class="site-header">
