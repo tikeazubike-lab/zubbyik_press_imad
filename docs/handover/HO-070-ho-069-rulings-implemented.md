@@ -202,17 +202,23 @@ network, no model and no memory probe; its worst case is returning the input unc
 Plugin repo (its own git, no remote): version bumped to 0.2.0.
 
 ```
-<PLUGIN_SHA>  local-worker 0.2.0: deterministic tier, selection reduction, memory gate
+4d5f2509bec67b9ac1de0520f4e323d92c1fec27  local-worker 0.2.0: deterministic tier, selection reduction, memory gate (HO-069)
 ```
 
 Main repo (`/home/zubbyik/wordpress_project`) — three commits, explicit paths only (never a
 blind `git add -A`), nothing pushed:
 
 ```
-<DOCS_SHA>   docs: HO-057..HO-070 handovers + reseed preflight tool
-<SEC_SHA>    fix(security): .htaccess hardening for the tracked-repo exposure (HO-058)
-<FEAT_SHA>   feat(business-checkup): template, script, styles, tests (HO-062/063/064)
+c7a843de1d4861e13c0da9a499811df11c4e2bd3  docs: HO-057..HO-070 handovers + project reseed preflight tool
+66575ff50f6fcd1d53845f461aed3889c176123e  fix(security): deny direct serving of repo files (.htaccess hardening, HO-058)
+4845d26b6e06d2f20d4b9c940463aa4c1feb144c  feat(business-checkup): page template, scoring script, styles, tests (HO-062/063/064)
 ```
+
+The docs commit above is the one that contains this file; a fourth commit records these SHAs
+(its own hash is reported in the session output, since a commit cannot contain its own SHA).
+
+`git status --porcelain` after the commits: **empty** (clean tree). `git rev-list --count
+origin/main..HEAD` = 3. Nothing pushed, per ruling 7.
 
 Scope note, stated explicitly because it exceeds the literal wording of ruling 7: I included
 the *implementation* files that HO-058/063/064 document (`.htaccess`; the five business-checkup
@@ -221,7 +227,9 @@ history describing code that is not in the repo. I did **not** commit anything i
 beyond the HO-057 runbook script, and nothing was pushed. Easy to revert locally if you wanted
 docs only.
 
-`git status --porcelain` after the commits: reported verbatim in the session output.
+Note for production: the HO-058 `.htaccess` fix is committed **locally only**, so
+`imadconsulting.co.uk` still serves `docker-compose.yml` and the rest of the tracked repo until
+the fix is pushed *and* pulled on the prod server. The exposure remains live.
 
 ## 8. Limitations
 
