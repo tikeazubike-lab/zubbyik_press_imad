@@ -43,3 +43,25 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
 # END WordPress
+
+# BEGIN Repo exposure hardening
+# Why this exists: the repo is checked out INSIDE the web root, at
+# /home/imadco5/public_html/wp-content/themes/zubbyik_press_imad/, so every
+# non-theme file in it was reachable over HTTP. Verified live 2026-09-26:
+#   - docker-compose.yml -> 200, 2991 bytes, serving its three 48-hex DB
+#     password literals in full (lines 14/45/46)
+#   - directory indexes  -> "Index of ..." for the repo root, docs/,
+#     docs/handover/, .agent/, .hermes/, tests/, utility/, imad-automation/, assets/
+#   - AGENTS.md, package.json, opencode.json, error_log, /vim, /eed-preflight.php,
+#     docs/handover/HO-054*.md, HO-056*.md, .agent/investigation.md -> all 200, plain text
+# Only the theme subdirectory (malachy-portfolio/) is meant to be public; all
+# theme URLs on the live site resolve under it.
+# Deliberately uses mod_rewrite only - no Options/Indexes directives - so it
+# cannot 500 the live theme if AllowOverride restricts those overrides.
+# Revert: delete this block, or `git checkout .htaccess`.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !^/wp-content/themes/zubbyik_press_imad/malachy-portfolio/
+  RewriteRule ^ - [F,L]
+</IfModule>
+# END Repo exposure hardening
