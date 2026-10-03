@@ -12,6 +12,10 @@ $nav_links = array(
 	array( 'href' => '/#experience', 'label' => __( 'Experience', 'malachy-portfolio' ), 'section' => 'experience' ),
 	array( 'href' => '/#contact', 'label' => __( 'Contact', 'malachy-portfolio' ), 'section' => 'contact' ),
 	array( 'href' => '/blog', 'label' => __( 'Blog', 'malachy-portfolio' ), 'route' => true ),
+	// Mobile-only entry. On desktop the header CTA carries the checkup, but that CTA is
+	// hidden at <=800px (see the RESPONSIVE block in main.css), so the collapsed menu is a
+	// phone's only route to /business-checkup/. Hidden above 800px by .nav-mobile-only.
+	array( 'href' => '/business-checkup/', 'label' => __( 'Business Checkup', 'malachy-portfolio' ), 'route' => true, 'mobile_only' => true ),
 );
 ?>
 <header id="site-header" class="site-header">
@@ -21,12 +25,13 @@ $nav_links = array(
 
 	<nav id="site-nav" class="site-nav" role="navigation" aria-label="<?php esc_attr_e( 'Primary navigation', 'malachy-portfolio' ); ?>">
 		<?php foreach ( $nav_links as $link ) : ?>
+			<?php $link_class = ! empty( $link['mobile_only'] ) ? ' class="nav-mobile-only"' : ''; ?>
 			<?php if ( isset( $link['route'] ) && $link['route'] ) : ?>
-				<a href="<?php echo esc_url( home_url( $link['href'] ) ); ?>" data-section-link="<?php echo esc_attr( $link['section'] ?? '' ); ?>">
+				<a href="<?php echo esc_url( home_url( $link['href'] ) ); ?>"<?php echo $link_class; ?> data-section-link="<?php echo esc_attr( $link['section'] ?? '' ); ?>">
 					<?php echo esc_html( $link['label'] ); ?>
 				</a>
 			<?php else : ?>
-				<a href="<?php echo esc_attr( $link['href'] ); ?>" data-section-link="<?php echo esc_attr( $link['section'] ); ?>">
+				<a href="<?php echo esc_attr( $link['href'] ); ?>"<?php echo $link_class; ?> data-section-link="<?php echo esc_attr( $link['section'] ); ?>">
 					<?php echo esc_html( $link['label'] ); ?>
 				</a>
 			<?php endif; ?>

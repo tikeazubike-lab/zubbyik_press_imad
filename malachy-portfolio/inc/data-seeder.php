@@ -62,7 +62,15 @@ class Malachy_Seeder {
 		$this->seed_blog_posts();
 		$this->seed_offer_pages();
 		$this->seed_thank_you_page();
+		$this->seed_business_checkup_page();
 		$this->seed_testimonials();
+
+		// A page can exist in the database while its URL still 404s: WordPress resolves page
+		// URLs from cached rewrite rules, and those are only rebuilt on certain events. The
+		// production checkup page sat published but unreachable until `wp rewrite flush`
+		// (HO-079). Rebuild once here so anything seeded above is immediately reachable.
+		flush_rewrite_rules();
+		malachy_seeder_log( '  → rewrite rules flushed.' );
 
 		malachy_seeder_success( 'All data seeded successfully.' );
 	}
@@ -231,6 +239,45 @@ class Malachy_Seeder {
 		if ( $id && ! is_wp_error( $id ) ) {
 			update_post_meta( $id, '_wp_page_template', 'template-thank-you.php' );
 			malachy_seeder_log( '  → thank-you page created.' );
+		}
+	}
+
+	/**
+	 * Seed the Business Checkup page.
+	 *
+	 * Mirrors seed_thank_you_page(), with one deliberate difference: the existence check
+	 * covers every post status, not just 'publish'. A draft (or pending/private) page holding
+	 * the slug would otherwise leave wp_insert_post to create 'business-checkup-2', so the
+	 * seeder would report success while /business-checkup/ stayed a 404 - the failure mode
+	 * HO-079 hit in production.
+	 */
+	private function seed_business_checkup_page() {
+		$existing = get_posts( array(
+			'post_type'      => 'page',
+			'name'           => 'business-checkup',
+			'post_status'    => array( 'publish', 'draft', 'pending', 'private', 'future', 'trash' ),
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		) );
+
+		if ( ! empty( $existing ) ) {
+			$page = get_post( $existing[0] );
+			malachy_seeder_log( '  → Business Checkup page already exists (' . $page->post_status . ', ID ' . $page->ID . ').' );
+			return;
+		}
+
+		$id = wp_insert_post( array(
+			'post_type'    => 'page',
+			'post_title'   => 'Business Checkup',
+			'post_name'    => 'business-checkup',
+			'post_content' => '',
+			'post_status'  => 'publish',
+			'page_template' => 'template-business-checkup.php',
+		) );
+
+		if ( $id && ! is_wp_error( $id ) ) {
+			update_post_meta( $id, '_wp_page_template', 'template-business-checkup.php' );
+			malachy_seeder_log( '  → Business Checkup page created (ID ' . $id . ').' );
 		}
 	}
 

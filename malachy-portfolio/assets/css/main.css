@@ -204,6 +204,13 @@ select:focus-visible,
   text-transform: uppercase;
 }
 
+/* Mobile-only nav entries (HO-080). The Business Checkup link lives in the collapsed mobile
+   menu only: on desktop the header CTA carries it, and at <=800px that CTA is hidden, so the
+   menu is the phone's only route to the page. Overridden in the RESPONSIVE block below. */
+.site-nav .nav-mobile-only {
+  display: none;
+}
+
 .site-nav a,
 .contact-links a,
 .site-footer a,
@@ -2320,6 +2327,9 @@ select:focus-visible,
     padding: 16px;
     border-bottom: 1px solid var(--line);
   }
+
+  /* The header CTA is hidden at this width, so the checkup entry reappears here (HO-080). */
+  .site-nav .nav-mobile-only { display: block; }
 
   .header-cta { display: none; }
   .menu-toggle { display: inline-flex; }
