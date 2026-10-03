@@ -320,6 +320,20 @@ demo temp root -> 2 rows; sources: ['dev']
 `summarize_metrics` excludes `source=dev` rows from every count and reports
 `dev_rows_excluded` (test: `test_82`).
 
+A second, independent datapoint later completed for the bare `discovery` stage (which makes no
+write calls at all — verified: the stage contains no `process_text`/`invoke_hook`/`record_metrics`
+call):
+
+```
+live metrics md5 BEFORE: 63342eeea6302b7e0e50310c77e3dd52
+live metrics md5 AFTER : 63342eeea6302b7e0e50310c77e3dd52
+live audit   md5 BEFORE: 5c877dc20a51a46597e518765fa408ec
+live audit   md5 AFTER : 5c877dc20a51a46597e518765fa408ec
+live raw files BEFORE  : 193
+live raw files AFTER   : 193
+PROOF: live state UNCHANGED by the demo
+```
+
 ## 9. §9 — the 13:07 epoch is voided
 
 ```
@@ -344,9 +358,14 @@ changes to the summariser or this report do not.
 
 ## 10. Deviations, observations, limits
 
-- **Observation (harness):** `integration_shadow_demo.py` with no stage argument runs `discovery`
-  only, and that stage leaves the plugin manager's thread alive so the process does not exit. It
-  made **no model call** — `ollama ps` was `{"models":[]}` throughout, confirmed before and after.
+- **Observation (harness), corrected:** `integration_shadow_demo.py` with no stage argument runs
+  `discovery` only. I initially reported that the process "does not exit" — that was wrong, and I
+  am correcting it rather than leaving it standing: the run completed normally with **exit 0** and
+  printed its own md5 proof. It simply takes minutes between the last printed line and process
+  exit (the plugin-manager load outlives the printing). My attempt to stop it with
+  `pkill -f integration_shadow_demo` matched its own shell command string and SIGTERM'd **my
+  shell**, not the demo — the same `-f` self-match trap I hit once before. The demo made **no
+  model call**; `ollama ps` was `{"models":[]}` before, during and after.
 - **Observation (core, not patched):** `_effective_terminal_backend` relies on `bind_module`
   injection (see §6).
 - **Interpretation:** legacy rows written before this change carry no `seam`/`call_key` and stand
